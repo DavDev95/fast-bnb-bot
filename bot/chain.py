@@ -110,7 +110,11 @@ class Chain:
 
     def _sign_send(self, tx: dict) -> str:
         signed = self.w3.eth.account.sign_transaction(tx, self.cfg.private_key)
-        tx_hash = self.w3.eth.send_raw_transaction(signed.raw_transaction)
+        # eth-account renamed this attribute across versions; support both.
+        raw = getattr(signed, "raw_transaction", None)
+        if raw is None:
+            raw = signed.rawTransaction
+        tx_hash = self.w3.eth.send_raw_transaction(raw)
         h = tx_hash.hex()
         log.info("Sent tx %s — waiting for receipt ...", h)
         receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=120)
