@@ -9,6 +9,11 @@
 
 dry_run: true
 
+# Strategy: "grid" (buy low / sell higher) or "churn" (buy then immediately
+# sell back on a timer). NOTE: churn pays the ~0.5% PancakeSwap fee + gas on
+# every round trip, so it loses money when the price does not rise.
+mode: churn
+
 tokens:
   base:
     address: "0xf22aac87E08d7FC60aA89eb21110ddfE59c20854"
@@ -27,9 +32,16 @@ grid:
   levels: 11
   order_size_quote: 0.01  # WBNB spent per buy step — small, micro-cap token
 
+# Churn settings — used only when mode: churn.
+churn:
+  trade_size_quote: 0.15   # BNB per buy (~$85-90). You hold ~0.52 BNB.
+  interval_sec: 10         # buy + sell back roughly every 10 seconds
+
 execution:
   poll_interval_sec: 1.0
-  slippage_bps: 100        # 1% — wider, since this is a low-liquidity token
+  slippage_bps: 300        # 3% — churn does big trades on a thin pool; a worse
+                           # fill than this REVERTS (only gas lost) instead of
+                           # executing at a bad price.
   deadline_sec: 30
   gas_price_gwei: null
   max_gas_limit: 350000

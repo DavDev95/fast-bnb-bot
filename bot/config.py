@@ -49,13 +49,28 @@ class RiskCfg:
 
 
 @dataclass
+class ChurnCfg:
+    """Buy a fixed quote amount then immediately sell it back, on a timer."""
+    trade_size_quote: float = 0.15   # BNB spent per buy
+    interval_sec: float = 10.0
+
+    def __post_init__(self) -> None:
+        if self.trade_size_quote <= 0:
+            raise ValueError("churn.trade_size_quote must be positive")
+        if self.interval_sec < 0:
+            raise ValueError("churn.interval_sec must be >= 0")
+
+
+@dataclass
 class Config:
     dry_run: bool
     base: TokenCfg
     quote: TokenCfg
     grid: GridCfg
+    mode: str = "grid"               # "grid" or "churn"
     execution: ExecutionCfg = field(default_factory=ExecutionCfg)
     risk: RiskCfg = field(default_factory=RiskCfg)
+    churn: ChurnCfg = field(default_factory=ChurnCfg)
     # Secrets (from env, not YAML).
     rpc_url: str = "https://bsc-dataseed.binance.org"
     private_key: Optional[str] = None
@@ -74,6 +89,8 @@ def load_config(path: str = "config.yaml") -> Config:
     grid = GridCfg(**raw["grid"])
     execution = ExecutionCfg(**raw.get("execution", {}))
     risk = RiskCfg(**raw.get("risk", {}))
+    churn = ChurnCfg(**raw.get("churn", {}))
+    mode = raw.get("mode", "grid")
 
     private_key = os.getenv("PRIVATE_KEY") or None
     dry_run = bool(raw.get("dry_run", True))
@@ -87,8 +104,10 @@ def load_config(path: str = "config.yaml") -> Config:
         base=base,
         quote=quote,
         grid=grid,
+        mode=mode,
         execution=execution,
         risk=risk,
+        churn=churn,
         rpc_url=os.getenv("BSC_RPC_URL", "https://bsc-dataseed.binance.org"),
         private_key=private_key,
     )

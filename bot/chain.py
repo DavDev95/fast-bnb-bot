@@ -49,8 +49,13 @@ class Chain:
     def balance(self, token: str, decimals: int) -> float:
         if not self.account:
             return 0.0
-        raw = self._erc20(token).functions.balanceOf(self.account.address).call()
-        return raw / (10 ** decimals)
+        return self.balance_raw(token) / (10 ** decimals)
+
+    def balance_raw(self, token: str) -> int:
+        """Raw on-chain token balance (integer) — exact, no float rounding."""
+        if not self.account:
+            return 0
+        return self._erc20(token).functions.balanceOf(self.account.address).call()
 
     def native_balance(self) -> float:
         """Native BNB balance of the bot wallet."""

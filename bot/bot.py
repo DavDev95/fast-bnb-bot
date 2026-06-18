@@ -86,10 +86,53 @@ class GridBot:
                 raw = self.chain.to_raw(base_amount, self.chain.base_decimals)
                 self.chain.swap(self.chain.base, self.chain.quote, raw)
 
+    # --- churn loop (buy then immediately sell back, on a timer) -----------
+    def run_churn(self) -> None:
+        c = self.cfg.churn
+        tag = "DRY" if self.cfg.dry_run else "LIVE"
+        log.info("CHURN mode — buy %.6g %s then sell it back, every %gs",
+                 c.trade_size_quote, self.cfg.quote.symbol, c.interval_sec)
+        log.warning("Each round trip pays ~0.5%% PancakeSwap fee + gas — this "
+                    "bleeds capital when the price does not rise. You chose this.")
+
+        while True:
+            try:
+                price = self.chain.get_price()
+                if self.cfg.dry_run:
+                    base_amt = c.trade_size_quote / price
+                    log.info("[DRY] BUY %.6g %s -> %.6g %s, then SELL back @ %.6g",
+                             c.trade_size_quote, self.cfg.quote.symbol,
+                             base_amt, self.cfg.base.symbol, price)
+                else:
+                    # BUY: spend the quote amount, measure exactly what we got.
+                    before = self.chain.balance_raw(self.chain.base)
+                    raw_in = self.chain.to_raw(c.trade_size_quote, self.chain.quote_decimals)
+                    self.chain.swap(self.chain.quote, self.chain.base, raw_in)
+                    bought = self.chain.balance_raw(self.chain.base) - before
+                    log.info("[LIVE] BUY %.6g %s -> %s (raw) %s @ %.6g",
+                             c.trade_size_quote, self.cfg.quote.symbol,
+                             bought, self.cfg.base.symbol, price)
+                    # SELL back exactly what this buy produced.
+                    if bought > 0:
+                        self.chain.swap(self.chain.base, self.chain.quote, bought)
+                        log.info("[LIVE] SELL %s (raw) %s back to %s",
+                                 bought, self.cfg.base.symbol, self.cfg.quote.symbol)
+                    else:
+                        log.warning("buy produced no tokens — skipping sell")
+
+            except Exception as exc:  # keep looping on transient errors / reverts
+                log.error("churn error: %s", exc)
+
+            time.sleep(c.interval_sec)
+
     # --- main loop --------------------------------------------------------
     def run(self) -> None:
-        mode = "DRY-RUN (no real trades)" if self.cfg.dry_run else "LIVE TRADING"
-        log.info("Starting Fast BNB Bot — %s", mode)
+        live = "DRY-RUN (no real trades)" if self.cfg.dry_run else "LIVE TRADING"
+        if self.cfg.mode == "churn":
+            log.info("Starting Fast BNB Bot — %s", live)
+            self.run_churn()
+            return
+        log.info("Starting Fast BNB Bot — %s", live)
         log.info("Pair %s/%s | grid %.6g..%.6g x%d | order %.6g %s",
                  self.cfg.base.symbol, self.cfg.quote.symbol,
                  self.cfg.grid.lower_price, self.cfg.grid.upper_price,
