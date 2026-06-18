@@ -1,0 +1,38 @@
+# Grid config for the "BTC" token 0xf22aac87E08d7FC60aA89eb21110ddfE59c20854
+#
+# WARNING: this is NOT the official Binance-Peg BTCB
+# (which is 0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c).
+# Run `python tools/inspect_token.py 0xf22aac87E08d7FC60aA89eb21110ddfE59c20854`
+# on your server FIRST to confirm it is legit and to get the real price band.
+#
+# Start with:  python main.py -c config.btc.yaml   (dry-run, safe)
+
+dry_run: true
+
+tokens:
+  base:
+    address: "0xf22aac87E08d7FC60aA89eb21110ddfE59c20854"
+    symbol: "BTC"
+  quote:
+    address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"   # WBNB
+    symbol: "WBNB"
+
+grid:
+  # TODO: replace with the values printed by tools/inspect_token.py
+  # (they are "quote per 1 base" = WBNB per 1 BTC token).
+  lower_price: 0.0        # <-- fill from inspect_token.py "lower_price"
+  upper_price: 0.0        # <-- fill from inspect_token.py "upper_price"
+  levels: 11
+  order_size_quote: 0.02  # WBNB spent per buy step — keep small to start
+
+execution:
+  poll_interval_sec: 1.0
+  slippage_bps: 100        # 1% — wider, since unknown/illiquid tokens move more
+  deadline_sec: 30
+  gas_price_gwei: null
+  max_gas_limit: 350000
+
+risk:
+  max_quote_exposure: 0.1  # never hold more than 0.1 WBNB of this token
+  stop_below_price: null
+  stop_above_price: null
