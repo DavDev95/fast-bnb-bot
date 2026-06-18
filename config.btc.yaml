@@ -34,7 +34,7 @@ grid:
 
 # Churn settings — used only when mode: churn.
 churn:
-  trade_size_quote: 0.15   # BNB per buy (~$85-90). You hold ~0.52 BNB.
+  trade_size_quote: 0.03   # BNB per buy (~$17). Small = low price impact = less loss.
   interval_sec: 10         # buy + sell back roughly every 10 seconds
 
 execution:
