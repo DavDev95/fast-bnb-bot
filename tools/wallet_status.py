@@ -31,19 +31,22 @@ def main() -> int:
 
     chain = Chain(cfg)
     addr = chain.account.address
-    bnb = chain.w3.eth.get_balance(addr) / 1e18
-    quote_bal = chain.balance(chain.quote, chain.quote_decimals)
+    bnb = chain.native_balance()
+    quote_bal = chain.quote_balance()
     base_bal = chain.balance(chain.base, chain.base_decimals)
 
     print(f"Bot wallet address : {addr}")
-    print(f"  BNB (for gas)    : {bnb:.6f} BNB")
-    print(f"  {cfg.quote.symbol:<14} : {quote_bal:.6f}   (used to buy)")
+    if chain.native_quote:
+        print(f"  BNB (gas + buys) : {bnb:.6f} BNB   (native, used to buy)")
+    else:
+        print(f"  BNB (for gas)    : {bnb:.6f} BNB")
+        print(f"  {cfg.quote.symbol:<14} : {quote_bal:.6f}   (used to buy)")
     print(f"  {cfg.base.symbol:<14} : {base_bal:.6f}   (the token traded)")
 
     print("\nChecklist:")
     print(f"  - This address ({addr}) is the one you funded?  <- verify in your wallet")
     print(f"  - BNB > 0 for gas? {'YES' if bnb > 0 else 'NO  <-- add a little BNB'}")
-    print(f"  - {cfg.quote.symbol} > 0 to trade? "
+    print(f"  - Funds to trade ({cfg.quote.symbol})? "
           f"{'YES' if quote_bal > 0 else 'NO  <-- add some ' + cfg.quote.symbol}")
     return 0
 

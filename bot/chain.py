@@ -30,6 +30,10 @@ class Chain:
         self.base_decimals = self._decimals(self.base)
         self.quote_decimals = self._decimals(self.quote)
 
+        # When the quote token is WBNB we trade with NATIVE BNB directly
+        # (no wrapping needed): pay BNB on buys, receive BNB on sells.
+        self.native_quote = self.quote == Web3.to_checksum_address(WBNB)
+
         self.account = None
         if cfg.private_key:
             self.account = self.w3.eth.account.from_key(cfg.private_key)
@@ -47,6 +51,18 @@ class Chain:
             return 0.0
         raw = self._erc20(token).functions.balanceOf(self.account.address).call()
         return raw / (10 ** decimals)
+
+    def native_balance(self) -> float:
+        """Native BNB balance of the bot wallet."""
+        if not self.account:
+            return 0.0
+        return self.w3.eth.get_balance(self.account.address) / 1e18
+
+    def quote_balance(self) -> float:
+        """How much 'quote' the wallet holds — native BNB if trading natively."""
+        if self.native_quote:
+            return self.native_balance()
+        return self.balance(self.quote, self.quote_decimals)
 
     # --- price ------------------------------------------------------------
     def get_price(self) -> float:
@@ -95,18 +111,41 @@ class Chain:
         self._sign_send(tx)
 
     def swap(self, src: str, dst: str, amount_in_raw: int) -> Optional[str]:
-        """Swap `amount_in_raw` of src for dst. Returns the tx hash hex."""
+        """Swap `amount_in_raw` of src for dst. Returns the tx hash hex.
+
+        When trading natively (quote == WBNB), buys spend native BNB and sells
+        receive native BNB, so no wrapping is ever needed.
+        """
+        wbnb = Web3.to_checksum_address(WBNB)
         path = self._path(src, dst)
         amounts = self.router.functions.getAmountsOut(amount_in_raw, path).call()
         min_out = self._min_out(amounts[-1])
         deadline = int(time.time()) + self.cfg.execution.deadline_sec
+        to = self.account.address
 
+        # BUY token with native BNB.
+        if self.native_quote and src == wbnb:
+            fn = self.router.functions.swapExactETHForTokens(
+                min_out, path, to, deadline
+            )
+            params = self._gas_params()
+            params["value"] = amount_in_raw
+            return self._sign_send(fn.build_transaction(params))
+
+        # SELL token for native BNB.
+        if self.native_quote and dst == wbnb:
+            self.ensure_allowance(src, amount_in_raw)
+            fn = self.router.functions.swapExactTokensForETH(
+                amount_in_raw, min_out, path, to, deadline
+            )
+            return self._sign_send(fn.build_transaction(self._gas_params()))
+
+        # Plain token-for-token (non-native quote).
         self.ensure_allowance(src, amount_in_raw)
         fn = self.router.functions.swapExactTokensForTokens(
-            amount_in_raw, min_out, path, self.account.address, deadline
+            amount_in_raw, min_out, path, to, deadline
         )
-        tx = fn.build_transaction(self._gas_params())
-        return self._sign_send(tx)
+        return self._sign_send(fn.build_transaction(self._gas_params()))
 
     def _sign_send(self, tx: dict) -> str:
         signed = self.w3.eth.account.sign_transaction(tx, self.cfg.private_key)
