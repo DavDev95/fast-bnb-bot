@@ -89,11 +89,17 @@ class GridBot:
     # --- churn loop (buy then immediately sell back, on a timer) -----------
     def run_churn(self) -> None:
         c = self.cfg.churn
-        tag = "DRY" if self.cfg.dry_run else "LIVE"
         log.info("CHURN mode — buy %.6g %s then sell it back, every %gs",
                  c.trade_size_quote, self.cfg.quote.symbol, c.interval_sec)
         log.warning("Each round trip pays ~0.5%% PancakeSwap fee + gas — this "
                     "bleeds capital when the price does not rise. You chose this.")
+
+        # Remember pre-existing token holdings so we never sell them: each cycle
+        # we only sell what sits ABOVE this baseline (i.e. what churn just bought).
+        baseline = self.chain.balance_raw(self.chain.base) if not self.cfg.dry_run else 0
+        if not self.cfg.dry_run:
+            log.info("Preserving %s (raw) pre-existing %s — only churned tokens "
+                     "are sold.", baseline, self.cfg.base.symbol)
 
         while True:
             try:
@@ -104,21 +110,20 @@ class GridBot:
                              c.trade_size_quote, self.cfg.quote.symbol,
                              base_amt, self.cfg.base.symbol, price)
                 else:
-                    # BUY: spend the quote amount, measure exactly what we got.
-                    before = self.chain.balance_raw(self.chain.base)
+                    # BUY with native BNB.
                     raw_in = self.chain.to_raw(c.trade_size_quote, self.chain.quote_decimals)
                     self.chain.swap(self.chain.quote, self.chain.base, raw_in)
-                    bought = self.chain.balance_raw(self.chain.base) - before
-                    log.info("[LIVE] BUY %.6g %s -> %s (raw) %s @ %.6g",
-                             c.trade_size_quote, self.cfg.quote.symbol,
-                             bought, self.cfg.base.symbol, price)
-                    # SELL back exactly what this buy produced.
-                    if bought > 0:
-                        self.chain.swap(self.chain.base, self.chain.quote, bought)
+                    log.info("[LIVE] BUY %.6g %s @ %.6g",
+                             c.trade_size_quote, self.cfg.quote.symbol, price)
+                    # SELL everything above the baseline (all churned tokens).
+                    to_sell = self.chain.balance_raw(self.chain.base) - baseline
+                    if to_sell > 0:
+                        self.chain.swap(self.chain.base, self.chain.quote, to_sell)
                         log.info("[LIVE] SELL %s (raw) %s back to %s",
-                                 bought, self.cfg.base.symbol, self.cfg.quote.symbol)
+                                 to_sell, self.cfg.base.symbol, self.cfg.quote.symbol)
                     else:
-                        log.warning("buy produced no tokens — skipping sell")
+                        log.warning("nothing above baseline to sell yet — "
+                                    "will retry next cycle")
 
             except Exception as exc:  # keep looping on transient errors / reverts
                 log.error("churn error: %s", exc)
