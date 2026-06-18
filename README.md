@@ -50,6 +50,36 @@ python main.py --live
 
 It prints the mode on startup and pauses 5s before live trading so you can abort.
 
+## Run 24/7 (always on)
+
+The bot already loops forever — buying as the price falls and selling as it
+rises — and survives transient RPC errors. To keep it alive across crashes and
+reboots **on your existing server** (no extra hosting, no extra cost), use one
+of these:
+
+**Option A — systemd (recommended, needs root):**
+
+```bash
+sudo cp deploy/fast-bnb-bot.service /etc/systemd/system/
+sudoedit /etc/systemd/system/fast-bnb-bot.service   # set User + paths
+sudo systemctl daemon-reload
+sudo systemctl enable --now fast-bnb-bot            # starts now + on every boot
+journalctl -u fast-bnb-bot -f                       # live logs
+```
+
+It restarts automatically if it crashes or the machine reboots.
+
+**Option B — no root (nohup + auto-restart loop):**
+
+```bash
+nohup ./deploy/run-forever.sh > bot.out 2>&1 &
+tail -f bot.out          # logs
+pkill -f main.py         # stop
+```
+
+Both keep running after you log out. Start in **dry-run** to watch it trade
+24/7 safely before risking real funds.
+
 ## Configuration
 
 All strategy settings live in `config.yaml` (see `config.example.yaml` for the

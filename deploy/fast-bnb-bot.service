@@ -1,0 +1,40 @@
+# systemd service to run the Fast BNB Bot 24/7 on your existing server.
+#
+# Install:
+#   sudo cp deploy/fast-bnb-bot.service /etc/systemd/system/
+#   # edit the paths/user below to match your setup, then:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now fast-bnb-bot
+#
+# Watch logs:    journalctl -u fast-bnb-bot -f
+# Stop / start:  sudo systemctl stop|start fast-bnb-bot
+# Status:        systemctl status fast-bnb-bot
+
+[Unit]
+Description=Fast BNB grid-trading bot (PancakeSwap / BSC)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# --- EDIT THESE to match your server ---------------------------------------
+User=YOUR_USER
+WorkingDirectory=/home/YOUR_USER/fast-bnb-bot
+# Use the venv python if you created one, otherwise plain python3.
+ExecStart=/home/YOUR_USER/fast-bnb-bot/.venv/bin/python main.py
+# ---------------------------------------------------------------------------
+
+# Keep it alive 24/7: restart on any crash, wait 5s between attempts.
+Restart=always
+RestartSec=5
+
+# Unbuffered output so logs show up live in journalctl.
+Environment=PYTHONUNBUFFERED=1
+
+# Light hardening (optional, safe defaults).
+NoNewPrivileges=true
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
