@@ -14,6 +14,9 @@ Usage:
 import os
 import sys
 
+# Make the project root importable when run as `python tools/inspect_token.py`.
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from web3 import Web3
 
 from bot.constants import ERC20_ABI, ROUTER_ABI, PANCAKE_ROUTER, WBNB
