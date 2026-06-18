@@ -1,0 +1,43 @@
+# Fast BNB Bot — grid trading configuration.
+# Copy to config.yaml and adjust. Prices are expressed as: quote per 1 base.
+
+# --- Safety ---------------------------------------------------------------
+# dry_run: true  -> simulate only, never sends a transaction (DEFAULT, SAFE).
+# dry_run: false -> sends real swaps on-chain (requires PRIVATE_KEY in .env).
+dry_run: true
+
+# --- Tokens we trade ------------------------------------------------------
+# base  = the token we accumulate/sell (e.g. CAKE).
+# quote = what we price/pay with. Use WBNB to trade against native BNB.
+tokens:
+  base:
+    address: "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"   # CAKE
+    symbol: "CAKE"
+  quote:
+    address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"   # WBNB
+    symbol: "WBNB"
+
+# --- Grid strategy --------------------------------------------------------
+grid:
+  # Price band the grid operates in (quote per 1 base).
+  lower_price: 0.004
+  upper_price: 0.008
+  # Number of grid lines between lower and upper (inclusive endpoints).
+  levels: 11
+  # Quote amount spent per BUY step (e.g. WBNB per buy). The matching SELL
+  # sells the base bought at the level below.
+  order_size_quote: 0.02
+
+# --- Execution / speed ----------------------------------------------------
+execution:
+  poll_interval_sec: 1.0      # how often we re-check the price (lower = faster)
+  slippage_bps: 50            # 50 = 0.5% max slippage on swaps
+  deadline_sec: 30            # tx deadline window
+  gas_price_gwei: null        # null = let the node decide; set a number to override
+  max_gas_limit: 350000
+
+# --- Risk limits ----------------------------------------------------------
+risk:
+  max_quote_exposure: 0.2     # never hold more than this much base (valued in quote)
+  stop_below_price: null      # if set, halt the bot if price drops under this
+  stop_above_price: null      # if set, halt the bot if price rises over this
