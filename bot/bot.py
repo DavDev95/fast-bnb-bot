@@ -91,8 +91,8 @@ class GridBot:
         c = self.cfg.churn
         log.info("CHURN mode — buy %.6g %s then sell it back, every %gs",
                  c.trade_size_quote, self.cfg.quote.symbol, c.interval_sec)
-        log.warning("Each round trip pays ~0.5%% PancakeSwap fee + gas — this "
-                    "bleeds capital when the price does not rise. You chose this.")
+        log.warning("Each round trip pays the PancakeSwap fee (~0.5pct) + gas, so "
+                    "it bleeds capital when the price does not rise. You chose this.")
 
         # Remember pre-existing token holdings so we never sell them: each cycle
         # we only sell what sits ABOVE this baseline (i.e. what churn just bought).
@@ -111,19 +111,27 @@ class GridBot:
                              base_amt, self.cfg.base.symbol, price)
                 else:
                     # BUY with native BNB.
+                    before = self.chain.balance_raw(self.chain.base)
                     raw_in = self.chain.to_raw(c.trade_size_quote, self.chain.quote_decimals)
                     self.chain.swap(self.chain.quote, self.chain.base, raw_in)
                     log.info("[LIVE] BUY %.6g %s @ %.6g",
                              c.trade_size_quote, self.cfg.quote.symbol, price)
+                    # Wait for the bought tokens to appear (RPC replicas can lag).
+                    held = before
+                    for _ in range(10):
+                        held = self.chain.balance_raw(self.chain.base)
+                        if held > before:
+                            break
+                        time.sleep(0.5)
                     # SELL everything above the baseline (all churned tokens).
-                    to_sell = self.chain.balance_raw(self.chain.base) - baseline
+                    to_sell = held - baseline
                     if to_sell > 0:
                         self.chain.swap(self.chain.base, self.chain.quote, to_sell)
                         log.info("[LIVE] SELL %s (raw) %s back to %s",
                                  to_sell, self.cfg.base.symbol, self.cfg.quote.symbol)
                     else:
-                        log.warning("nothing above baseline to sell yet — "
-                                    "will retry next cycle")
+                        log.warning("bought tokens not visible yet — "
+                                    "will sell them next cycle")
 
             except Exception as exc:  # keep looping on transient errors / reverts
                 log.error("churn error: %s", exc)
