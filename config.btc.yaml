@@ -43,7 +43,7 @@ execution:
                            # fill than this REVERTS (only gas lost) instead of
                            # executing at a bad price.
   deadline_sec: 30
-  gas_price_gwei: 1        # cheapest reliable gas on BSC (lower may get stuck)
+  gas_price_gwei: 0.1      # BSC floor — cheapest possible (may be slower if busy)
   max_gas_limit: 350000
 
 risk:
