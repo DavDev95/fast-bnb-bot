@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BTCN Moon Rocket 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Layout: one narrow column — HUD, tall play field, short footer. Single dark look. */
+  :root{
+    color-scheme:dark;
+    --orange:#F7931A; --orange2:#ffae40; --bg:#05070d; --card:#0f141d; --border:#232b3a;
+    --text:#eef3fb; --muted:#93a1b5; --bad:#ff6b6b; --ink:#1a1000;
+    --display:Orbitron,system-ui,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.45;
+    display:flex;justify-content:center;-webkit-tap-highlight-color:transparent}
+  button{font-family:inherit}
+  .app{width:100%;max-width:460px;padding-block:10px 16px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+    display:flex;flex-direction:column;gap:8px}
+  .app>*{flex:none}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-family:var(--display);font-size:17px;letter-spacing:.3px}
+  h1 span{color:var(--orange)}
+  .tools{display:flex;gap:6px}
+  .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;
+    padding:6px 11px;font-size:13px;font-weight:600;cursor:pointer}
+  :focus-visible{outline:2px solid var(--orange2);outline-offset:2px}
+  .hud{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:6px 10px;min-width:0}
+  .stat small{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-family:var(--display);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bar{position:relative;height:16px;background:var(--card);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;width:100%;border-radius:999px;background:linear-gradient(90deg,#ff5a1f,var(--orange2))}
+  .bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;font-weight:700;letter-spacing:.6px;text-shadow:0 1px 2px #000}
+  .stage{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#07090c}
+  canvas{display:block;width:100%;touch-action:none;cursor:pointer}
+  .overlay{position:absolute;inset:0;background:rgba(5,7,13,.88);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:18px;gap:10px;overflow:auto}
+  .overlay h2{font-family:var(--display);font-size:24px;text-wrap:balance}
+  .overlay h2 em{font-style:normal;color:var(--orange)}
+  .overlay p{color:var(--muted);font-size:14px;max-width:320px}
+  .overlay .result{color:var(--text);font-size:15px}
+  .btn{background:var(--orange);color:var(--ink);border:0;border-radius:999px;padding:12px 26px;
+    font-size:16px;font-weight:800;cursor:pointer}
+  .btn.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .toast{position:absolute;left:10px;right:10px;top:10px;background:rgba(15,20,29,.92);text-align:center;
+    border:1px solid var(--orange);border-radius:12px;padding:8px 12px;font-family:var(--display);font-size:13px;
+    opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:none}
+  footer{color:var(--muted);font-size:11.5px;text-align:center}
+  @media (prefers-reduced-motion:reduce){ .toast{transition:none} }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;800&display=swap">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1><span>BTCN</span> Moon Rocket 3D</h1>
+    <div class="tools">
+      <button class="chip" id="langBtn" aria-label="Language">EN</button>
+      <button class="chip" id="soundBtn" aria-label="Sound">🔊</button>
+    </div>
+  </header>
+  <div class="hud">
+    <div class="stat"><small data-i18n="alt">Altitude</small><b id="alt">0 km</b></div>
+    <div class="stat"><small data-i18n="coins">Pièces</small><b id="coins">0</b></div>
+    <div class="stat"><small data-i18n="shield">Bouclier</small><b id="hearts">♥♥♥</b></div>
+  </div>
+  <div class="bar"><i id="fuelFill"></i><span data-i18n="fuel">CARBURANT</span></div>
+  <div class="stage">
+    <canvas id="cv"></canvas>
+    <div class="toast" id="toast"></div>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle"><em>BTCN</em> Moon Rocket 3D</h2>
+      <p id="ovText" data-i18n="intro"></p>
+      <p class="result" id="ovResult" hidden></p>
+      <div class="row">
+        <button class="btn" id="playBtn" data-i18n="play">Décoller</button>
+        <button class="btn alt" id="shareBtn" data-i18n="share" hidden>Partager</button>
+      </div>
+      <p id="bestTxt"></p>
+    </div>
+  </div>
+  <footer data-i18n="disclaimer"></footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  var SHARE_URL = "";                       // public link of the game, added to the share text
+  var LOGO = "data:image/jpeg;base64,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";
+  var MOON_KM = 384400, TRIP = 105;         // seconds of flight at base speed
+
+  var T = {
+    fr:{ alt:"Altitude", coins:"Pièces", shield:"Bouclier", fuel:"CARBURANT", play:"Décoller", again:"Redécoller",
+      share:"Partager", copied:"Copié ✓",
+      intro:"Pilotez la fusée jusqu'à la Lune. Attrapez les pièces BTCN pour le carburant, évitez tout le reste. Glissez le doigt dans tous les sens, ou utilisez les flèches.",
+      z1:"Ciel", z2:"Stratosphère", z3:"Espace", z4:"En approche de la Lune",
+      winTitle:"Sur la <em>Lune</em> ! 🌕", crashTitle:"Fusée <em>détruite</em>", fuelTitle:"Panne de <em>carburant</em>",
+      winRes:"Lune atteinte en {t} avec {c} pièces.", loseRes:"Altitude atteinte : {a}, avec {c} pièces.",
+      best:"Record : {v}", bestMoon:"Lune en {t}", bestAlt:"{a}",
+      shareWin:"J'ai posé la fusée BTCN sur la Lune en {t} avec {c} pièces 🚀🌕 À vous :",
+      shareLose:"Ma fusée BTCN est montée à {a} avec {c} pièces 🚀 Qui va plus haut ?",
+      no3d:"La 3D n'est pas disponible sur cet appareil ou ce navigateur.",
+      disclaimer:"Jeu gratuit, sans portefeuille ni gain. $BTCN est un meme token : pas un conseil financier, les cryptos sont risquées. Non affilié à Bitcoin." },
+    en:{ alt:"Altitude", coins:"Coins", shield:"Shield", fuel:"FUEL", play:"Lift off", again:"Fly again",
+      share:"Share", copied:"Copied ✓",
+      intro:"Fly the rocket to the Moon. Catch BTCN coins for fuel, dodge everything else. Drag in any direction, or use the arrow keys.",
+      z1:"Sky", z2:"Stratosphere", z3:"Space", z4:"Approaching the Moon",
+      winTitle:"On the <em>Moon</em>! 🌕", crashTitle:"Rocket <em>destroyed</em>", fuelTitle:"Out of <em>fuel</em>",
+      winRes:"Moon reached in {t} with {c} coins.", loseRes:"Altitude reached: {a}, with {c} coins.",
+      best:"Best: {v}", bestMoon:"Moon in {t}", bestAlt:"{a}",
+      shareWin:"I landed the BTCN rocket on the Moon in {t} with {c} coins 🚀🌕 Your turn:",
+      shareLose:"My BTCN rocket climbed to {a} with {c} coins 🚀 Who goes higher?",
+      no3d:"3D is not available on this device or browser.",
+      disclaimer:"Free game, no wallet, no rewards. $BTCN is a meme token: not financial advice, crypto is risky. Not affiliated with Bitcoin." }
+  };
+
+
+  function $(id){ return document.getElementById(id); }
+  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function put(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rand(a, b){ return a + Math.random() * (b - a); }
+  function clamp(v, a, b){ return Math.min(b, Math.max(a, v)); }
+  function clock(s){ var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+  var lang = get("btcn.lang") || ((navigator.language || "en").slice(0, 2) === "fr" ? "fr" : "en");
+  function tr(key, vars){
+    var s = (T[lang] && T[lang][key]) || T.en[key] || key;
+    if(vars) for(var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+    return s;
+  }
+  // progress 0..1 -> altitude in km: 0-12 km sky, 12-100 km stratosphere, then out to the Moon
+  function altKm(p){
+    if(p < 0.25) return p / 0.25 * 12;
+    if(p < 0.5) return 12 + (p - 0.25) / 0.25 * 88;
+    return 100 * Math.pow(MOON_KM / 100, (p - 0.5) / 0.5);
+  }
+  function altTxt(p){
+    var k = altKm(p);
+    return (k < 100 ? k.toFixed(1) : Math.round(k).toLocaleString(lang === "fr" ? "fr-FR" : "en-US")) + " km";
+  }
+  function zone(p){ return p < 0.25 ? 1 : p < 0.5 ? 2 : p < 0.82 ? 3 : 4; }
+
+  /* ---------- sound ---------- */
+  var muted = get("btcn.mute") === "1", actx = null;
+  function beep(f, d, type, vol){
+    if(muted) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || 0.06, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d);
+      o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d);
+    }catch(e){}
+  }
+  function paintSound(){ $("soundBtn").textContent = muted ? "🔇" : "🔊"; }
+  $("soundBtn").addEventListener("click", function(){ muted = !muted; put("btcn.mute", muted ? "1" : "0"); paintSound(); });
+
+  /* ---------- 3D scene ---------- */
+  var cv = $("cv"), ok3d = !!window.THREE, renderer, scene, camera, W = 400, H = 520, xMax = 3, yMin = -2.1, yMax = 2.5;
+  var shipG, flame, moon, starPts, cloudsG, sparkPts, sparkData = [], logoTex;
+  var M = {}, G = {};
+  function build(){
+    renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true });
+    scene = new THREE.Scene(); scene.background = new THREE.Color(0x4a90e2); scene.fog = new THREE.Fog(0x4a90e2, 40, 120);
+    camera = new THREE.PerspectiveCamera(58, 1, 0.1, 400);
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x334466, 0.95));
+    var sun = new THREE.DirectionalLight(0xffffff, 0.9); sun.position.set(4, 8, 6); scene.add(sun);
+    logoTex = new THREE.TextureLoader().load(LOGO);
+
+    M.white = new THREE.MeshStandardMaterial({ color: 0xf3f6fb, roughness: 0.5, metalness: 0.1 });
+    M.orange = new THREE.MeshStandardMaterial({ color: 0xF7931A, roughness: 0.45, metalness: 0.2 });
+    M.logo = new THREE.MeshBasicMaterial({ map: logoTex });
+    M.coinEdge = new THREE.MeshStandardMaterial({ color: 0xF7931A, emissive: 0x7a3c00, roughness: 0.3, metalness: 0.6 });
+    M.flame = new THREE.MeshBasicMaterial({ color: 0xffb347, transparent: true, opacity: 0.9, fog: false });
+    M.storm = new THREE.MeshStandardMaterial({ color: 0x4b5566, roughness: 1, flatShading: true });
+    M.bolt = new THREE.MeshBasicMaterial({ color: 0xffe066 });
+    M.bird = new THREE.MeshStandardMaterial({ color: 0x1b2433, roughness: 1 });
+    M.metal = new THREE.MeshStandardMaterial({ color: 0xc9d3e0, roughness: 0.4, metalness: 0.6 });
+    M.panel = new THREE.MeshStandardMaterial({ color: 0x3d7bd9, roughness: 0.3, metalness: 0.4 });
+    M.rock = new THREE.MeshStandardMaterial({ color: 0x8a7868, roughness: 1, flatShading: true });
+    M.cloud = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 1, transparent: true, opacity: 0.85 });
+
+    G.coin = new THREE.CylinderGeometry(0.55, 0.55, 0.12, 28);
+    G.sphere = new THREE.SphereGeometry(1, 12, 10);
+    G.rock = new THREE.IcosahedronGeometry(1, 0);
+    G.box = new THREE.BoxGeometry(1, 1, 1);
+
+    // rocket: built along +Y, then laid down so the nose points away from the camera
+    shipG = new THREE.Group();
+    var r = new THREE.Group(); r.rotation.x = -Math.PI / 2 + 0.8; shipG.add(r);   // nose up and away, logo towards the camera
+    var body = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.4, 1.5, 20), M.white); r.add(body);
+    var nose = new THREE.Mesh(new THREE.ConeGeometry(0.34, 0.7, 20), M.orange); nose.position.y = 1.1; r.add(nose);
+    var band = new THREE.Mesh(new THREE.CylinderGeometry(0.405, 0.405, 0.14, 20), M.orange); band.position.y = -0.55; r.add(band);
+    for(var i = 0; i < 3; i++){
+      var fin = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.6, 0.5), M.orange), a = i / 3 * Math.PI * 2 + Math.PI / 2;
+      fin.position.set(Math.cos(a) * 0.5, -0.6, Math.sin(a) * 0.5); fin.rotation.y = -a + Math.PI / 2; r.add(fin);
+    }
+    // the logo, on the side that faces the camera
+    var badge = new THREE.Mesh(new THREE.CircleGeometry(0.3, 28), M.logo); badge.position.set(0, 0.15, 0.4); r.add(badge);
+    var ring = new THREE.Mesh(new THREE.RingGeometry(0.3, 0.35, 28), M.orange); ring.position.copy(badge.position); r.add(ring);
+    flame = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.9, 14), M.flame); flame.rotation.x = Math.PI; flame.position.y = -1.2; r.add(flame);
+    scene.add(shipG);
+
+    // Moon with a painted crater texture
+    var c = document.createElement("canvas"); c.width = 256; c.height = 128; var g = c.getContext("2d");
+    g.fillStyle = "#e9e6d8"; g.fillRect(0, 0, 256, 128); g.fillStyle = "#cfcbb9";
+    for(i = 0; i < 26; i++){ g.beginPath(); g.arc(Math.random() * 256, Math.random() * 128, 3 + Math.random() * 13, 0, 6.2832); g.fill(); }
+    moon = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 28),
+      new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(c), roughness: 1, fog: false, emissive: 0x1c1c18 }));
+    moon.visible = false; scene.add(moon);
+
+    // stars
+    var pos = new Float32Array(700 * 3);
+    for(i = 0; i < 700; i++){
+      var th = Math.random() * 6.2832, ph = Math.acos(rand(-1, 1)), rr = 170;
+      pos[i * 3] = rr * Math.sin(ph) * Math.cos(th); pos[i * 3 + 1] = rr * Math.sin(ph) * Math.sin(th); pos[i * 3 + 2] = -Math.abs(rr * Math.cos(ph)) - 10;
+    }
+    var sg = new THREE.BufferGeometry(); sg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    starPts = new THREE.Points(sg, new THREE.PointsMaterial({ color: 0xffffff, size: 1.1, transparent: true, opacity: 0, fog: false }));
+    scene.add(starPts);
+
+    // scenery clouds off to the sides (never collide)
+    cloudsG = new THREE.Group(); scene.add(cloudsG);
+    for(i = 0; i < 14; i++){
+      var cl = new THREE.Group();
+      for(var j = 0; j < 3; j++){ var s = new THREE.Mesh(G.sphere, M.cloud); s.scale.set(rand(1.4, 2.4), rand(0.7, 1.1), rand(1.2, 2)); s.position.x = (j - 1) * 1.7; cl.add(s); }
+      cl.position.set((Math.random() < 0.5 ? -1 : 1) * rand(6, 15), rand(-5, 5), -rand(0, 120)); cloudsG.add(cl);
+    }
+
+    // sparks
+    var sp = new Float32Array(120 * 3); for(i = 0; i < 360; i++) sp[i] = 9999;
+    var spg = new THREE.BufferGeometry(); spg.setAttribute("position", new THREE.BufferAttribute(sp, 3));
+    sparkPts = new THREE.Points(spg, new THREE.PointsMaterial({ color: 0xffc45c, size: 0.16, transparent: true, fog: false }));
+    scene.add(sparkPts);
+    for(i = 0; i < 120; i++) sparkData.push({ life: 0, vx: 0, vy: 0, vz: 0 });
+  }
+  function resize(){
+    W = cv.parentNode.clientWidth; H = Math.max(380, Math.min(620, window.innerHeight - 190));
+    cv.style.height = H + "px";
+    if(!ok3d) return;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2)); renderer.setSize(W, H, false);
+    camera.aspect = W / H; camera.updateProjectionMatrix();
+    xMax = Math.max(1.6, Math.tan(camera.fov * Math.PI / 360) * 9.5 * camera.aspect - 0.9);
+    if(state !== "play" && state !== "landing") render(0);
+  }
+
+  function makeMesh(kind, r){
+    var g = new THREE.Group(), m, i;
+    if(kind === "coin"){
+      var c = new THREE.Group(); c.rotation.x = Math.PI / 2;
+      c.add(new THREE.Mesh(G.coin, M.coinEdge));
+      [1, -1].forEach(function(s){ var f = new THREE.Mesh(new THREE.CircleGeometry(0.5, 28), M.logo);
+        f.rotation.x = -s * Math.PI / 2; f.position.y = s * 0.065; c.add(f); });
+      g.add(c);
+    } else if(kind === "storm"){
+      [[-0.55, 0, 0.6], [0, 0.25, 0.8], [0.6, 0, 0.55], [0.1, -0.2, 0.6]].forEach(function(p){
+        m = new THREE.Mesh(G.sphere, M.storm); m.position.set(p[0] * r, p[1] * r, 0); m.scale.setScalar(p[2] * r); g.add(m); });
+      m = new THREE.Mesh(G.box, M.bolt); m.scale.set(0.1, 0.8, 0.1); m.position.y = -r * 0.8; m.rotation.z = 0.35; g.add(m); g.userData.bolt = m;
+    } else if(kind === "bird"){
+      m = new THREE.Mesh(G.sphere, M.bird); m.scale.set(0.22, 0.2, 0.4); g.add(m);
+      g.userData.wings = [];
+      [1, -1].forEach(function(s){ var p = new THREE.Group(), w = new THREE.Mesh(G.box, M.bird);
+        w.scale.set(0.75, 0.05, 0.3); w.position.x = s * 0.42; p.add(w); g.add(p); g.userData.wings.push([p, s]); });
+    } else if(kind === "sat"){
+      m = new THREE.Mesh(G.box, M.metal); m.scale.set(0.45, 0.45, 0.45); g.add(m);
+      [1, -1].forEach(function(s){ var p = new THREE.Mesh(G.box, M.panel); p.scale.set(0.7, 0.04, 0.36); p.position.x = s * 0.62; g.add(p); });
+      m = new THREE.Mesh(G.box, M.metal); m.scale.set(0.04, 0.4, 0.04); m.position.y = 0.4; g.add(m);
+    } else {
+      m = new THREE.Mesh(G.rock, M.rock); m.scale.set(r * rand(0.8, 1.1), r * rand(0.7, 1), r * rand(0.8, 1.1)); g.add(m);
+    }
+    return g;
+  }
+
+  /* ---------- state ---------- */
+  var state = "idle";                        // idle | play | landing | over
+  var ship = { x: 0, y: 0, tx: 0, ty: 0, z: 0 };
+  var items = [];
+  var prog = 0, fuel = 100, hearts = 3, coins = 0, elapsed = 0, boost = 0, spawnT = 0, inv = 0, shake = 0, zNow = 1, endKind = "";
+  var keys = {}, last = 0, landT = 0, clockT = 0;
+
+  function clearItems(){ for(var i = 0; i < items.length; i++) scene.remove(items[i].mesh); items = []; }
+  function start(){
+    if(!ok3d) return;
+    clearItems();
+    endKind = ""; prog = 0; fuel = 100; hearts = 3; coins = 0; elapsed = 0; boost = 0; spawnT = 0.6; inv = 0; shake = 0; zNow = 1; landT = 0;
+    ship.x = ship.tx = 0; ship.y = ship.ty = 0; ship.z = 0; shipG.visible = true;
+    state = "play"; $("overlay").hidden = true;
+    last = performance.now(); beep(300, 0.3, "sawtooth", 0.04); toast(tr("z1"));
+    requestAnimationFrame(loop);
+  }
+  function toast(t){
+    var el = $("toast"); el.textContent = t; el.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(function(){ el.classList.remove("show"); }, 2200);
+  }
+  function burst(x, y, z, n){
+    var a = sparkPts.geometry.attributes.position.array, k = 0;
+    for(var i = 0; i < sparkData.length && k < n; i++) if(sparkData[i].life <= 0){
+      var d = sparkData[i]; d.life = rand(0.3, 0.7); d.vx = rand(-5, 5); d.vy = rand(-5, 5); d.vz = rand(-2, 6);
+      a[i * 3] = x; a[i * 3 + 1] = y; a[i * 3 + 2] = z; k++;
+    }
+  }
+  function spawn(){
+    var z = zNow, coin = Math.random() < (0.56 - z * 0.04), kind, r;
+    if(coin){ kind = "coin"; r = 0.55; }
+    else {
+      kind = z === 1 ? (Math.random() < 0.5 ? "bird" : "storm") : z === 2 ? (Math.random() < 0.5 ? "storm" : "sat") : (Math.random() < 0.3 ? "sat" : "rock");
+      r = kind === "storm" ? 1 : kind === "rock" ? rand(0.6, 1.1) : 0.75;
+    }
+    var it = { kind: kind, r: r, x: rand(-xMax, xMax), y: rand(yMin, yMax), z: -110, vx: 0,
+               vz: (coin ? 30 : 34) + z * 5 + rand(0, 6), spin: rand(-2, 2) };
+    if(kind === "bird" || kind === "sat") it.vx = (Math.random() < 0.5 ? -1 : 1) * rand(0.6, 1.8);
+    it.mesh = makeMesh(kind, r); it.mesh.position.set(it.x, it.y, it.z); scene.add(it.mesh); items.push(it);
+  }
+
+  function update(dt){
+    elapsed += dt;
+    var kx = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a || keys.q ? 1 : 0);
+    var ky = (keys.ArrowUp || keys.w || keys.z ? 1 : 0) - (keys.ArrowDown || keys.s ? 1 : 0);
+    if(kx) ship.tx = ship.x + kx * 9 * dt * 3; if(ky) ship.ty = ship.y + ky * 7 * dt * 3;
+    ship.tx = clamp(ship.tx, -xMax, xMax); ship.ty = clamp(ship.ty, yMin, yMax);
+    var k = Math.min(1, dt * 12), dx = (ship.tx - ship.x) * k, dy = (ship.ty - ship.y) * k;
+    ship.x += dx; ship.y += dy;
+    shipG.rotation.z += (-dx / Math.max(dt, 0.001) * 0.05 - shipG.rotation.z) * Math.min(1, dt * 8);
+    shipG.rotation.x += (dy / Math.max(dt, 0.001) * 0.04 - shipG.rotation.x) * Math.min(1, dt * 8);
+
+    boost = Math.max(0, boost - dt * 0.35);
+    prog = Math.min(1, prog + dt / TRIP * (1 + boost * 0.6));
+    fuel -= (5 + zNow * 0.85) * dt;
+    if(inv > 0) inv -= dt; if(shake > 0) shake -= dt;
+    var z = zone(prog);
+    if(z !== zNow){ zNow = z; toast(tr("z" + z)); beep(660, 0.25, "square", 0.04); }
+    spawnT -= dt;
+    if(spawnT <= 0){ spawn(); spawnT = Math.max(0.25, 0.6 - zNow * 0.07) * rand(0.75, 1.25); }
+
+    var sp = 1 + boost * 0.35;
+    for(var i = items.length - 1; i >= 0; i--){
+      var it = items[i], pz = it.z; it.z += it.vz * sp * dt; it.x += it.vx * dt;
+      if(Math.abs(it.x) > xMax) it.vx = -it.vx;
+      // the item crossed the rocket's plane this frame: test in x/y
+      if(pz < 0.9 && it.z > -0.9){
+        var ddx = it.x - ship.x, ddy = it.y - ship.y, rr = it.r + 0.5;
+        if(ddx * ddx + ddy * ddy < rr * rr){
+          if(it.kind === "coin"){
+            coins++; fuel = Math.min(100, fuel + 11); boost = Math.min(1.5, boost + 0.3);
+            burst(it.x, it.y, 0, 10); beep(520 + Math.min(coins, 30) * 12, 0.08);
+            scene.remove(it.mesh); items.splice(i, 1); continue;
+          } else if(inv <= 0){
+            hearts--; inv = 1.4; shake = 0.3; boost = 0; burst(it.x, it.y, 0, 22); beep(120, 0.3, "sawtooth", 0.06);
+            scene.remove(it.mesh); items.splice(i, 1);
+            if(hearts <= 0){ end("crash"); return; }
+            continue;
+          }
+        }
+      }
+      if(it.z > 12){ scene.remove(it.mesh); items.splice(i, 1); }
+    }
+    if(prog >= 1){ state = "landing"; landT = 0; clearItems(); beep(880, 0.5); }
+    else if(fuel <= 0){ fuel = 0; end("fuel"); }
+  }
+
+  /* ---------- render ---------- */
+  var cA = new THREE.Color(), cB = new THREE.Color();
+  function skyColor(p){
+    if(p < 0.25) return cA.set(0x58a6f0).lerp(cB.set(0x2f6fd0), p / 0.25);
+    if(p < 0.5) return cA.set(0x2f6fd0).lerp(cB.set(0x0a1030), (p - 0.25) / 0.25);
+    return cA.set(0x0a1030).lerp(cB.set(0x03040c), Math.min(1, (p - 0.5) / 0.2));
+  }
+  function render(dt){
+    clockT += dt; var t = clockT, p = prog, playing = state === "play";
+    var col = skyColor(p); scene.background.copy(col); scene.fog.color.copy(col);
+    starPts.material.opacity = clamp((p - 0.3) / 0.25, 0, 1); starPts.rotation.z += dt * 0.01;
+    // scenery clouds
+    var ca = clamp(1 - p / 0.32, 0, 1); cloudsG.visible = ca > 0.01; M.cloud.opacity = 0.85 * ca;
+    if(cloudsG.visible) for(var i = 0; i < cloudsG.children.length; i++){
+      var c = cloudsG.children[i]; c.position.z += dt * (playing ? 26 * (1 + boost * 0.35) : 3);
+      if(c.position.z > 12){ c.position.z = -120; c.position.y = rand(-5, 5); }
+    }
+    // the Moon grows as you approach
+    var ma = clamp((p - 0.78) / 0.22, 0, 1), land = state === "landing" ? landT / 1.8 : (endKind === "win" ? 1 : 0);
+    moon.visible = ma > 0;
+    if(moon.visible){
+      var mr = 5 + ma * 17 + land * 9; moon.scale.setScalar(mr);
+      moon.position.set(0, 16 - ma * 7 - land * 2, -150 + ma * 55 + land * 12); moon.rotation.y += dt * 0.03;
+    }
+    // items
+    for(i = 0; i < items.length; i++){
+      var it = items[i], m = it.mesh; m.position.set(it.x, it.y, it.z);
+      if(it.kind === "coin") m.rotation.y += dt * 3;
+      else if(it.kind === "rock"){ m.rotation.x += dt * it.spin; m.rotation.y += dt * it.spin * 0.7; }
+      else if(it.kind === "sat") m.rotation.z += dt * it.spin * 0.4;
+      else if(it.kind === "bird"){ var f = Math.sin(t * 14 + it.x) * 0.7; m.userData.wings.forEach(function(w){ w[0].rotation.z = w[1] * f; }); }
+      else if(m.userData.bolt) m.userData.bolt.visible = Math.sin(t * 16 + it.x * 3) > 0;
+    }
+    // rocket
+    shipG.position.set(ship.x, ship.y, ship.z);
+    shipG.visible = !(endKind === "crash" || endKind === "fuel") && !(inv > 0 && Math.sin(t * 30) > 0);
+    flame.scale.set(1, 0.8 + Math.sin(t * 40) * 0.18 + boost * 0.5, 1);
+    // sparks
+    var a = sparkPts.geometry.attributes.position.array;
+    for(i = 0; i < sparkData.length; i++){
+      var d = sparkData[i]; if(d.life <= 0) continue; d.life -= dt;
+      if(d.life <= 0){ a[i * 3] = 9999; continue; }
+      a[i * 3] += d.vx * dt; a[i * 3 + 1] += d.vy * dt; a[i * 3 + 2] += d.vz * dt;
+    }
+    sparkPts.geometry.attributes.position.needsUpdate = true;
+    // camera: behind and above, drifting with the rocket
+    var sx = shake > 0 ? rand(-0.15, 0.15) : 0, sy = shake > 0 ? rand(-0.15, 0.15) : 0;
+    camera.position.set(ship.x * 0.3 + sx, 3.1 + ship.y * 0.25 + sy, 9.5);
+    camera.lookAt(ship.x * 0.3, 0.2 + ship.y * 0.25 + land * 3, -8);
+    renderer.render(scene, camera);
+  }
+  function hud(){
+    $("alt").textContent = altTxt(prog); $("coins").textContent = coins;
+    $("hearts").textContent = "♥♥♥".slice(0, hearts) + "♡♡♡".slice(0, 3 - hearts);
+    $("fuelFill").style.width = Math.max(0, fuel).toFixed(1) + "%";
+  }
+  function loop(now){
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if(state === "play"){ update(dt); hud(); render(dt); }
+    else if(state === "landing"){
+      landT += dt; ship.x += (0 - ship.x) * Math.min(1, dt * 3); ship.y += (2.2 - ship.y) * Math.min(1, dt * 2);
+      ship.z -= dt * 30; shipG.rotation.z *= 0.9; render(dt);
+      if(landT > 1.8){ end("win"); return; }
+    }
+    if(state === "play" || state === "landing") requestAnimationFrame(loop);
+  }
+
+  /* ---------- end ---------- */
+  var lastRes = null;
+  function end(kind){
+    endKind = kind; state = "over";
+    lastRes = { t: clock(elapsed), c: coins, a: altTxt(prog), win: kind === "win" };
+    var bp = parseFloat(get("btcn.rocket.prog") || "0"), bt = parseFloat(get("btcn.rocket.time") || "0");
+    if(prog > bp) put("btcn.rocket.prog", String(prog));
+    if(kind === "win" && (!bt || elapsed < bt)) put("btcn.rocket.time", String(elapsed));
+    if(kind !== "win"){ burst(ship.x, ship.y, 0, 40); beep(90, 0.6, "sawtooth", 0.06); }
+    hud(); render(0.016); showEnd();
+  }
+  function showBest(){
+    var bp = parseFloat(get("btcn.rocket.prog") || "0"), bt = parseFloat(get("btcn.rocket.time") || "0");
+    var v = bt ? tr("bestMoon", { t: clock(bt) }) : (bp ? tr("bestAlt", { a: altTxt(bp) }) : "");
+    $("bestTxt").textContent = v ? tr("best", { v: v }) : "";
+  }
+  function showEnd(){
+    $("ovTitle").innerHTML = tr(endKind === "win" ? "winTitle" : endKind === "fuel" ? "fuelTitle" : "crashTitle");
+    $("ovText").hidden = true; $("ovResult").hidden = false;
+    $("ovResult").textContent = tr(lastRes.win ? "winRes" : "loseRes", lastRes);
+    $("playBtn").textContent = tr("again"); $("shareBtn").hidden = false; showBest(); $("overlay").hidden = false;
+  }
+  function shareText(){
+    var url = SHARE_URL || (/^https?:/.test(location.href) ? location.href.split("#")[0] : "");
+    return tr(lastRes.win ? "shareWin" : "shareLose", lastRes) + (url ? " " + url : "");
+  }
+  $("shareBtn").addEventListener("click", function(){
+    var b = $("shareBtn"), text = shareText();
+    function ok(){ b.textContent = tr("copied"); setTimeout(function(){ b.textContent = tr("share"); }, 1500); }
+    function byCopy(){ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok).catch(function(){}); }
+    if(navigator.share) navigator.share({ text: text }).catch(function(e){ if(!e || e.name !== "AbortError") byCopy(); });
+    else byCopy();
+  });
+
+  /* ---------- input, language, boot ---------- */
+  function pointer(e){
+    var r = cv.getBoundingClientRect(), nx = (e.clientX - r.left) / r.width * 2 - 1, ny = (e.clientY - r.top) / r.height;
+    ship.tx = nx * xMax * 1.15; ship.ty = yMax - (ny - 0.2) / 0.7 * (yMax - yMin);   // finger sits a little below the rocket
+  }
+  cv.addEventListener("pointerdown", function(e){ pointer(e); try{ cv.setPointerCapture(e.pointerId); }catch(err){} });
+  cv.addEventListener("pointermove", pointer);
+  window.addEventListener("keydown", function(e){
+    keys[e.key] = true;
+    if((e.key === " " || e.key === "Enter") && state !== "play" && state !== "landing" && document.activeElement.tagName !== "BUTTON"){ e.preventDefault(); start(); }
+    if(e.key.indexOf("Arrow") === 0) e.preventDefault();
+  });
+  window.addEventListener("keyup", function(e){ keys[e.key] = false; });
+  window.addEventListener("blur", function(){ keys = {}; });
+  window.addEventListener("resize", resize);
+  $("playBtn").addEventListener("click", start);
+  function applyLang(){
+    document.documentElement.lang = lang;
+    var n = document.querySelectorAll("[data-i18n]");
+    for(var i = 0; i < n.length; i++) n[i].textContent = tr(n[i].getAttribute("data-i18n"));
+    $("langBtn").textContent = lang === "fr" ? "EN" : "FR";
+    if(!ok3d){ $("ovText").textContent = tr("no3d"); $("playBtn").hidden = true; }
+    if(state === "over"){ lastRes.a = altTxt(prog); showEnd(); } else showBest();
+    hud();
+  }
+  $("langBtn").addEventListener("click", function(){ lang = lang === "fr" ? "en" : "fr"; put("btcn.lang", lang); applyLang(); });
+  if(ok3d){ try{ build(); }catch(e){ ok3d = false; } }
+  if(location.hash === "#debug") window.__rocket = { ship: ship, items: function(){ return items; }, warp: function(v){ prog = v; }, lim: function(){ return [xMax, yMin, yMax]; } };
+  paintSound(); applyLang(); resize(); if(ok3d) render(0);
+})();
+</script>
+</body>
+</html>
