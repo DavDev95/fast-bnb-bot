@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bitcoin New ($BTCN)</title>
+<meta name="description" content="Bitcoin New ($BTCN): a community meme token on BNB Chain. 21,000,000 supply, 96.9% burned, liquidity burned, ownership renounced. Verify everything on-chain.">
+<meta name="theme-color" content="#05070d">
+<link rel="icon" href="logo.jpg">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600;800&display=swap">
+<style>
+  /* Layout: a projected-hologram hero, then stacked "holo panels" in one centered column. */
+  @property --spin{syntax:"<angle>";inherits:false;initial-value:0deg}
+  :root{
+    color-scheme:dark;
+    --bg:#05070d; --panel:#0b101b; --line:#1c2638; --text:#e9f2ff; --muted:#8fa0b8;
+    --cyan:#5ef2ff; --magenta:#ff5edb; --orange:#F7931A; --ok:#4dffb0;
+    --holo:linear-gradient(100deg,var(--cyan),#9d8bff 35%,var(--magenta) 60%,var(--orange) 85%,var(--cyan));
+    --display:Orbitron,"Space Grotesk",system-ui,sans-serif;
+    --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    --max:1040px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;overflow-x:hidden;
+    background-image:
+      radial-gradient(60% 40% at 50% 0%,rgba(94,242,255,.10),transparent 70%),
+      linear-gradient(rgba(94,242,255,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(94,242,255,.045) 1px,transparent 1px);
+    background-size:auto,44px 44px,44px 44px}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
+  .wrap{max-width:var(--max);margin:0 auto;
+    padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+  section{padding-block:56px}
+  h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15}
+  h2{font-size:clamp(22px,4.4vw,32px);margin-bottom:8px}
+  .lead{color:var(--muted);max-width:62ch;margin-bottom:26px}
+  .holo-text{background:var(--holo);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
+    color:transparent;animation:slide 7s linear infinite}
+  @keyframes slide{to{background-position:220% 0}}
+  .eyebrow{font-family:var(--display);font-size:11.5px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan)}
+
+  /* ----- nav ----- */
+  nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,7,13,.78);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:15px}
+  .brand img{width:30px;height:30px;border-radius:50%}
+  .links{display:flex;gap:18px;font-size:14px;color:var(--muted)}
+  .links a:hover{color:var(--text)}
+  .chip{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;
+    padding:6px 12px;font:600 13px var(--body);cursor:pointer}
+  @media (max-width:720px){ .links{display:none} }
+
+  /* ----- buttons ----- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;
+    font-weight:800;font-size:15px;border:1px solid var(--line);background:rgba(11,16,27,.7);color:var(--text);cursor:pointer}
+  .btn.primary{border:0;color:#04121a;background:var(--holo);background-size:220% 100%;animation:slide 7s linear infinite}
+  .btn:hover{filter:brightness(1.12)}
+  .cta{display:flex;gap:10px;flex-wrap:wrap}
+
+  /* ----- hero ----- */
+  .hero{padding-block:44px 30px}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+  .hero h1{font-size:clamp(38px,8.2vw,72px);font-weight:800;margin:10px 0 14px}
+  .hero p{color:var(--muted);font-size:17px;max-width:46ch;margin-bottom:22px}
+  @media (max-width:820px){ .hero .wrap{grid-template-columns:1fr} .projector{order:-1} }
+
+  /* the hologram: a coin projected above an emitter */
+  .projector{position:relative;height:340px;display:flex;align-items:flex-end;justify-content:center;perspective:900px}
+  .beam{position:absolute;bottom:26px;left:50%;width:250px;height:270px;transform:translateX(-50%);
+    background:linear-gradient(to top,rgba(94,242,255,.34),rgba(94,242,255,.04) 75%,transparent);
+    clip-path:polygon(41% 100%,59% 100%,100% 0,0 0);filter:blur(1px);animation:flicker 4s infinite}
+  .emitter{position:relative;width:150px;height:22px;border-radius:50%;
+    background:radial-gradient(closest-side,var(--cyan),rgba(94,242,255,.2) 60%,transparent);
+    box-shadow:0 0 34px 6px rgba(94,242,255,.45)}
+  .holo-coin{position:absolute;bottom:92px;left:50%;width:176px;height:176px;margin-left:-88px;
+    transform-style:preserve-3d;animation:turn 9s linear infinite,bob 4s ease-in-out infinite}
+  .holo-coin .face{position:absolute;inset:0;border-radius:50%;overflow:hidden;
+    border:2px solid rgba(94,242,255,.9);box-shadow:0 0 26px rgba(94,242,255,.55),inset 0 0 30px rgba(94,242,255,.35);
+    background:radial-gradient(circle at 35% 30%,rgba(94,242,255,.30),rgba(255,94,219,.14) 60%,rgba(5,7,13,.2));
+    display:flex;align-items:center;justify-content:center}
+  .holo-coin .face.back{transform:rotateY(180deg)}
+  .holo-coin img{width:100%;height:100%;object-fit:cover;opacity:.78;mix-blend-mode:screen;filter:saturate(.6) hue-rotate(150deg) brightness(1.2)}
+  .holo-coin .glyph{font:800 86px var(--display);color:var(--cyan);text-shadow:0 0 18px var(--cyan)}
+  .scan{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+    background:repeating-linear-gradient(to bottom,rgba(255,255,255,.14) 0 1px,transparent 1px 4px);
+    animation:scan 1.2s linear infinite}
+  .ring{position:absolute;left:50%;bottom:70px;width:230px;height:60px;margin-left:-115px;border-radius:50%;
+    border:1px solid rgba(94,242,255,.5);transform:rotateX(72deg);animation:pulse 3s ease-out infinite}
+  .ring.r2{animation-delay:1.5s}
+  @keyframes turn{to{transform:rotateY(360deg)}}
+  @keyframes bob{50%{bottom:104px}}
+  @keyframes scan{to{background-position:0 4px}}
+  @keyframes flicker{0%,100%{opacity:.95}8%{opacity:.6}10%{opacity:1}52%{opacity:.82}54%{opacity:1}}
+  @keyframes pulse{from{opacity:.9;scale:.6}to{opacity:0;scale:1.25}}
+
+  /* ----- holo panels ----- */
+  .panel{position:relative;border-radius:18px;background:var(--panel);padding:20px;isolation:isolate;overflow:hidden}
+  .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:-1;
+    background:conic-gradient(from var(--spin),var(--cyan),#9d8bff,var(--magenta),var(--orange),var(--cyan));
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    opacity:.55;animation:spin 9s linear infinite}
+  .panel::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .25s;
+    background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(94,242,255,.16),rgba(255,94,219,.07) 45%,transparent 70%)}
+  .panel:hover::after{opacity:1}
+  @keyframes spin{to{--spin:360deg}}
+  .grid{display:grid;gap:14px}
+  .g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media (max-width:820px){ .g4{grid-template-columns:repeat(2,1fr)} .g3,.g2{grid-template-columns:1fr} }
+  .panel>*{min-width:0}
+  .stat small{display:block;color:var(--muted);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase}
+  .stat b{font-family:var(--display);font-size:clamp(18px,3.6vw,26px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+  .stat span{display:block;color:var(--muted);font-size:13px}
+  .meter{height:12px;border-radius:999px;background:#0e1524;border:1px solid var(--line);overflow:hidden;margin:18px 0 8px}
+  .meter i{display:block;height:100%;width:96.9%;background:var(--holo);background-size:220% 100%;animation:slide 7s linear infinite}
+  .note{color:var(--muted);font-size:12.5px}
+  .proof h3{font-size:16px;margin-bottom:6px;display:flex;gap:8px;align-items:center}
+  .proof h3 i{font-style:normal;color:var(--ok);font-size:12px;border:1px solid var(--ok);border-radius:999px;padding:1px 8px;font-family:var(--body)}
+  .proof p{color:var(--muted);font-size:14px;margin-bottom:10px}
+  .proof a{color:var(--cyan);font-size:14px;font-weight:600}
+  .steps{counter-reset:s}
+  .steps .panel{counter-increment:s}
+  .steps h3{font-size:15px;margin-bottom:4px}
+  .steps h3::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;
+    border-radius:50%;border:1px solid var(--cyan);color:var(--cyan);font-size:13px}
+  .steps p{color:var(--muted);font-size:14px}
+  .ca{display:flex;gap:10px;align-items:center;margin-top:16px}
+  .ca code{flex:1;min-width:0;font-size:13px;background:#070b14;border:1px solid var(--line);border-radius:10px;
+    padding:11px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
+  .warn{color:var(--orange);font-size:13px;margin-top:10px}
+  footer{border-top:1px solid var(--line);padding-block:30px 40px;color:var(--muted);font-size:13px}
+  footer .wrap{display:grid;gap:14px}
+  .social{display:flex;gap:16px;flex-wrap:wrap;color:var(--text);font-weight:600}
+  .social a:hover{color:var(--cyan)}
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important;scroll-behavior:auto!important} }
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><img src="logo.jpg" alt="" onerror="this.hidden=true"><span>Bitcoin New</span></a>
+  <div class="links">
+    <a href="#burn" data-i18n="navBurn">Burn</a>
+    <a href="#security" data-i18n="navSec">Preuves</a>
+    <a href="#tokenomics" data-i18n="navTok">Tokenomics</a>
+    <a href="#buy" data-i18n="navBuy">Acheter</a>
+    <a href="#play" data-i18n="navPlay">Jouer</a>
+  </div>
+  <button class="chip" id="langBtn" aria-label="Language">EN</button>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div>
+    <div class="eyebrow">$BTCN · BNB Chain</div>
+    <h1><span class="holo-text">Bitcoin New</span></h1>
+    <p data-i18n="heroP"></p>
+    <div class="cta">
+      <a class="btn primary" target="_blank" rel="noopener"
+         href="https://pancakeswap.finance/swap?outputCurrency=0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" data-i18n="buyBtn">Acheter sur PancakeSwap</a>
+      <a class="btn" href="#security" data-i18n="verifyBtn">Vérifier les preuves</a>
+    </div>
+  </div>
+  <div class="projector" aria-hidden="true">
+    <div class="beam"></div>
+    <div class="ring"></div><div class="ring r2"></div>
+    <div class="holo-coin">
+      <div class="face"><img src="logo.jpg" alt="" onerror="this.outerHTML='<span class=glyph>N</span>'"><div class="scan"></div></div>
+      <div class="face back"><span class="glyph">N</span><div class="scan"></div></div>
+    </div>
+    <div class="emitter"></div>
+  </div>
+</div></header>
+
+<section id="burn"><div class="wrap">
+  <div class="eyebrow" data-i18n="liveEyebrow">Sur la blockchain</div>
+  <h2 data-i18n="burnH"></h2>
+  <p class="lead" data-i18n="burnP"></p>
+  <div class="grid g4">
+    <div class="panel stat"><small data-i18n="sBurned">Brûlés pour toujours</small><b id="vBurned">20 340 979</b><span>BTCN</span></div>
+    <div class="panel stat"><small data-i18n="sPct">Part de l'offre</small><b id="vPct">96,9 %</b><span data-i18n="sPctSub">à l'adresse morte</span></div>
+    <div class="panel stat"><small data-i18n="sCirc">En circulation</small><b id="vCirc">659 021</b><span>BTCN</span></div>
+    <div class="panel stat"><small data-i18n="sLp">Liquidité brûlée</small><b id="vLp">99,8 %</b><span data-i18n="sLpSub">des jetons LP</span></div>
+  </div>
+  <div class="meter"><i id="meter"></i></div>
+  <p class="note" id="liveNote" data-i18n="liveStatic"></p>
+</div></section>
+
+<section id="security"><div class="wrap">
+  <div class="eyebrow" data-i18n="secEyebrow">Ne nous croyez pas</div>
+  <h2 data-i18n="secH"></h2>
+  <p class="lead" data-i18n="secP"></p>
+  <div class="grid g2">
+    <div class="panel proof"><h3><span data-i18n="p1H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p1P"></p>
+      <a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x6dbdb189a2a7f19a8b94aa44294d7280413c1e0784998aedfb9d944513ce4e08" data-i18n="p1A"></a></div>
+    <div class="panel proof"><h3><span data-i18n="p2H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p2P"></p>
+      <a target="_blank" rel="noopener" href="https://bscscan.com/address/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#readContract" data-i18n="p2A"></a></div>
+    <div class="panel proof"><h3><span data-i18n="p3H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p3P"></p>
+      <a target="_blank" rel="noopener" href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad?a=0x000000000000000000000000000000000000dEaD" data-i18n="p3A"></a></div>
+    <div class="panel proof"><h3><span data-i18n="p4H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p4P"></p>
+      <a target="_blank" rel="noopener" href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#code" data-i18n="p4A"></a></div>
+  </div>
+</div></section>
+
+<section id="tokenomics"><div class="wrap">
+  <div class="eyebrow">Tokenomics</div>
+  <h2 data-i18n="tokH"></h2>
+  <p class="lead" data-i18n="tokP"></p>
+  <div class="grid g4">
+    <div class="panel stat"><small data-i18n="t1">Offre initiale</small><b>21 000 000</b><span data-i18n="t1s">fixe</span></div>
+    <div class="panel stat"><small data-i18n="t2">Taxe achat / vente</small><b>8 %</b><span data-i18n="t2s">plafonnée dans le contrat</span></div>
+    <div class="panel stat"><small data-i18n="t3">Max par portefeuille</small><b>21 000</b><span>BTCN</span></div>
+    <div class="panel stat"><small data-i18n="t4">Marché</small><b>PancakeSwap</b><span>BTCN / BNB</span></div>
+  </div>
+</div></section>
+
+<section id="buy"><div class="wrap">
+  <div class="eyebrow" data-i18n="buyEyebrow">Acheter</div>
+  <h2 data-i18n="buyH"></h2>
+  <div class="grid g4 steps" style="margin-top:18px">
+    <div class="panel"><h3 data-i18n="b1H"></h3><p data-i18n="b1P"></p></div>
+    <div class="panel"><h3 data-i18n="b2H"></h3><p data-i18n="b2P"></p></div>
+    <div class="panel"><h3 data-i18n="b3H"></h3><p data-i18n="b3P"></p></div>
+    <div class="panel"><h3 data-i18n="b4H"></h3><p data-i18n="b4P"></p></div>
+  </div>
+  <div class="ca">
+    <code id="ca">0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
+    <button class="btn" id="copyBtn" data-i18n="copy">Copier</button>
+  </div>
+  <p class="warn" data-i18n="warn"></p>
+</div></section>
+
+<section id="play"><div class="wrap">
+  <div class="eyebrow" data-i18n="playEyebrow">Jouer</div>
+  <h2 data-i18n="playH"></h2>
+  <p class="lead" data-i18n="playP"></p>
+  <div class="grid g2">
+    <a class="panel proof" href="../game/daily.html"><h3>Daily Block</h3><p data-i18n="g1P"></p><span class="holo-text" data-i18n="playGo">Jouer →</span></a>
+    <a class="panel proof" href="../game/index.html"><h3>Burn Rush</h3><p data-i18n="g2P"></p><span class="holo-text" data-i18n="playGo">Jouer →</span></a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div class="social">
+    <a href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener">Telegram</a>
+    <a href="https://x.com/BitcoinNewAI" target="_blank" rel="noopener">X</a>
+    <a href="https://www.tiktok.com/@bitcoin_new" target="_blank" rel="noopener">TikTok</a>
+    <a href="https://coinmarketcap.com/currencies/bitcoin-new/" target="_blank" rel="noopener">CoinMarketCap</a>
+    <a href="https://www.dextools.io/app/bnb/pair-explorer/0x0820d24f1ecd6e4dd88e899e31db066d016155ca" target="_blank" rel="noopener">DexTools</a>
+  </div>
+  <p data-i18n="disclaimer"></p>
+  <p>© 2026 Bitcoin New</p>
+</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  var TOKEN="0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad", PAIR="0x0820D24f1ecd6E4dd88E899e31DB066d016155CA",
+      DEAD="0x000000000000000000000000000000000000dEaD", SUPPLY=21000000;
+  var RPCS=["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.defibit.io","https://bsc.publicnode.com","https://binance.llamarpc.com"];
+
+  var T={
+    fr:{
+      navBurn:"Burn",navSec:"Preuves",navTok:"Tokenomics",navBuy:"Acheter",navPlay:"Jouer",
+      heroP:"Un meme token communautaire sur BNB Chain, en hommage à Bitcoin : 21 millions à l'origine, presque tout brûlé, et des règles que plus personne ne peut changer.",
+      buyBtn:"Acheter sur PancakeSwap",verifyBtn:"Vérifier les preuves",
+      liveEyebrow:"Sur la blockchain",burnH:"96,9 % de l'offre a été brûlée",
+      burnP:"Ces jetons sont à l'adresse morte : personne ne peut les récupérer. Le burn est terminé, il ne reste que l'offre en circulation.",
+      sBurned:"Brûlés pour toujours",sPct:"Part de l'offre",sPctSub:"à l'adresse morte",sCirc:"En circulation",sLp:"Liquidité brûlée",sLpSub:"des jetons LP",
+      liveStatic:"Valeurs lues sur BNB Chain le 10 nov. 2026.",liveOk:"Valeurs lues sur BNB Chain à l'instant. Mise à jour toutes les 60 s.",
+      secEyebrow:"Ne nous croyez pas",secH:"Vérifiez chaque point vous-même",
+      secP:"Chaque affirmation ci-dessous renvoie vers BscScan, où vous pouvez la contrôler sans nous faire confiance.",
+      onchain:"on-chain",
+      p1H:"Liquidité brûlée",p1P:"Les jetons de liquidité ont été envoyés à l'adresse morte le 29 octobre 2026. La liquidité ne peut pas être retirée.",p1A:"Voir la transaction ↗",
+      p2H:"Propriété renoncée",p2P:"Le propriétaire du contrat est l'adresse zéro. Personne ne peut modifier la taxe ni les règles.",p2A:"Lire owner() ↗",
+      p3H:"Offre brûlée",p3P:"Plus de 20,3 millions de BTCN sont à l'adresse morte.",p3A:"Voir le solde de l'adresse morte ↗",
+      p4H:"Contrat public",p4P:"Le code source est publié sur BscScan. La taxe est plafonnée à 8 % (MAX_FEE).",p4A:"Lire le contrat ↗",
+      tokH:"Des règles simples et figées",
+      tokP:"Le contrat n'a plus de propriétaire : ces paramètres ne peuvent plus changer.",
+      t1:"Offre initiale",t1s:"fixe",t2:"Taxe achat / vente",t2s:"plafonnée dans le contrat",t3:"Max par portefeuille",t4:"Marché",
+      buyEyebrow:"Acheter",buyH:"Quatre étapes",
+      b1H:"Portefeuille",b1P:"Installez MetaMask ou Trust Wallet, réseau BNB Smart Chain.",
+      b2H:"BNB",b2P:"Achetez du BNB sur une plateforme et envoyez-le à votre portefeuille.",
+      b3H:"PancakeSwap",b3P:"Ouvrez PancakeSwap et connectez votre portefeuille.",
+      b4H:"Échange",b4P:"Collez l'adresse du contrat, réglez le slippage vers 9 %, puis échangez.",
+      copy:"Copier",copied:"Copié ✓",
+      warn:"Vérifiez toujours cette adresse avant d'acheter. Nous ne vous contacterons jamais en premier par message privé.",
+      playEyebrow:"Jouer",playH:"Deux jeux gratuits",playP:"Sans portefeuille et sans gain : juste pour jouer et défier vos amis.",
+      g1P:"Un nombre à miner par jour, le même pour tout le monde. Gardez votre série.",
+      g2P:"Gardez le four chaud et brûlez l'offre jusqu'à 96,9 %.",playGo:"Jouer →",
+      disclaimer:"$BTCN est un meme token communautaire sur BNB Chain. Rien ici n'est un conseil financier. Les cryptos sont risquées : n'investissez que ce que vous pouvez vous permettre de perdre. Aucun rendement n'est promis. Non affilié à Bitcoin ni à aucun autre projet."
+    },
+    en:{
+      navBurn:"Burn",navSec:"Proofs",navTok:"Tokenomics",navBuy:"Buy",navPlay:"Play",
+      heroP:"A community meme token on BNB Chain, a tribute to Bitcoin: 21 million at launch, almost all of it burned, and rules nobody can change any more.",
+      buyBtn:"Buy on PancakeSwap",verifyBtn:"Check the proofs",
+      liveEyebrow:"On-chain",burnH:"96.9% of the supply has been burned",
+      burnP:"These tokens sit at the dead address: nobody can get them back. The burn is complete; only the circulating supply remains.",
+      sBurned:"Burned forever",sPct:"Share of supply",sPctSub:"at the dead address",sCirc:"Circulating",sLp:"Liquidity burned",sLpSub:"of LP tokens",
+      liveStatic:"Values read from BNB Chain on 10 Nov 2026.",liveOk:"Values read from BNB Chain just now. Updates every 60 s.",
+      secEyebrow:"Don't trust us",secH:"Check every point yourself",
+      secP:"Each claim below links to BscScan, where you can check it without trusting us.",
+      onchain:"on-chain",
+      p1H:"Liquidity burned",p1P:"The liquidity tokens were sent to the dead address on 29 October 2026. Liquidity cannot be pulled.",p1A:"View the transaction ↗",
+      p2H:"Ownership renounced",p2P:"The contract owner is the zero address. Nobody can change the tax or the rules.",p2A:"Read owner() ↗",
+      p3H:"Supply burned",p3P:"More than 20.3 million BTCN sit at the dead address.",p3A:"View the dead address balance ↗",
+      p4H:"Public contract",p4P:"The source code is published on BscScan. The tax is capped at 8% (MAX_FEE).",p4A:"Read the contract ↗",
+      tokH:"Simple, frozen rules",
+      tokP:"The contract has no owner any more: these settings can no longer change.",
+      t1:"Initial supply",t1s:"fixed",t2:"Buy / sell tax",t2s:"capped in the contract",t3:"Max per wallet",t4:"Market",
+      buyEyebrow:"Buy",buyH:"Four steps",
+      b1H:"Wallet",b1P:"Install MetaMask or Trust Wallet, on BNB Smart Chain.",
+      b2H:"BNB",b2P:"Buy BNB on an exchange and send it to your wallet.",
+      b3H:"PancakeSwap",b3P:"Open PancakeSwap and connect your wallet.",
+      b4H:"Swap",b4P:"Paste the contract address, set slippage to about 9%, then swap.",
+      copy:"Copy",copied:"Copied ✓",
+      warn:"Always check this address before buying. We will never message you first.",
+      playEyebrow:"Play",playH:"Two free games",playP:"No wallet and no rewards: just play and challenge your friends.",
+      g1P:"One number to mine per day, the same for everyone. Keep your streak.",
+      g2P:"Keep the furnace hot and burn the supply down to 96.9%.",playGo:"Play →",
+      disclaimer:"$BTCN is a community meme token on BNB Chain. Nothing here is financial advice. Crypto is risky: only invest what you can afford to lose. No returns are promised. Not affiliated with Bitcoin or any other project."
+    }
+  };
+
+  function $(id){return document.getElementById(id);}
+  function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+  function put(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+  var lang=get("btcn.lang")||((navigator.language||"en").slice(0,2)==="fr"?"fr":"en");
+  var live=null;
+  function tr(k){return (T[lang]&&T[lang][k])||T.en[k]||k;}
+  function num(n){return Math.round(n).toLocaleString(lang==="fr"?"fr-FR":"en-US");}
+  function pc(x){return x.toLocaleString(lang==="fr"?"fr-FR":"en-US",{minimumFractionDigits:1,maximumFractionDigits:1})+(lang==="fr"?" %":"%");}
+  function paint(){
+    var d=live||{dead:20340979,lp:99.825};
+    $("vBurned").textContent=num(d.dead);
+    $("vPct").textContent=pc(d.dead/SUPPLY*100);
+    $("vCirc").textContent=num(SUPPLY-d.dead);
+    $("vLp").textContent=pc(d.lp);
+    $("meter").style.width=(d.dead/SUPPLY*100).toFixed(1)+"%";
+    $("liveNote").textContent=tr(live?"liveOk":"liveStatic");
+  }
+  function applyLang(){
+    document.documentElement.lang=lang;
+    var n=document.querySelectorAll("[data-i18n]");
+    for(var i=0;i<n.length;i++) n[i].textContent=tr(n[i].getAttribute("data-i18n"));
+    $("langBtn").textContent=lang==="fr"?"EN":"FR";
+    paint();
+  }
+  $("langBtn").addEventListener("click",function(){lang=lang==="fr"?"en":"fr";put("btcn.lang",lang);applyLang();});
+
+  $("copyBtn").addEventListener("click",function(){
+    var b=$("copyBtn");
+    function ok(){b.textContent=tr("copied");setTimeout(function(){b.textContent=tr("copy");},1500);}
+    function sel(){var r=document.createRange();r.selectNodeContents($("ca"));var s=getSelection();s.removeAllRanges();s.addRange(r);}
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(TOKEN).then(ok).catch(sel); else sel();
+  });
+
+  /* pointer-tracked sheen on the holo panels */
+  document.addEventListener("pointermove",function(e){
+    var p=e.target.closest?e.target.closest(".panel"):null; if(!p) return;
+    var r=p.getBoundingClientRect();
+    p.style.setProperty("--mx",(e.clientX-r.left)+"px"); p.style.setProperty("--my",(e.clientY-r.top)+"px");
+  });
+
+  /* live on-chain values, with the dated figures as fallback */
+  function pad(a){return a.toLowerCase().replace(/^0x/,"").padStart(64,"0");}
+  function call(to,data,i){
+    i=i||0; if(i>=RPCS.length||!window.fetch) return Promise.reject(new Error("rpc"));
+    return fetch(RPCS[i],{method:"POST",headers:{"content-type":"application/json"},
+      body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_call",params:[{to:to,data:data},"latest"]})})
+      .then(function(r){return r.json();})
+      .then(function(j){ if(j&&j.result&&j.result.length>2) return BigInt(j.result); throw new Error("empty"); })
+      .catch(function(){return call(to,data,i+1);});
+  }
+  function refresh(){
+    Promise.all([
+      call(TOKEN,"0x70a08231"+pad(DEAD)),   // BTCN at the dead address
+      call(PAIR,"0x70a08231"+pad(DEAD)),    // LP tokens at the dead address
+      call(PAIR,"0x18160ddd")               // LP total supply
+    ]).then(function(r){
+      var dead=Number(r[0]/1000000000000000000n), lp=Number(r[1]*100000n/r[2])/1000;
+      if(dead>0&&dead<=SUPPLY){live={dead:dead,lp:lp};paint();}
+    }).catch(function(){});
+  }
+  applyLang(); refresh(); setInterval(refresh,60000);
+})();
+</script>
+</body>
+</html>
