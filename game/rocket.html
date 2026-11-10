@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BTCN Moon Rocket</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Layout: one narrow column — HUD, tall play field, short footer. Single dark look. */
+  :root{
+    color-scheme:dark;
+    --orange:#F7931A; --orange2:#ffae40; --bg:#05070d; --card:#0f141d; --border:#232b3a;
+    --text:#eef3fb; --muted:#93a1b5; --bad:#ff6b6b; --ink:#1a1000;
+    --display:Orbitron,system-ui,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.45;
+    display:flex;justify-content:center;-webkit-tap-highlight-color:transparent}
+  button{font-family:inherit}
+  .app{width:100%;max-width:460px;padding-block:10px 16px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+    display:flex;flex-direction:column;gap:8px}
+  .app>*{flex:none}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-family:var(--display);font-size:17px;letter-spacing:.3px}
+  h1 span{color:var(--orange)}
+  .tools{display:flex;gap:6px}
+  .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;
+    padding:6px 11px;font-size:13px;font-weight:600;cursor:pointer}
+  :focus-visible{outline:2px solid var(--orange2);outline-offset:2px}
+  .hud{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:6px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:6px 10px;min-width:0}
+  .stat small{display:block;color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-family:var(--display);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .bar{position:relative;height:16px;background:var(--card);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;width:100%;border-radius:999px;background:linear-gradient(90deg,#ff5a1f,var(--orange2))}
+  .bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;font-weight:700;letter-spacing:.6px;text-shadow:0 1px 2px #000}
+  .stage{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#07090c}
+  canvas{display:block;width:100%;touch-action:none;cursor:pointer}
+  .overlay{position:absolute;inset:0;background:rgba(5,7,13,.88);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:18px;gap:10px;overflow:auto}
+  .overlay h2{font-family:var(--display);font-size:24px;text-wrap:balance}
+  .overlay h2 em{font-style:normal;color:var(--orange)}
+  .overlay p{color:var(--muted);font-size:14px;max-width:320px}
+  .overlay .result{color:var(--text);font-size:15px}
+  .btn{background:var(--orange);color:var(--ink);border:0;border-radius:999px;padding:12px 26px;
+    font-size:16px;font-weight:800;cursor:pointer}
+  .btn.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .toast{position:absolute;left:10px;right:10px;top:10px;background:rgba(15,20,29,.92);text-align:center;
+    border:1px solid var(--orange);border-radius:12px;padding:8px 12px;font-family:var(--display);font-size:13px;
+    opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:none}
+  footer{color:var(--muted);font-size:11.5px;text-align:center}
+  @media (prefers-reduced-motion:reduce){ .toast{transition:none} }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700;800&display=swap">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1><span>BTCN</span> Moon Rocket</h1>
+    <div class="tools">
+      <button class="chip" id="langBtn" aria-label="Language">EN</button>
+      <button class="chip" id="soundBtn" aria-label="Sound">🔊</button>
+    </div>
+  </header>
+  <div class="hud">
+    <div class="stat"><small data-i18n="alt">Altitude</small><b id="alt">0 km</b></div>
+    <div class="stat"><small data-i18n="coins">Pièces</small><b id="coins">0</b></div>
+    <div class="stat"><small data-i18n="shield">Bouclier</small><b id="hearts">♥♥♥</b></div>
+  </div>
+  <div class="bar"><i id="fuelFill"></i><span data-i18n="fuel">CARBURANT</span></div>
+  <div class="stage">
+    <canvas id="cv" width="428" height="520"></canvas>
+    <div class="toast" id="toast"></div>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle"><em>BTCN</em> Moon Rocket</h2>
+      <p id="ovText" data-i18n="intro"></p>
+      <p class="result" id="ovResult" hidden></p>
+      <div class="row">
+        <button class="btn" id="playBtn" data-i18n="play">Décoller</button>
+        <button class="btn alt" id="shareBtn" data-i18n="share" hidden>Partager</button>
+      </div>
+      <p id="bestTxt"></p>
+    </div>
+  </div>
+  <footer data-i18n="disclaimer"></footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SHARE_URL = "";                       // public link of the game, added to the share text
+  var LOGO = "data:image/jpeg;base64,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";
+  var MOON_KM = 384400, TRIP = 105;         // seconds of flight at base speed
+
+  var T = {
+    fr:{ alt:"Altitude", coins:"Pièces", shield:"Bouclier", fuel:"CARBURANT", play:"Décoller", again:"Redécoller",
+      share:"Partager", copied:"Copié ✓",
+      intro:"Pilotez la fusée jusqu'à la Lune. Attrapez les pièces BTCN pour le carburant, évitez tout le reste. Glissez le doigt, ou utilisez ← →.",
+      z1:"Ciel", z2:"Stratosphère", z3:"Espace", z4:"En approche de la Lune",
+      winTitle:"Sur la <em>Lune</em> ! 🌕", crashTitle:"Fusée <em>détruite</em>", fuelTitle:"Panne de <em>carburant</em>",
+      winRes:"Lune atteinte en {t} avec {c} pièces.", loseRes:"Altitude atteinte : {a}, avec {c} pièces.",
+      best:"Record : {v}", bestMoon:"Lune en {t}", bestAlt:"{a}",
+      shareWin:"J'ai posé la fusée BTCN sur la Lune en {t} avec {c} pièces 🚀🌕 À vous :",
+      shareLose:"Ma fusée BTCN est montée à {a} avec {c} pièces 🚀 Qui va plus haut ?",
+      disclaimer:"Jeu gratuit, sans portefeuille ni gain. $BTCN est un meme token : pas un conseil financier, les cryptos sont risquées. Non affilié à Bitcoin." },
+    en:{ alt:"Altitude", coins:"Coins", shield:"Shield", fuel:"FUEL", play:"Lift off", again:"Fly again",
+      share:"Share", copied:"Copied ✓",
+      intro:"Fly the rocket to the Moon. Catch BTCN coins for fuel, dodge everything else. Drag, or use ← →.",
+      z1:"Sky", z2:"Stratosphere", z3:"Space", z4:"Approaching the Moon",
+      winTitle:"On the <em>Moon</em>! 🌕", crashTitle:"Rocket <em>destroyed</em>", fuelTitle:"Out of <em>fuel</em>",
+      winRes:"Moon reached in {t} with {c} coins.", loseRes:"Altitude reached: {a}, with {c} coins.",
+      best:"Best: {v}", bestMoon:"Moon in {t}", bestAlt:"{a}",
+      shareWin:"I landed the BTCN rocket on the Moon in {t} with {c} coins 🚀🌕 Your turn:",
+      shareLose:"My BTCN rocket climbed to {a} with {c} coins 🚀 Who goes higher?",
+      disclaimer:"Free game, no wallet, no rewards. $BTCN is a meme token: not financial advice, crypto is risky. Not affiliated with Bitcoin." }
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function put(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rand(a, b){ return a + Math.random() * (b - a); }
+  function clock(s){ var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+  var lang = get("btcn.lang") || ((navigator.language || "en").slice(0, 2) === "fr" ? "fr" : "en");
+  function tr(key, vars){
+    var s = (T[lang] && T[lang][key]) || T.en[key] || key;
+    if(vars) for(var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+    return s;
+  }
+  // progress 0..1 -> altitude in km: 0-12 km sky, 12-100 km stratosphere, then out to the Moon
+  function altKm(p){
+    if(p < 0.25) return p / 0.25 * 12;
+    if(p < 0.5) return 12 + (p - 0.25) / 0.25 * 88;
+    return 100 * Math.pow(MOON_KM / 100, (p - 0.5) / 0.5);
+  }
+  function altTxt(p){
+    var k = altKm(p);
+    return (k < 100 ? k.toFixed(1) : Math.round(k).toLocaleString(lang === "fr" ? "fr-FR" : "en-US")) + " km";
+  }
+  function zone(p){ return p < 0.25 ? 1 : p < 0.5 ? 2 : p < 0.82 ? 3 : 4; }
+
+  /* ---------- sound ---------- */
+  var muted = get("btcn.mute") === "1", actx = null;
+  function beep(f, d, type, vol){
+    if(muted) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || "triangle"; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || 0.06, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + d);
+      o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + d);
+    }catch(e){}
+  }
+  function paintSound(){ $("soundBtn").textContent = muted ? "🔇" : "🔊"; }
+  $("soundBtn").addEventListener("click", function(){ muted = !muted; put("btcn.mute", muted ? "1" : "0"); paintSound(); });
+
+  /* ---------- canvas ---------- */
+  var cv = $("cv"), ctx = cv.getContext("2d"), W = 428, H = 520, DPR = 1;
+  var logo = new Image(), logoOk = false; logo.onload = function(){ logoOk = true; if(state !== "play") draw(); }; logo.src = LOGO;
+  function resize(){
+    W = cv.parentNode.clientWidth; H = Math.max(380, Math.min(600, window.innerHeight - 190));
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    ship.x = Math.min(Math.max(ship.x, 24), W - 24); ship.tx = ship.x;
+    if(state !== "play") draw();
+  }
+
+  /* ---------- state ---------- */
+  var state = "idle";                        // idle | play | landing | over
+  var ship = { x: 214, tx: 214, tilt: 0 };
+  var items = [], sparks = [], stars = [], clouds = [];
+  var prog = 0, fuel = 100, hearts = 3, coins = 0, elapsed = 0, boost = 0, spawnT = 0, inv = 0, shake = 0, zNow = 1, endKind = "";
+  var keys = {}, last = 0, landT = 0;
+  for(var i = 0; i < 70; i++) stars.push({ x: Math.random(), y: Math.random(), r: rand(0.5, 1.7), s: rand(0.3, 1) });
+  for(i = 0; i < 7; i++) clouds.push({ x: Math.random(), y: Math.random(), w: rand(70, 140), s: rand(0.5, 1) });
+  function shipY(){ return H - 92; }
+
+  function start(){
+    items = []; sparks = [];
+    endKind = ""; prog = 0; fuel = 100; hearts = 3; coins = 0; elapsed = 0; boost = 0; spawnT = 0.5; inv = 0; shake = 0; zNow = 1; landT = 0;
+    ship.x = ship.tx = W / 2; state = "play"; $("overlay").hidden = true;
+    last = performance.now(); beep(300, 0.3, "sawtooth", 0.04); toast(tr("z1"));
+    requestAnimationFrame(loop);
+  }
+  function toast(t){
+    var el = $("toast"); el.textContent = t; el.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(function(){ el.classList.remove("show"); }, 2200);
+  }
+  function burst(x, y, c, n){
+    for(var i = 0; i < n; i++) sparks.push({ x: x, y: y, vx: rand(-150, 150), vy: rand(-150, 150), life: rand(0.3, 0.7), c: c });
+  }
+
+  function spawn(){
+    var z = zNow, coin = Math.random() < (0.55 - z * 0.04);
+    var it = { x: rand(26, W - 26), y: -30, rot: rand(0, 6.28), vr: rand(-1.5, 1.5), vx: 0 };
+    if(coin){ it.kind = "coin"; it.r = 15; it.vy = rand(150, 190) + z * 22; }
+    else {
+      it.kind = z === 1 ? (Math.random() < 0.5 ? "bird" : "storm") : z === 2 ? (Math.random() < 0.5 ? "storm" : "sat")
+              : (Math.random() < 0.3 ? "sat" : "rock");
+      it.r = it.kind === "storm" ? 24 : it.kind === "rock" ? rand(14, 26) : 17;
+      it.vy = rand(170, 230) + z * 38;
+      if(it.kind === "bird" || it.kind === "sat"){ it.vx = (Math.random() < 0.5 ? -1 : 1) * rand(40, 110); }
+      if(it.kind === "rock"){ it.vx = rand(-60, 60); it.seed = Math.random() * 99; }
+    }
+    items.push(it);
+  }
+
+  function update(dt){
+    elapsed += dt;
+    var dir = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a || keys.q ? 1 : 0);
+    if(dir) ship.tx = ship.x + dir * 520 * dt;
+    ship.tx = Math.min(Math.max(ship.tx, 24), W - 24);
+    var dx = (ship.tx - ship.x) * Math.min(1, dt * 16); ship.x += dx;
+    ship.tilt += ((dx / Math.max(dt, 0.001)) / 900 - ship.tilt) * Math.min(1, dt * 10);
+
+    boost = Math.max(0, boost - dt * 0.35);
+    prog = Math.min(1, prog + dt / TRIP * (1 + boost * 0.6));
+    fuel -= (5.2 + zNow * 0.9) * dt;
+    if(inv > 0) inv -= dt; if(shake > 0) shake -= dt;
+
+    var z = zone(prog);
+    if(z !== zNow){ zNow = z; toast(tr("z" + z)); beep(660, 0.25, "square", 0.04); }
+
+    spawnT -= dt;
+    if(spawnT <= 0){ spawn(); spawnT = Math.max(0.26, 0.62 - zNow * 0.07) * rand(0.75, 1.25); }
+
+    var sy = shipY();
+    for(var i = items.length - 1; i >= 0; i--){
+      var it = items[i]; it.y += it.vy * dt; it.x += it.vx * dt; it.rot += it.vr * dt;
+      if(it.x < 16 || it.x > W - 16) it.vx = -it.vx;
+      var ddx = it.x - ship.x, ddy = it.y - (sy + 6), rr = it.r + 17;
+      if(ddx * ddx + ddy * ddy < rr * rr){
+        if(it.kind === "coin"){
+          coins++; fuel = Math.min(100, fuel + 11); boost = Math.min(1.5, boost + 0.3);
+          burst(it.x, it.y, "#ffae40", 10); beep(520 + Math.min(coins, 30) * 12, 0.08);
+          items.splice(i, 1);
+        } else if(inv <= 0){
+          hearts--; inv = 1.4; shake = 0.3; boost = 0; burst(it.x, it.y, "#ff6b6b", 18); beep(120, 0.3, "sawtooth", 0.06);
+          items.splice(i, 1);
+          if(hearts <= 0){ end("crash"); return; }
+        }
+      } else if(it.y - it.r > H + 10) items.splice(i, 1);
+    }
+    for(i = sparks.length - 1; i >= 0; i--){
+      var s = sparks[i]; s.life -= dt; s.x += s.vx * dt; s.y += s.vy * dt; if(s.life <= 0) sparks.splice(i, 1);
+    }
+    if(prog >= 1){ state = "landing"; landT = 0; items = []; beep(880, 0.5); }
+    else if(fuel <= 0){ fuel = 0; end("fuel"); }
+  }
+
+  /* ---------- drawing ---------- */
+  function mix(a, b, t){ return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+  function rgb(c){ return "rgb(" + Math.round(c[0]) + "," + Math.round(c[1]) + "," + Math.round(c[2]) + ")"; }
+  function sky(p){
+    var top, bot;
+    if(p < 0.25){ top = mix([40, 120, 220], [20, 60, 150], p / 0.25); bot = mix([150, 205, 255], [90, 150, 230], p / 0.25); }
+    else if(p < 0.5){ var t = (p - 0.25) / 0.25; top = mix([20, 60, 150], [5, 8, 24], t); bot = mix([90, 150, 230], [22, 34, 84], t); }
+    else { top = [3, 4, 12]; bot = mix([22, 34, 84], [6, 8, 20], Math.min(1, (p - 0.5) / 0.2)); }
+    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, rgb(top)); g.addColorStop(1, rgb(bot));
+    ctx.fillStyle = g; ctx.fillRect(-10, -10, W + 20, H + 20);
+  }
+  function drawCoin(x, y, r, rot){
+    var sx = 0.7 + 0.3 * Math.abs(Math.cos(rot * 2));
+    ctx.save(); ctx.translate(x, y); ctx.scale(sx, 1);
+    ctx.shadowColor = "#ffae40"; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.2832); ctx.fillStyle = "#F7931A"; ctx.fill(); ctx.shadowBlur = 0;
+    if(logoOk){ ctx.save(); ctx.clip(); ctx.drawImage(logo, -r, -r, r * 2, r * 2); ctx.restore(); }
+    ctx.lineWidth = 2; ctx.strokeStyle = "#ffd58a"; ctx.stroke();
+    ctx.restore();
+  }
+  function drawStorm(x, y, r, t){
+    ctx.save(); ctx.translate(x, y); ctx.fillStyle = "#4b5566";
+    ctx.beginPath(); ctx.arc(-r * 0.5, 2, r * 0.55, 0, 6.2832); ctx.arc(0, -r * 0.25, r * 0.7, 0, 6.2832);
+    ctx.arc(r * 0.55, 2, r * 0.5, 0, 6.2832); ctx.fill();
+    if(Math.sin(t * 14 + x) > 0){
+      ctx.strokeStyle = "#ffe066"; ctx.lineWidth = 3; ctx.lineJoin = "round"; ctx.beginPath();
+      ctx.moveTo(2, r * 0.3); ctx.lineTo(-5, r * 0.85); ctx.lineTo(3, r * 0.85); ctx.lineTo(-3, r * 1.45); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawBird(x, y, r, t, vx){
+    var f = Math.sin(t * 12 + x) * 0.6;
+    ctx.save(); ctx.translate(x, y); ctx.scale(vx < 0 ? -1 : 1, 1);
+    ctx.strokeStyle = "#1b2433"; ctx.lineWidth = 4; ctx.lineCap = "round"; ctx.beginPath();
+    ctx.moveTo(-r, -r * f); ctx.quadraticCurveTo(-r * 0.4, -r * 0.7, 0, 0); ctx.quadraticCurveTo(r * 0.4, -r * 0.7, r, -r * f); ctx.stroke();
+    ctx.fillStyle = "#1b2433"; ctx.beginPath(); ctx.arc(0, 1, 4, 0, 6.2832); ctx.fill();
+    ctx.restore();
+  }
+  function drawSat(x, y, r, rot){
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot * 0.4);
+    ctx.fillStyle = "#3d7bd9"; ctx.fillRect(-r * 1.25, -r * 0.3, r * 0.8, r * 0.6); ctx.fillRect(r * 0.45, -r * 0.3, r * 0.8, r * 0.6);
+    ctx.fillStyle = "#c9d3e0"; ctx.fillRect(-r * 0.42, -r * 0.42, r * 0.84, r * 0.84);
+    ctx.strokeStyle = "#c9d3e0"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, -r * 0.42); ctx.lineTo(0, -r * 0.9); ctx.stroke();
+    ctx.fillStyle = "#ff6b6b"; ctx.beginPath(); ctx.arc(0, -r * 0.9, 2.5, 0, 6.2832); ctx.fill();
+    ctx.restore();
+  }
+  function drawRock(x, y, r, rot, seed){
+    ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.fillStyle = "#7b6a5c"; ctx.strokeStyle = "#a8947f"; ctx.lineWidth = 2;
+    ctx.beginPath();
+    for(var i = 0; i < 9; i++){
+      var a = i / 9 * 6.2832, rr = r * (0.78 + 0.22 * Math.sin(seed + i * 2.3));
+      if(i) ctx.lineTo(Math.cos(a) * rr, Math.sin(a) * rr); else ctx.moveTo(Math.cos(a) * rr, Math.sin(a) * rr);
+    }
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#5e5046"; ctx.beginPath(); ctx.arc(-r * 0.25, -r * 0.1, r * 0.2, 0, 6.2832); ctx.fill();
+    ctx.restore();
+  }
+  function drawShip(x, y, t, scale){
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ship.tilt); ctx.scale(scale || 1, scale || 1);
+    if(inv > 0 && Math.sin(t * 30) > 0) ctx.globalAlpha = 0.4;
+    // flame
+    var fl = 22 + Math.sin(t * 40) * 5 + boost * 14;
+    var g = ctx.createLinearGradient(0, 30, 0, 30 + fl);
+    g.addColorStop(0, "#fff3b0"); g.addColorStop(0.4, "#ffae40"); g.addColorStop(1, "rgba(255,90,31,0)");
+    ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(-9, 30); ctx.quadraticCurveTo(0, 30 + fl * 1.5, 9, 30); ctx.fill();
+    // fins
+    ctx.fillStyle = "#F7931A";
+    ctx.beginPath(); ctx.moveTo(-14, 12); ctx.lineTo(-26, 34); ctx.lineTo(-12, 28); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(14, 12); ctx.lineTo(26, 34); ctx.lineTo(12, 28); ctx.closePath(); ctx.fill();
+    // body
+    ctx.fillStyle = "#f3f6fb"; ctx.beginPath(); ctx.moveTo(0, -40);
+    ctx.bezierCurveTo(19, -22, 17, 16, 13, 32); ctx.lineTo(-13, 32); ctx.bezierCurveTo(-17, 16, -19, -22, 0, -40); ctx.fill();
+    // nose
+    ctx.fillStyle = "#F7931A"; ctx.beginPath(); ctx.moveTo(0, -40);
+    ctx.bezierCurveTo(8, -32, 11, -26, 12.5, -20); ctx.lineTo(-12.5, -20); ctx.bezierCurveTo(-11, -26, -8, -32, 0, -40); ctx.fill();
+    // logo porthole
+    ctx.beginPath(); ctx.arc(0, 2, 12, 0, 6.2832); ctx.fillStyle = "#F7931A"; ctx.fill();
+    if(logoOk){ ctx.save(); ctx.clip(); ctx.drawImage(logo, -12, -10, 24, 24); ctx.restore(); }
+    ctx.lineWidth = 2; ctx.strokeStyle = "#1b2433"; ctx.stroke();
+    ctx.restore();
+  }
+  function drawMoon(cx, cy, r){
+    ctx.save(); ctx.shadowColor = "#fff8d6"; ctx.shadowBlur = 30; ctx.fillStyle = "#e9e6d8";
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, 6.2832); ctx.fill(); ctx.shadowBlur = 0; ctx.clip();
+    ctx.fillStyle = "#cfcbb9";
+    [[-0.35, -0.2, 0.2], [0.3, 0.1, 0.26], [-0.1, 0.45, 0.16], [0.45, -0.45, 0.12], [-0.55, 0.35, 0.1]].forEach(function(c){
+      ctx.beginPath(); ctx.arc(cx + c[0] * r, cy + c[1] * r, c[2] * r, 0, 6.2832); ctx.fill();
+    });
+    ctx.restore();
+  }
+  function draw(){
+    var t = performance.now() / 1000, p = prog;
+    ctx.save(); if(shake > 0) ctx.translate(rand(-5, 5), rand(-5, 5));
+    sky(p);
+    // stars fade in with altitude and streak downward
+    var sa = Math.max(0, Math.min(1, (p - 0.3) / 0.25));
+    if(sa > 0){
+      ctx.fillStyle = "#fff";
+      for(var i = 0; i < stars.length; i++){
+        var s = stars[i], yy = (s.y * H + t * 26 * s.s * (state === "play" ? 1 + boost : 0.3)) % H;
+        ctx.globalAlpha = sa * (0.4 + 0.6 * s.s); ctx.fillRect(s.x * W, yy, s.r, s.r + (state === "play" ? boost * 3 : 0));
+      }
+      ctx.globalAlpha = 1;
+    }
+    // clouds only low down
+    var ca = Math.max(0, 1 - p / 0.32);
+    if(ca > 0){
+      ctx.fillStyle = "rgba(255,255,255," + (0.75 * ca) + ")";
+      for(i = 0; i < clouds.length; i++){
+        var c = clouds[i], cy = (c.y * (H + 120) + t * 60 * c.s) % (H + 120) - 60, cx = c.x * W;
+        ctx.beginPath(); ctx.ellipse(cx, cy, c.w / 2, c.w / 6, 0, 0, 6.2832);
+        ctx.ellipse(cx - c.w / 5, cy - c.w / 9, c.w / 4, c.w / 7, 0, 0, 6.2832);
+        ctx.ellipse(cx + c.w / 6, cy - c.w / 8, c.w / 3.4, c.w / 6.5, 0, 0, 6.2832); ctx.fill();
+      }
+    }
+    // the Moon grows as you approach
+    var ma = Math.max(0, (p - 0.78) / 0.22);
+    if(ma > 0 || state === "landing"){
+      var grow = state === "landing" ? landT * 60 : (state === "over" && endKind === "win" ? 96 : 0);
+      var mr = 26 + ma * 110 + grow;
+      drawMoon(W / 2, -mr * 0.25 + ma * 90 + grow, mr);
+    }
+    for(i = 0; i < items.length; i++){
+      var it = items[i];
+      if(it.kind === "coin") drawCoin(it.x, it.y, it.r, it.rot);
+      else if(it.kind === "storm") drawStorm(it.x, it.y, it.r, t);
+      else if(it.kind === "bird") drawBird(it.x, it.y, it.r, t, it.vx);
+      else if(it.kind === "sat") drawSat(it.x, it.y, it.r, it.rot);
+      else drawRock(it.x, it.y, it.r, it.rot, it.seed);
+    }
+    if(endKind !== "crash" || state === "play" || state === "idle"){
+      var onMoon = state === "over" && endKind === "win", lt = onMoon ? 1.6 : landT;
+      var ly = state === "landing" || onMoon ? shipY() - lt * (shipY() - 150) / 1.6 : shipY();
+      drawShip(ship.x, ly, t, state === "landing" || onMoon ? Math.max(0.35, 1 - lt * 0.4) : 1);
+    }
+    for(i = 0; i < sparks.length; i++){
+      var k = sparks[i]; ctx.globalAlpha = Math.max(0, k.life * 1.8); ctx.fillStyle = k.c; ctx.fillRect(k.x, k.y, 3, 3);
+    }
+    ctx.globalAlpha = 1; ctx.restore();
+  }
+  function hud(){
+    $("alt").textContent = altTxt(prog); $("coins").textContent = coins;
+    $("hearts").textContent = "♥♥♥".slice(0, hearts) + "♡♡♡".slice(0, 3 - hearts);
+    $("fuelFill").style.width = Math.max(0, fuel).toFixed(1) + "%";
+  }
+  function loop(now){
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    if(state === "play"){ update(dt); hud(); draw(); }
+    else if(state === "landing"){
+      landT += dt; ship.x += (W / 2 - ship.x) * Math.min(1, dt * 4); ship.tilt *= 0.9; draw();
+      if(landT > 1.6){ end("win"); return; }
+    }
+    if(state === "play" || state === "landing") requestAnimationFrame(loop);
+  }
+
+  /* ---------- end ---------- */
+  var lastRes = null;
+  function end(kind){
+    endKind = kind; state = "over";
+    lastRes = { t: clock(elapsed), c: coins, a: altTxt(prog), win: kind === "win" };
+    var bp = parseFloat(get("btcn.rocket.prog") || "0"), bt = parseFloat(get("btcn.rocket.time") || "0");
+    if(prog > bp) put("btcn.rocket.prog", String(prog));
+    if(kind === "win" && (!bt || elapsed < bt)) put("btcn.rocket.time", String(elapsed));
+    if(kind !== "win"){ burst(ship.x, shipY(), "#ffae40", 30); beep(90, 0.6, "sawtooth", 0.06); }
+    hud(); draw(); showEnd();
+  }
+  function showBest(){
+    var bp = parseFloat(get("btcn.rocket.prog") || "0"), bt = parseFloat(get("btcn.rocket.time") || "0");
+    var v = bt ? tr("bestMoon", { t: clock(bt) }) : (bp ? tr("bestAlt", { a: altTxt(bp) }) : "");
+    $("bestTxt").textContent = v ? tr("best", { v: v }) : "";
+  }
+  function showEnd(){
+    $("ovTitle").innerHTML = tr(endKind === "win" ? "winTitle" : endKind === "fuel" ? "fuelTitle" : "crashTitle");
+    $("ovText").hidden = true; $("ovResult").hidden = false;
+    $("ovResult").textContent = tr(lastRes.win ? "winRes" : "loseRes", lastRes);
+    $("playBtn").textContent = tr("again"); $("shareBtn").hidden = false; showBest(); $("overlay").hidden = false;
+  }
+  function shareText(){
+    var url = SHARE_URL || (/^https?:/.test(location.href) ? location.href.split("#")[0] : "");
+    return tr(lastRes.win ? "shareWin" : "shareLose", lastRes) + (url ? " " + url : "");
+  }
+  $("shareBtn").addEventListener("click", function(){
+    var b = $("shareBtn"), text = shareText();
+    function ok(){ b.textContent = tr("copied"); setTimeout(function(){ b.textContent = tr("share"); }, 1500); }
+    function byCopy(){ if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(ok).catch(function(){}); }
+    if(navigator.share) navigator.share({ text: text }).catch(function(e){ if(!e || e.name !== "AbortError") byCopy(); });
+    else byCopy();
+  });
+
+  /* ---------- input, language, boot ---------- */
+  function pointer(e){ var r = cv.getBoundingClientRect(); ship.tx = (e.clientX - r.left) * (W / r.width); }
+  cv.addEventListener("pointerdown", function(e){ pointer(e); try{ cv.setPointerCapture(e.pointerId); }catch(err){} });
+  cv.addEventListener("pointermove", pointer);
+  window.addEventListener("keydown", function(e){
+    keys[e.key] = true;
+    if((e.key === " " || e.key === "Enter") && state !== "play" && state !== "landing" && document.activeElement.tagName !== "BUTTON"){ e.preventDefault(); start(); }
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight") e.preventDefault();
+  });
+  window.addEventListener("keyup", function(e){ keys[e.key] = false; });
+  window.addEventListener("blur", function(){ keys = {}; });
+  window.addEventListener("resize", resize);
+  $("playBtn").addEventListener("click", start);
+  function applyLang(){
+    document.documentElement.lang = lang;
+    var n = document.querySelectorAll("[data-i18n]");
+    for(var i = 0; i < n.length; i++) n[i].textContent = tr(n[i].getAttribute("data-i18n"));
+    $("langBtn").textContent = lang === "fr" ? "EN" : "FR";
+    if(state === "over"){ lastRes.a = altTxt(prog); showEnd(); } else { showBest(); }
+    hud();
+  }
+  $("langBtn").addEventListener("click", function(){ lang = lang === "fr" ? "en" : "fr"; put("btcn.lang", lang); applyLang(); });
+  if(location.hash === "#debug") window.__rocket = { ship: ship, items: function(){ return items; }, warp: function(v){ prog = v; } };
+  paintSound(); applyLang(); resize(); draw();
+})();
+</script>
+</body>
+</html>
