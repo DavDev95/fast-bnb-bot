@@ -71,12 +71,17 @@ class Chain:
 
     # --- price ------------------------------------------------------------
     def get_price(self) -> float:
-        """Quote amount received for selling 1 base — i.e. quote per base."""
-        one_base = 10 ** self.base_decimals
+        """Quote per 1 base, read by quoting the sale of a small probe amount.
+
+        The probe (execution.price_probe_base) keeps the reading close to the
+        real price at our order size instead of the price-impacted quote for a
+        whole unit of an expensive token.
+        """
+        probe = max(1, int(self.cfg.execution.price_probe_base * 10 ** self.base_decimals))
         path = self._path(self.base, self.quote)
-        amounts = self.router.functions.getAmountsOut(one_base, path).call()
+        amounts = self.router.functions.getAmountsOut(probe, path).call()
         out = amounts[-1]
-        return out / (10 ** self.quote_decimals)
+        return (out / (10 ** self.quote_decimals)) * (10 ** self.base_decimals) / probe
 
     def _path(self, src: str, dst: str) -> List[str]:
         """Swap path, routing through WBNB when neither side is WBNB."""

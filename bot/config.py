@@ -39,6 +39,10 @@ class ExecutionCfg:
     deadline_sec: int = 30
     gas_price_gwei: Optional[float] = None
     max_gas_limit: int = 350_000
+    # Amount of base used to read the price. 1.0 is fine for cheap tokens; for an
+    # expensive one (e.g. BTCB) quoting a whole unit moves a thin pool by several
+    # percent, so use a small probe such as 0.001.
+    price_probe_base: float = 1.0
 
 
 @dataclass

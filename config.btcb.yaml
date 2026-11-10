@@ -1,0 +1,43 @@
+# Grid config for REAL Bitcoin on BNB Chain: BTCB (Binance-Peg BTC) against USDT.
+#
+#   BTCB = 0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c  (official Binance-Peg BTC)
+#   USDT = 0x55d398326f99059fF775485246999027B3197955  (Binance-Peg USDT)
+#
+# Start with:  python main.py -c config.btcb.yaml      (dry-run, no real money)
+#
+# Costs to know before going live: swaps route BTCB -> WBNB -> USDT on
+# PancakeSwap V2, so a buy + sell round trip costs about 1% in fees and price
+# impact (measured on-chain on 2026-11-10 for a 20 USDT order). The grid step
+# below is ~2% so each completed buy/sell pair clears that cost.
+
+dry_run: true
+mode: grid
+
+tokens:
+  base:
+    address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"
+    symbol: "BTCB"
+  quote:
+    address: "0x55d398326f99059fF775485246999027B3197955"
+    symbol: "USDT"
+
+grid:
+  # Band around the ~73,500 USDT price read on-chain on 2026-11-10 (about -10% / +10%).
+  # UPDATE THESE to the current price before you start.
+  lower_price: 66000
+  upper_price: 81000
+  levels: 11               # 1,500 USDT between levels (~2%)
+  order_size_quote: 20     # USDT spent per buy step
+
+execution:
+  poll_interval_sec: 2.0
+  slippage_bps: 100        # 1% - a worse fill reverts (only gas is lost)
+  deadline_sec: 30
+  gas_price_gwei: null
+  max_gas_limit: 450000    # two-hop swap needs more gas than a single hop
+  price_probe_base: 0.001  # read the price with 0.001 BTCB, not a whole coin
+
+risk:
+  max_quote_exposure: 200  # never hold more than ~200 USDT worth of BTCB
+  stop_below_price: 62000  # halt if BTC falls out of the band
+  stop_above_price: 85000
