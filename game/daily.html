@@ -1,0 +1,389 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BTCN Daily Block</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+  /* Layout: one narrow column — target on top, coin tray, operators, log; proofs below. */
+  :root{
+    color-scheme:dark;
+    --orange:#F7931A; --orange2:#ffae40; --bg:#0b0d10; --card:#161a20; --border:#2a303b;
+    --text:#eef1f5; --muted:#9aa4b2; --ok:#39d98a; --bad:#ff6b6b; --ink:#1a1000;
+    --display:"Space Grotesk",system-ui,sans-serif; --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  body{min-height:100%;background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.45;
+    display:flex;justify-content:center;-webkit-tap-highlight-color:transparent}
+  a{color:var(--orange2)}
+  button{font-family:inherit}
+  .app{width:100%;max-width:460px;padding-block:12px 20px;
+    padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+    display:flex;flex-direction:column;gap:12px}
+  .app>*{flex:none}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-family:var(--display);font-size:19px;letter-spacing:.2px}
+  h1 span{color:var(--orange)}
+  .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;
+    padding:6px 12px;font-size:13px;font-weight:600;cursor:pointer}
+  :focus-visible{outline:2px solid var(--orange2);outline-offset:2px}
+  .meta{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+  .meta b{color:var(--text)}
+  .target{text-align:center;border:1px solid var(--border);border-radius:18px;padding:14px 10px 12px;
+    background:radial-gradient(120% 140% at 50% 0%,#231708 0%,var(--card) 60%)}
+  .target small{display:block;color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:1.2px}
+  .target b{font-family:var(--display);font-size:60px;line-height:1.05;color:var(--orange);font-variant-numeric:tabular-nums}
+  .target p{color:var(--muted);font-size:13px}
+  .tray{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .coin{aspect-ratio:1.5;border-radius:16px;border:2px solid var(--border);background:var(--card);color:var(--text);
+    font-family:var(--display);font-size:26px;font-weight:700;cursor:pointer;font-variant-numeric:tabular-nums;
+    transition:transform .08s,border-color .12s,background .12s}
+  .coin:active{transform:scale(.96)}
+  .coin.sel{border-color:var(--orange);background:#2a1c08;color:var(--orange2)}
+  .coin.made{border-style:dashed}
+  .coin.gone{visibility:hidden}
+  .ops{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .op{height:50px;border-radius:14px;border:2px solid var(--border);background:transparent;color:var(--text);
+    font-size:24px;font-weight:700;cursor:pointer}
+  .op.sel{background:var(--orange);border-color:var(--orange);color:var(--ink)}
+  .msg{min-height:20px;text-align:center;font-size:13px;color:var(--muted)}
+  .msg.bad{color:var(--bad)}
+  .log{display:grid;gap:4px;font-family:var(--display);font-size:15px;font-variant-numeric:tabular-nums;min-height:22px}
+  .log div{display:flex;gap:8px;align-items:center;color:var(--muted)}
+  .log div b{color:var(--text)}
+  .log div::before{content:"⛏";font-size:12px}
+  .row{display:flex;gap:8px;flex-wrap:wrap}
+  .row>*{flex:1}
+  .btn{background:var(--orange);color:var(--ink);border:0;border-radius:999px;padding:12px 18px;
+    font-size:15px;font-weight:800;cursor:pointer}
+  .btn.alt{background:transparent;color:var(--text);border:1px solid var(--border);font-weight:600}
+  .btn:disabled{opacity:.4;cursor:default}
+  .done{border:1px solid var(--orange);border-radius:18px;padding:16px;display:grid;gap:10px;text-align:center;
+    background:var(--card)}
+  .done h2{font-family:var(--display);font-size:22px;text-wrap:balance}
+  .done h2 em{font-style:normal;color:var(--orange)}
+  .done pre{font-family:var(--body);font-size:14px;background:var(--bg);border:1px solid var(--border);border-radius:12px;
+    padding:10px;white-space:pre-wrap;text-align:left;user-select:all}
+  .done p{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+  .facts{border-top:1px solid var(--border);padding-top:12px;display:grid;gap:6px}
+  .facts>*{min-width:0}
+  .facts h3{font-family:var(--display);font-size:14px}
+  .facts ul{list-style:none;display:grid;gap:4px;font-size:13px;color:var(--muted)}
+  .facts li{display:flex;gap:7px}
+  .facts li::before{content:"✓";color:var(--ok);font-weight:800}
+  .ca{display:flex;align-items:center;gap:8px}
+  .ca code{flex:1;min-width:0;font-size:11px;background:var(--card);border:1px solid var(--border);border-radius:8px;
+    padding:6px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
+  .src,footer{color:var(--muted);font-size:11.5px}
+  footer{text-align:center}
+  @media (prefers-reduced-motion:reduce){ .coin{transition:none} }
+</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Space+Grotesk:wght@600;700&display=swap">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1><span>BTCN</span> Daily Block</h1>
+    <button class="chip" id="langBtn" aria-label="Language">EN</button>
+  </header>
+
+  <div class="meta">
+    <span><span data-i18n="block">Bloc</span> <b id="dayNo">#1</b></span>
+    <span>⏱ <b id="clock">0:00</b></span>
+    <span>🔥 <span data-i18n="streak">Série</span> <b id="streak">0</b></span>
+  </div>
+
+  <div class="target">
+    <small data-i18n="targetLbl">Nombre à miner</small>
+    <b id="target">000</b>
+    <p data-i18n="how"></p>
+  </div>
+
+  <div id="board" style="display:grid;gap:12px">
+    <div class="tray" id="tray"></div>
+    <div class="ops" id="ops">
+      <button class="op" id="op-add" data-op="+" aria-label="plus">+</button>
+      <button class="op" id="op-sub" data-op="−" aria-label="minus">−</button>
+      <button class="op" id="op-mul" data-op="×" aria-label="times">×</button>
+      <button class="op" id="op-div" data-op="÷" aria-label="divide">÷</button>
+    </div>
+    <div class="msg" id="msg" role="status"></div>
+    <div class="log" id="log"></div>
+    <div class="row">
+      <button class="btn alt" id="undoBtn" data-i18n="undo">Annuler</button>
+      <button class="btn alt" id="resetBtn" data-i18n="reset">Recommencer</button>
+      <button class="btn alt" id="giveBtn" data-i18n="giveUp">Solution</button>
+    </div>
+  </div>
+
+  <section class="done" id="done" hidden>
+    <h2 id="doneTitle"></h2>
+    <pre id="shareTxt"></pre>
+    <button class="btn" id="shareBtn" data-i18n="share">Copier pour partager</button>
+    <p><span data-i18n="next">Prochain bloc dans</span> <b id="countdown">--:--:--</b></p>
+  </section>
+
+  <section class="facts">
+    <h3 data-i18n="factsTitle"></h3>
+    <ul>
+      <li><span data-i18n="f1"></span></li>
+      <li><span data-i18n="f2"></span></li>
+      <li><span data-i18n="f3"></span></li>
+    </ul>
+    <div class="ca">
+      <code id="ca">0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
+      <button class="chip" id="copyBtn" data-i18n="copy">Copier</button>
+    </div>
+    <p class="src"><span data-i18n="factsSrc"></span>
+      <a href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" target="_blank" rel="noopener">BscScan ↗</a></p>
+  </section>
+
+  <footer data-i18n="disclaimer"></footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SHARE_URL = "";                              // public link of the game, added to the share text
+  var EPOCH = Date.UTC(2026, 10, 10);              // block #1 = 10 Nov 2026 (UTC)
+  var DAY = 86400000;
+  var TOKEN = "0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad";
+
+  var T = {
+    fr: {
+      block:"Bloc", streak:"Série", targetLbl:"Nombre à miner",
+      how:"Touchez une pièce, une opération, puis une autre pièce. Atteignez le nombre exact.",
+      undo:"Annuler", reset:"Recommencer", giveUp:"Solution", share:"Copier pour partager", copied:"Copié ✓",
+      next:"Prochain bloc dans", copy:"Copier",
+      errNeg:"Le résultat doit être positif.", errDiv:"La division doit tomber juste.",
+      pickOp:"Choisissez une opération.", pickCoin:"Choisissez une autre pièce.",
+      winTitle:"Bloc <em>miné</em> !", lostTitle:"Bloc <em>manqué</em>", solTitle:"Une solution :",
+      sOps:"{n} opérations (objectif : {p})", sTime:"en {t}", sTry:"essai {n}",
+      sStreak:"Série : {n} jour(s)", sLost:"pas trouvé aujourd'hui", sHead:"BTCN Daily Block #{d} ⛏️",
+      sCta:"Même bloc pour tout le monde, un par jour :",
+      factsTitle:"Vérifiable sur la blockchain",
+      f1:"96,9 % de l'offre de BTCN est à l'adresse morte.",
+      f2:"99,8 % des jetons de liquidité (LP) sont à l'adresse morte.",
+      f3:"Le propriétaire du contrat est l'adresse zéro.",
+      factsSrc:"Lu sur BNB Chain le 10 nov. 2026. Vérifiez vous-même :",
+      disclaimer:"Jeu gratuit, sans portefeuille ni gain. $BTCN est un meme token : ceci n'est pas un conseil financier, les cryptos sont risquées, et le projet n'est pas affilié à Bitcoin."
+    },
+    en: {
+      block:"Block", streak:"Streak", targetLbl:"Number to mine",
+      how:"Tap a coin, an operation, then another coin. Hit the exact number.",
+      undo:"Undo", reset:"Restart", giveUp:"Solution", share:"Copy to share", copied:"Copied ✓",
+      next:"Next block in", copy:"Copy",
+      errNeg:"The result must be positive.", errDiv:"The division must be exact.",
+      pickOp:"Pick an operation.", pickCoin:"Pick another coin.",
+      winTitle:"Block <em>mined</em>!", lostTitle:"Block <em>missed</em>", solTitle:"One solution:",
+      sOps:"{n} operations (par: {p})", sTime:"in {t}", sTry:"try {n}",
+      sStreak:"Streak: {n} day(s)", sLost:"not found today", sHead:"BTCN Daily Block #{d} ⛏️",
+      sCta:"Same block for everyone, one per day:",
+      factsTitle:"Verifiable on-chain",
+      f1:"96.9% of the BTCN supply sits at the dead address.",
+      f2:"99.8% of the liquidity (LP) tokens sit at the dead address.",
+      f3:"The contract owner is the zero address.",
+      factsSrc:"Read from BNB Chain on 10 Nov 2026. Check it yourself:",
+      disclaimer:"Free game, no wallet, no rewards. $BTCN is a meme token: this is not financial advice, crypto is risky, and the project is not affiliated with Bitcoin."
+    }
+  };
+
+  function $(id){ return document.getElementById(id); }
+  function load(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } }
+  function save(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function clock(s){ var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+  var lang = load("btcn.lang") || ((navigator.language || "en").slice(0, 2) === "fr" ? "fr" : "en");
+  function tr(key, vars){
+    var s = (T[lang] && T[lang][key]) || T.en[key] || key;
+    if(vars) for(var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+    return s;
+  }
+
+  /* ---------- Daily puzzle: same for everyone, derived from the UTC date ---------- */
+  function rng(seed){
+    var a = seed >>> 0;
+    return function(){
+      a = (a + 0x6D2B79F5) >>> 0; var t = a;
+      t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function apply(a, op, b){
+    if(op === "+") return a + b;
+    if(op === "×") return a * b;
+    if(op === "−") return a > b ? a - b : null;
+    if(op === "÷") return b > 0 && a % b === 0 ? a / b : null;
+    return null;
+  }
+  function generate(day){
+    var r = rng(day * 2654435761 + 97), OPS = ["+", "−", "×", "÷"], BIG = [25, 50, 75, 100];
+    function pick(n){ return Math.floor(r() * n); }
+    for(var guard = 0; guard < 5000; guard++){
+      var nums = [BIG[pick(4)], BIG[pick(4)]];
+      while(nums.length < 6) nums.push(1 + pick(10));
+      var pool = nums.slice(), k = 3 + pick(3), steps = [];
+      var acc = pool.splice(pick(pool.length), 1)[0], ok = true;
+      for(var i = 0; i < k && ok; i++){
+        var b = pool.splice(pick(pool.length), 1)[0], op = OPS[pick(4)];
+        var x = acc, y = b;
+        if((op === "−" || op === "÷") && y > x){ x = b; y = acc; }
+        var res = apply(x, op, y);
+        if(res === null || res === acc || res === b || res > 5000 || res < 1) ok = false;
+        else { steps.push({ a: x, op: op, b: y, res: res }); acc = res; }
+      }
+      if(!ok || acc < 101 || acc > 999 || nums.indexOf(acc) >= 0) continue;
+      // shuffle the coins so their order gives nothing away
+      for(i = nums.length - 1; i > 0; i--){ var j = pick(i + 1), tmp = nums[i]; nums[i] = nums[j]; nums[j] = tmp; }
+      return { nums: nums, target: acc, steps: steps, par: steps.length };
+    }
+    return { nums: [100, 5, 3, 2, 7, 25], target: 515, par: 2,
+             steps: [{ a: 100, op: "×", b: 5, res: 500 }, { a: 500, op: "+", b: 15, res: 515 }] };
+  }
+
+  var day = Math.floor((Date.now() - EPOCH) / DAY) + 1;
+  var puzzle = generate(day);
+  var KEY = "btcn.daily." + day;
+  var saved = load(KEY) || { tries: 1, done: false };
+  var streak = load("btcn.streak") || { last: 0, count: 0 };
+
+  /* ---------- Play state ---------- */
+  var tiles, first, op, steps, uid, startAt = 0, timer = null, elapsed = saved.secs || 0;
+  function fresh(){
+    uid = 0; first = null; op = null; steps = [];
+    tiles = puzzle.nums.map(function(v){ return { id: uid++, val: v, made: false, slot: uid - 1 }; });
+  }
+  function tick(){ if(startAt) elapsed = (Date.now() - startAt) / 1000; $("clock").textContent = clock(elapsed); }
+  function begin(){ if(!startAt && !saved.done){ startAt = Date.now() - elapsed * 1000; timer = setInterval(tick, 500); } }
+  function say(key, bad){ var m = $("msg"); m.textContent = key ? tr(key) : ""; m.className = "msg" + (bad ? " bad" : ""); }
+
+  function render(){
+    var tray = $("tray"); tray.textContent = "";
+    for(var s = 0; s < 6; s++){
+      var t = null; for(var i = 0; i < tiles.length; i++) if(tiles[i].slot === s) t = tiles[i];
+      var b = document.createElement("button");
+      b.className = "coin" + (t ? (t.made ? " made" : "") + (first === t.id ? " sel" : "") : " gone");
+      b.id = "coin-" + s;
+      if(t){ b.textContent = t.val; b.setAttribute("data-id", t.id); } else { b.disabled = true; b.setAttribute("aria-hidden", "true"); }
+      tray.appendChild(b);
+    }
+    var ops = document.querySelectorAll(".op");
+    for(i = 0; i < ops.length; i++) ops[i].classList.toggle("sel", ops[i].getAttribute("data-op") === op);
+    var log = $("log"); log.textContent = "";
+    steps.forEach(function(st){
+      var d = document.createElement("div");
+      d.innerHTML = st.a + " " + st.op + " " + st.b + " = <b>" + st.res + "</b>"; log.appendChild(d);
+    });
+    $("undoBtn").disabled = !steps.length; $("resetBtn").disabled = !steps.length;
+  }
+
+  function tapCoin(id){
+    begin();
+    if(first === null || op === null){ first = first === id ? null : id; say(first === null ? "" : "pickOp"); render(); return; }
+    if(id === first){ first = null; op = null; say(""); render(); return; }
+    var A = find(first), B = find(id), res = apply(A.val, op, B.val);
+    if(res === null){ say(op === "÷" ? "errDiv" : "errNeg", true); return; }
+    steps.push({ a: A.val, op: op, b: B.val, res: res, undo: tiles.slice() });
+    tiles = tiles.filter(function(t){ return t.id !== A.id && t.id !== B.id; });
+    var made = { id: uid++, val: res, made: true, slot: B.slot };
+    tiles.push(made); first = made.id; op = null; say("pickOp"); render();
+    if(res === puzzle.target) finish(true);
+  }
+  function find(id){ for(var i = 0; i < tiles.length; i++) if(tiles[i].id === id) return tiles[i]; return null; }
+
+  $("tray").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".coin") : null;
+    if(b && b.hasAttribute("data-id") && !saved.done) tapCoin(parseInt(b.getAttribute("data-id"), 10));
+  });
+  $("ops").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".op") : null; if(!b || saved.done) return;
+    begin();
+    if(first === null){ say("how"); return; }
+    op = op === b.getAttribute("data-op") ? null : b.getAttribute("data-op");
+    say(op ? "pickCoin" : "pickOp"); render();
+  });
+  $("undoBtn").addEventListener("click", function(){
+    var st = steps.pop(); if(!st) return; tiles = st.undo; first = null; op = null; say(""); render();
+  });
+  $("resetBtn").addEventListener("click", function(){
+    if(!steps.length) return; saved.tries++; save(KEY, saved); fresh(); say(""); render();
+  });
+  $("giveBtn").addEventListener("click", function(){
+    if(!$("giveBtn").hasAttribute("data-armed")){
+      $("giveBtn").setAttribute("data-armed", "1"); $("giveBtn").textContent = "⚠ " + tr("giveUp") + " ?";
+      setTimeout(function(){ $("giveBtn").removeAttribute("data-armed"); $("giveBtn").textContent = tr("giveUp"); }, 3000);
+      return;
+    }
+    finish(false);
+  });
+
+  /* ---------- End, share, streak ---------- */
+  function finish(won){
+    tick(); clearInterval(timer); startAt = 0;
+    saved.done = true; saved.won = won; saved.ops = steps.length; saved.secs = elapsed;
+    if(won){ streak.count = streak.last === day - 1 ? streak.count + 1 : 1; streak.last = day; }
+    else { streak.count = 0; streak.last = day; }
+    save(KEY, saved); save("btcn.streak", streak);
+    showDone();
+  }
+  function shareText(){
+    var lines = [tr("sHead", { d: day })];
+    if(saved.won){
+      var squares = ""; for(var i = 0; i < saved.ops; i++) squares += "🟧";
+      lines.push(squares + " " + tr("sOps", { n: saved.ops, p: puzzle.par }));
+      lines.push("⏱ " + tr("sTime", { t: clock(saved.secs) }) + " · " + tr("sTry", { n: saved.tries }));
+      lines.push("🔥 " + tr("sStreak", { n: streak.count }));
+    } else lines.push("⬛ " + tr("sLost"));
+    var url = SHARE_URL || (/^https?:/.test(location.href) ? location.href.split("#")[0] : "");
+    lines.push(tr("sCta") + (url ? " " + url : ""));
+    return lines.join("\n");
+  }
+  function showDone(){
+    $("board").style.display = "none"; $("done").hidden = false;
+    $("doneTitle").innerHTML = tr(saved.won ? "winTitle" : "lostTitle");
+    var txt = shareText();
+    if(!saved.won) txt += "\n\n" + tr("solTitle") + "\n" + puzzle.steps.map(function(s){
+      return s.a + " " + s.op + " " + s.b + " = " + s.res; }).join("\n");
+    $("shareTxt").textContent = txt;
+    $("streak").textContent = streak.count; $("clock").textContent = clock(saved.secs || 0);
+  }
+  function copy(text, btn, key){
+    function done(){ btn.textContent = tr("copied"); setTimeout(function(){ btn.textContent = tr(key); }, 1500); }
+    function fallback(){
+      var el = btn.id === "copyBtn" ? $("ca") : $("shareTxt"), sel = window.getSelection(), r = document.createRange();
+      r.selectNodeContents(el); sel.removeAllRanges(); sel.addRange(r);
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(fallback);
+    else fallback();
+  }
+  $("shareBtn").addEventListener("click", function(){ copy(shareText(), $("shareBtn"), "share"); });
+  $("copyBtn").addEventListener("click", function(){ copy(TOKEN, $("copyBtn"), "copy"); });
+
+  function countdown(){
+    var left = Math.max(0, EPOCH + day * DAY - Date.now()) / 1000;
+    var h = Math.floor(left / 3600), m = Math.floor(left % 3600 / 60), s = Math.floor(left % 60);
+    $("countdown").textContent = h + ":" + (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+    if(left <= 0 && saved.done){ clearInterval(cd); location.reload(); }
+  }
+  var cd = setInterval(countdown, 1000);
+
+  /* ---------- Language ---------- */
+  function applyLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for(var i = 0; i < nodes.length; i++) nodes[i].textContent = tr(nodes[i].getAttribute("data-i18n"));
+    $("langBtn").textContent = lang === "fr" ? "EN" : "FR";
+    if(saved.done) showDone();
+  }
+  $("langBtn").addEventListener("click", function(){ lang = lang === "fr" ? "en" : "fr"; save("btcn.lang", lang); applyLang(); });
+
+  /* ---------- Boot ---------- */
+  if(location.hash === "#debug") window.__daily = { generate: generate, puzzle: puzzle, apply: apply };
+  if(streak.last < day - 1) streak.count = 0;      // a missed day breaks the streak
+  $("dayNo").textContent = "#" + day; $("target").textContent = puzzle.target; $("streak").textContent = streak.count;
+  fresh(); applyLang(); render(); tick(); countdown();
+})();
+</script>
+</body>
+</html>
