@@ -127,6 +127,18 @@
   .steps h3::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;
     border-radius:50%;border:1px solid var(--cyan);color:var(--cyan);font-size:13px}
   .steps p{color:var(--muted);font-size:14px}
+  .soon{display:inline-block;font:600 12px var(--body);letter-spacing:1px;text-transform:uppercase;color:var(--orange);
+    border:1px solid var(--orange);border-radius:999px;padding:3px 12px;margin-bottom:14px}
+  .mc{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+  .mc div small{display:block;color:var(--muted);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase}
+  .mc div b{font-family:var(--display);font-size:22px}
+  .road h3{font-size:16px;margin-bottom:2px}
+  .road .ph{color:var(--cyan);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-family:var(--display)}
+  .road ul{list-style:none;display:grid;gap:6px;margin-top:10px;font-size:14px;color:var(--muted)}
+  .road li{display:flex;gap:8px}
+  .road li::before{content:"○";color:var(--muted)}
+  .road li.ok{color:var(--text)}
+  .road li.ok::before{content:"✓";color:var(--ok);font-weight:800}
   .ca{display:flex;gap:10px;align-items:center;margin-top:16px}
   .ca code{flex:1;min-width:0;font-size:13px;background:#070b14;border:1px solid var(--line);border-radius:10px;
     padding:11px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
@@ -146,8 +158,10 @@
     <a href="#burn" data-i18n="navBurn">Burn</a>
     <a href="#security" data-i18n="navSec">Preuves</a>
     <a href="#tokenomics" data-i18n="navTok">Tokenomics</a>
+    <a href="#staking" data-i18n="navStk">Staking</a>
     <a href="#buy" data-i18n="navBuy">Acheter</a>
     <a href="#play" data-i18n="navPlay">Jouer</a>
+    <a href="#roadmap" data-i18n="navRoad">Roadmap</a>
   </div>
   <button class="chip" id="langBtn" aria-label="Language">EN</button>
 </div></nav>
@@ -216,6 +230,21 @@
   </div>
 </div></section>
 
+<section id="staking"><div class="wrap">
+  <div class="eyebrow">Staking</div>
+  <h2 data-i18n="stkH"></h2>
+  <p class="lead" data-i18n="stkP"></p>
+  <div class="panel">
+    <span class="soon" data-i18n="stkSoon"></span>
+    <div class="mc">
+      <div><small data-i18n="stkMc">Capitalisation actuelle</small><b id="stkMc">…</b></div>
+      <div style="text-align:right"><small data-i18n="stkGoal">Objectif</small><b>$1,000,000</b></div>
+    </div>
+    <div class="meter"><i id="stkBar" style="width:0"></i></div>
+    <p class="note" id="stkNote" data-i18n="stkNote"></p>
+  </div>
+</div></section>
+
 <section id="buy"><div class="wrap">
   <div class="eyebrow" data-i18n="buyEyebrow">Acheter</div>
   <h2 data-i18n="buyH"></h2>
@@ -242,6 +271,20 @@
   </div>
 </div></section>
 
+<section id="roadmap"><div class="wrap">
+  <div class="eyebrow">Roadmap</div>
+  <h2 data-i18n="roadH"></h2>
+  <div class="grid g3 road" style="margin-top:18px">
+    <div class="panel"><div class="ph" data-i18n="r1Ph"></div><h3 data-i18n="r1H"></h3>
+      <ul><li class="ok" data-i18n="r1a"></li><li class="ok" data-i18n="r1b"></li><li class="ok" data-i18n="r1c"></li><li class="ok" data-i18n="r1d"></li></ul></div>
+    <div class="panel"><div class="ph" data-i18n="r2Ph"></div><h3 data-i18n="r2H"></h3>
+      <ul><li data-i18n="r2a"></li><li data-i18n="r2b"></li><li data-i18n="r2c"></li><li data-i18n="r2d"></li></ul></div>
+    <div class="panel"><div class="ph" data-i18n="r3Ph"></div><h3 data-i18n="r3H"></h3>
+      <ul><li class="ok" data-i18n="r3a"></li><li data-i18n="r3b"></li><li data-i18n="r3c"></li><li data-i18n="r3d"></li><li data-i18n="r3e"></li></ul></div>
+  </div>
+  <p class="note" style="margin-top:14px" data-i18n="roadNote"></p>
+</div></section>
+
 <footer><div class="wrap">
   <div class="social">
     <a href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener">Telegram</a>
@@ -258,11 +301,22 @@
 (function(){
   "use strict";
   var TOKEN="0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad", PAIR="0x0820D24f1ecd6E4dd88E899e31DB066d016155CA",
-      DEAD="0x000000000000000000000000000000000000dEaD", SUPPLY=21000000;
+      DEAD="0x000000000000000000000000000000000000dEaD", WBNB="0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", SUPPLY=21000000;
   var RPCS=["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.defibit.io","https://bsc.publicnode.com","https://binance.llamarpc.com"];
 
   var T={
     fr:{
+      navStk:"Staking",navRoad:"Roadmap",
+      stkH:"Staking : prévu à 1 M$ de capitalisation",
+      stkP:"Le staking n'est pas encore ouvert. Il est prévu quand Bitcoin New atteindra 1 000 000 $ de capitalisation : les détenteurs pourront alors bloquer leurs $BTCN. Les conditions seront publiées avant le lancement.",
+      stkSoon:"Bientôt · pas encore actif",stkMc:"Capitalisation actuelle",stkGoal:"Objectif",
+      stkNote:"Capitalisation calculée depuis le pool PancakeSwap et l'offre en circulation.",
+      stkNoteOff:"Capitalisation indisponible pour le moment.",
+      roadH:"Les étapes du projet",
+      r1Ph:"Phase 1 · Lancement",r1H:"Mise à feu",r1a:"Site et réseaux sociaux en ligne",r1b:"Contrat déployé et vérifié",r1c:"Liquidité ajoutée et brûlée",r1d:"Lancement équitable sur PancakeSwap",
+      r2Ph:"Phase 2 · Croissance",r2H:"Faire connaître $BTCN",r2a:"Campagnes avec influenceurs et KOL",r2b:"Tendances sur DexScreener / DexTools",r2c:"Concours communautaires",r2d:"1 000 détenteurs et plus",
+      r3Ph:"Phase 3 · Expansion",r3H:"Voir plus grand",r3a:"Référencement CoinMarketCap",r3b:"Référencement CoinGecko",r3c:"Listings sur plateformes centralisées",r3d:"Partenariats",r3e:"Ouverture du staking",
+      roadNote:"Cette feuille de route décrit des objectifs, pas des engagements : les dates et les résultats ne sont pas garantis.",
       navBurn:"Burn",navSec:"Preuves",navTok:"Tokenomics",navBuy:"Acheter",navPlay:"Jouer",
       heroP:"Un meme token communautaire sur BNB Chain, en hommage à Bitcoin : 21 millions à l'origine, presque tout brûlé, et des règles que plus personne ne peut changer.",
       buyBtn:"Acheter sur PancakeSwap",verifyBtn:"Vérifier les preuves",
@@ -293,6 +347,17 @@
       disclaimer:"$BTCN est un meme token communautaire sur BNB Chain. Rien ici n'est un conseil financier. Les cryptos sont risquées : n'investissez que ce que vous pouvez vous permettre de perdre. Aucun rendement n'est promis. Non affilié à Bitcoin ni à aucun autre projet."
     },
     en:{
+      navStk:"Staking",navRoad:"Roadmap",
+      stkH:"Staking: planned at a $1M market cap",
+      stkP:"Staking is not open yet. It is planned for when Bitcoin New reaches a $1,000,000 market cap: holders will then be able to lock their $BTCN. The terms will be published before launch.",
+      stkSoon:"Coming · not active yet",stkMc:"Current market cap",stkGoal:"Goal",
+      stkNote:"Market cap computed from the PancakeSwap pool and the circulating supply.",
+      stkNoteOff:"Market cap unavailable right now.",
+      roadH:"Project milestones",
+      r1Ph:"Phase 1 · Launch",r1H:"Ignition",r1a:"Website and socials live",r1b:"Contract deployed and verified",r1c:"Liquidity added and burned",r1d:"Fair launch on PancakeSwap",
+      r2Ph:"Phase 2 · Growth",r2H:"Getting $BTCN known",r2a:"Influencer and KOL campaigns",r2b:"Trending on DexScreener / DexTools",r2c:"Community contests",r2d:"1,000+ holders",
+      r3Ph:"Phase 3 · Expansion",r3H:"Going bigger",r3a:"CoinMarketCap listing",r3b:"CoinGecko listing",r3c:"Centralized exchange listings",r3d:"Partnerships",r3e:"Staking opens",
+      roadNote:"This roadmap describes goals, not commitments: dates and outcomes are not guaranteed.",
       navBurn:"Burn",navSec:"Proofs",navTok:"Tokenomics",navBuy:"Buy",navPlay:"Play",
       heroP:"A community meme token on BNB Chain, a tribute to Bitcoin: 21 million at launch, almost all of it burned, and rules nobody can change any more.",
       buyBtn:"Buy on PancakeSwap",verifyBtn:"Check the proofs",
@@ -328,7 +393,7 @@
   function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
   function put(k,v){try{localStorage.setItem(k,v);}catch(e){}}
   var lang=get("btcn.lang")||((navigator.language||"en").slice(0,2)==="fr"?"fr":"en");
-  var live=null;
+  var live=null, mcap=null;
   function tr(k){return (T[lang]&&T[lang][k])||T.en[k]||k;}
   function num(n){return Math.round(n).toLocaleString(lang==="fr"?"fr-FR":"en-US");}
   function pc(x){return x.toLocaleString(lang==="fr"?"fr-FR":"en-US",{minimumFractionDigits:1,maximumFractionDigits:1})+(lang==="fr"?" %":"%");}
@@ -340,6 +405,9 @@
     $("vLp").textContent=pc(d.lp);
     $("meter").style.width=(d.dead/SUPPLY*100).toFixed(1)+"%";
     $("liveNote").textContent=tr(live?"liveOk":"liveStatic");
+    $("stkMc").textContent=mcap===null?"…":"$"+Math.round(mcap).toLocaleString("en-US");
+    $("stkBar").style.width=(mcap===null?0:Math.max(0.5,Math.min(100,mcap/10000))).toFixed(2)+"%";
+    $("stkNote").textContent=tr(mcap===null?"stkNoteOff":"stkNote");
   }
   function applyLang(){
     document.documentElement.lang=lang;
@@ -374,6 +442,10 @@
       .then(function(j){ if(j&&j.result&&j.result.length>2) return BigInt(j.result); throw new Error("empty"); })
       .catch(function(){return call(to,data,i+1);});
   }
+  function bnbUsd(){
+    return fetch("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
+      .then(function(r){return r.json();}).then(function(j){return parseFloat(j.price)||0;});
+  }
   function refresh(){
     Promise.all([
       call(TOKEN,"0x70a08231"+pad(DEAD)),   // BTCN at the dead address
@@ -382,6 +454,11 @@
     ]).then(function(r){
       var dead=Number(r[0]/1000000000000000000n), lp=Number(r[1]*100000n/r[2])/1000;
       if(dead>0&&dead<=SUPPLY){live={dead:dead,lp:lp};paint();}
+      return Promise.all([call(TOKEN,"0x70a08231"+pad(PAIR)),call(WBNB,"0x70a08231"+pad(PAIR)),bnbUsd()]);
+    }).then(function(r){
+      // price = BNB in the pool / BTCN in the pool; market cap = price x circulating supply
+      var tok=Number(r[0]/1000000000000n)/1e6, bnb=Number(r[1]/1000000000000n)/1e6;
+      if(tok>0&&r[2]>0&&live){mcap=bnb/tok*r[2]*(SUPPLY-live.dead);paint();}
     }).catch(function(){});
   }
   applyLang(); refresh(); setInterval(refresh,60000);
