@@ -107,6 +107,14 @@ pytest
 
 The grid engine is pure and covered by unit tests — no RPC needed.
 
+## Game: BTCN Burn Rush
+
+`game/index.html` is a self-contained browser game (no build step, no dependencies,
+no wallet, no rewards). Catch falling coins to keep the furnace hot and burn the
+supply down to the token's real on-chain burn level. Open the file in a browser, or
+host the `game/` folder on any static host. The on-chain facts it displays were read
+from BNB Chain on 2026-11-10; the burned figure refreshes live when an RPC is reachable.
+
 ## Disclaimer
 
 This software is provided for educational purposes. Automated trading is risky;

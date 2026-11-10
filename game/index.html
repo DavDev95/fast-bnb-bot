@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BTCN Burn Rush</title>
+<meta name="description" content="Free browser game: keep the furnace hot and burn the supply. No wallet, no rewards.">
+<meta name="theme-color" content="#0b0d10">
+<style>
+  :root{
+    --orange:#F7931A; --orange2:#ffae40; --bg:#0b0d10; --card:#161a20; --border:#232832;
+    --text:#eef1f5; --muted:#9aa4b2; --ice:#7fd4ff; --ok:#39d98a;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  [hidden]{display:none!important}
+  body{background:var(--bg);color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.45;display:flex;justify-content:center;-webkit-tap-highlight-color:transparent}
+  a{color:var(--orange2)}
+  .app{width:100%;max-width:460px;padding:10px 12px 18px;display:flex;flex-direction:column;gap:8px}
+  .app>*{flex:none}
+  header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  h1{font-size:18px;letter-spacing:.3px}
+  h1 span{color:var(--orange)}
+  .tools{display:flex;gap:6px}
+  .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;
+    padding:6px 11px;font-size:13px;font-weight:600;cursor:pointer}
+  .chip:focus-visible,.btn:focus-visible{outline:2px solid var(--orange2);outline-offset:2px}
+  .hud{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:7px 10px}
+  .stat small{display:block;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.6px}
+  .stat b{font-size:16px;font-variant-numeric:tabular-nums}
+  .bars{display:grid;gap:5px}
+  .bar{position:relative;height:16px;background:var(--card);border:1px solid var(--border);border-radius:999px;overflow:hidden}
+  .bar i{position:absolute;inset:0 auto 0 0;width:0;border-radius:999px;transition:width .12s linear}
+  .bar span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-size:10.5px;font-weight:700;letter-spacing:.5px;text-shadow:0 1px 2px #000}
+  #heatFill{background:linear-gradient(90deg,#ff5a1f,var(--orange2))}
+  #burnFill{background:linear-gradient(90deg,#8a4b00,var(--orange))}
+  .stage{position:relative;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:#07090c}
+  canvas{display:block;width:100%;touch-action:none;cursor:pointer}
+  .overlay{position:absolute;inset:0;background:rgba(7,9,12,.9);display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;padding:18px;gap:10px;overflow:auto}
+  .overlay[hidden]{display:none}
+  .overlay h2{font-size:24px}
+  .overlay h2 em{font-style:normal;color:var(--orange)}
+  .overlay p{color:var(--muted);font-size:14px;max-width:330px}
+  .legend{display:grid;gap:5px;font-size:13.5px;text-align:left;margin:2px 0}
+  .legend div{display:flex;align-items:center;gap:8px}
+  .dot{width:18px;height:18px;border-radius:50%;flex:none}
+  .dot.c{background:var(--orange)} .dot.g{background:#ffe066;box-shadow:0 0 8px #ffe066}
+  .dot.f{background:var(--ice);border-radius:4px}
+  .btn{background:var(--orange);color:#1a1000;border:0;border-radius:999px;padding:12px 26px;
+    font-size:16px;font-weight:800;cursor:pointer}
+  .btn.alt{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .result{font-size:15px;color:var(--text)}
+  .toast{position:absolute;left:10px;right:10px;top:10px;background:rgba(22,26,32,.94);
+    border:1px solid var(--orange);border-radius:12px;padding:9px 12px;font-size:13px;
+    opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s;pointer-events:none}
+  .toast.show{opacity:1;transform:none}
+  .toast b{color:var(--orange2)}
+  .facts{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 13px}
+  .facts h3{font-size:14px;margin-bottom:6px}
+  .facts ul{list-style:none;display:grid;gap:5px;font-size:13px}
+  .facts li{display:flex;gap:7px}
+  .facts li::before{content:"✓";color:var(--ok);font-weight:800}
+  .facts .src{color:var(--muted);font-size:11.5px;margin-top:7px}
+  .ca{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .ca code{flex:1;font-size:11px;background:#0d1014;border:1px solid var(--border);border-radius:8px;
+    padding:6px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  footer{color:var(--muted);font-size:11.5px;text-align:center}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1><span>BTCN</span> Burn Rush</h1>
+    <div class="tools">
+      <button class="chip" id="langBtn" aria-label="Language">EN</button>
+      <button class="chip" id="soundBtn" aria-label="Sound">🔊</button>
+    </div>
+  </header>
+
+  <div class="hud">
+    <div class="stat"><small data-i18n="supplyLeft">Offre restante</small><b id="supply">21,000,000</b></div>
+    <div class="stat"><small data-i18n="combo">Combo</small><b id="combo">x1</b></div>
+  </div>
+  <div class="bars">
+    <div class="bar"><i id="burnFill"></i><span id="burnTxt">0.0%</span></div>
+    <div class="bar"><i id="heatFill"></i><span data-i18n="heat">CHALEUR</span></div>
+  </div>
+
+  <div class="stage">
+    <canvas id="cv" width="436" height="520"></canvas>
+    <div class="toast" id="toast"></div>
+    <div class="overlay" id="overlay">
+      <h2 id="ovTitle"><em>BTCN</em> Burn Rush</h2>
+      <p id="ovText" data-i18n="intro"></p>
+      <div class="legend" id="legend">
+        <div><span class="dot c"></span><span data-i18n="legCoin"></span></div>
+        <div><span class="dot g"></span><span data-i18n="legGold"></span></div>
+        <div><span class="dot f"></span><span data-i18n="legFud"></span></div>
+      </div>
+      <p class="result" id="ovResult" hidden></p>
+      <div class="row">
+        <button class="btn" id="playBtn" data-i18n="play">Jouer</button>
+        <button class="btn alt" id="shareBtn" data-i18n="share" hidden>Partager</button>
+      </div>
+      <p id="bestTxt"></p>
+    </div>
+  </div>
+
+  <section class="facts">
+    <h3 data-i18n="factsTitle"></h3>
+    <ul>
+      <li><span id="f1"></span></li>
+      <li><span data-i18n="f2"></span></li>
+      <li><span data-i18n="f3"></span></li>
+      <li><span data-i18n="f4"></span></li>
+    </ul>
+    <div class="ca">
+      <code id="ca">0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
+      <button class="chip" id="copyBtn" data-i18n="copy">Copier</button>
+    </div>
+    <p class="src"><span data-i18n="factsSrc"></span>
+      <a href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" target="_blank" rel="noopener">BscScan ↗</a></p>
+  </section>
+
+  <footer data-i18n="disclaimer"></footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Constants ---------- */
+  var SUPPLY = 21000000;
+  // Balance of the dead address, read on BNB Chain on 2026-11-10. Refreshed live when possible.
+  var burnedOnChain = 20340979;
+  var GOAL = burnedOnChain;                 // match the real burn to win
+  var TOKEN = "0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad";
+  var DEAD  = "0x000000000000000000000000000000000000dEaD";
+  var RPCS  = ["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.defibit.io","https://bsc.publicnode.com"];
+  var STAGES = [0, 25, 50, 75, 90];         // % burned at which the pace steps up
+
+  /* ---------- Text ---------- */
+  var T = {
+    fr: {
+      supplyLeft:"Offre restante", combo:"Combo", heat:"CHALEUR", play:"Jouer", again:"Rejouer",
+      share:"Partager", copy:"Copier", copied:"Copié ✓",
+      intro:"Gardez le four chaud et brûlez l'offre jusqu'au niveau du vrai burn. Glissez le doigt, ou utilisez ← →.",
+      legCoin:"Pièce BTCN : brûle l'offre, réchauffe le four",
+      legGold:"Pièce dorée : gros burn, grosse chaleur",
+      legFud:"Bloc FUD : refroidit le four, casse le combo",
+      overTitle:"Four <em>éteint</em>", winTitle:"Burn <em>égalé</em> !",
+      overRes:"Vous avez brûlé {p}% de l'offre en {t}.",
+      winRes:"{p}% de l'offre brûlée en {t}, comme sur la blockchain.",
+      best:"Record : {v}", bestPct:"{p}% brûlés", bestTime:"objectif atteint en {t}",
+      shareTxt:"J'ai brûlé {p}% de l'offre dans BTCN Burn Rush 🔥 À vous de jouer :",
+      stage:"<b>Palier {n}</b> · le rythme accélère",
+      tip1:"<b>Le saviez-vous ?</b> {b}% de l'offre réelle est à l'adresse morte.",
+      tip2:"<b>Le saviez-vous ?</b> Les jetons de liquidité (LP) sont brûlés : la liquidité ne peut pas être retirée.",
+      tip3:"<b>Le saviez-vous ?</b> Le contrat n'a plus de propriétaire : personne ne peut changer ses règles.",
+      tip4:"<b>Le saviez-vous ?</b> La taxe est plafonnée à 8 % dans le code du contrat.",
+      factsTitle:"Vérifiable sur la blockchain",
+      f1:"{n} BTCN ({b} % de l'offre) sont à l'adresse morte.",
+      f2:"99,8 % des jetons de liquidité (LP) sont à l'adresse morte.",
+      f3:"Le propriétaire du contrat est l'adresse zéro (propriété renoncée).",
+      f4:"Offre fixe de 21 000 000 ; taxe d'achat et de vente de 8 %, plafonnée dans le contrat.",
+      factsSrc:"Lu sur BNB Chain le 10 nov. 2026. Vérifiez vous-même :",
+      disclaimer:"Jeu gratuit, sans portefeuille ni gain. $BTCN est un meme token : ceci n'est pas un conseil financier, les cryptos sont risquées, et le projet n'est pas affilié à Bitcoin."
+    },
+    en: {
+      supplyLeft:"Supply left", combo:"Combo", heat:"HEAT", play:"Play", again:"Play again",
+      share:"Share", copy:"Copy", copied:"Copied ✓",
+      intro:"Keep the furnace hot and burn the supply down to the real burn level. Drag, or use ← →.",
+      legCoin:"BTCN coin: burns supply, heats the furnace",
+      legGold:"Golden coin: big burn, big heat",
+      legFud:"FUD block: cools the furnace, breaks the combo",
+      overTitle:"Furnace <em>out</em>", winTitle:"Burn <em>matched</em>!",
+      overRes:"You burned {p}% of the supply in {t}.",
+      winRes:"{p}% of the supply burned in {t}, just like on-chain.",
+      best:"Best: {v}", bestPct:"{p}% burned", bestTime:"goal reached in {t}",
+      shareTxt:"I burned {p}% of the supply in BTCN Burn Rush 🔥 Your turn:",
+      stage:"<b>Stage {n}</b> · the pace picks up",
+      tip1:"<b>Did you know?</b> {b}% of the real supply sits at the dead address.",
+      tip2:"<b>Did you know?</b> The liquidity (LP) tokens are burned: liquidity cannot be pulled.",
+      tip3:"<b>Did you know?</b> The contract has no owner: nobody can change its rules.",
+      tip4:"<b>Did you know?</b> The tax is capped at 8% in the contract code.",
+      factsTitle:"Verifiable on-chain",
+      f1:"{n} BTCN ({b}% of supply) sit at the dead address.",
+      f2:"99.8% of the liquidity (LP) tokens sit at the dead address.",
+      f3:"The contract owner is the zero address (ownership renounced).",
+      f4:"Fixed supply of 21,000,000; 8% buy and sell tax, capped in the contract.",
+      factsSrc:"Read from BNB Chain on 10 Nov 2026. Check it yourself:",
+      disclaimer:"Free game, no wallet, no rewards. $BTCN is a meme token: this is not financial advice, crypto is risky, and the project is not affiliated with Bitcoin."
+    }
+  };
+
+  /* ---------- Small helpers ---------- */
+  function $(id){ return document.getElementById(id); }
+  function store(k, v){
+    try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){}
+    return null;
+  }
+  function fmt(n){ return Math.round(n).toLocaleString(lang === "fr" ? "fr-FR" : "en-US"); }
+  function pct(n){ return (n / SUPPLY * 100).toFixed(1); }
+  function clock(s){ var m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ":" + (r < 10 ? "0" : "") + r; }
+  function tr(key, vars){
+    var s = (T[lang] && T[lang][key]) || T.en[key] || key;
+    if(vars) for(var k in vars) s = s.split("{" + k + "}").join(vars[k]);
+    return s;
+  }
+  function rand(a, b){ return a + Math.random() * (b - a); }
+
+  /* ---------- Language ---------- */
+  var lang = store("btcn.lang") || ((navigator.language || "en").slice(0, 2) === "fr" ? "fr" : "en");
+  function applyLang(){
+    document.documentElement.lang = lang;
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for(var i = 0; i < nodes.length; i++) nodes[i].textContent = tr(nodes[i].getAttribute("data-i18n"));
+    $("langBtn").textContent = lang === "fr" ? "EN" : "FR";
+    $("f1").textContent = tr("f1", { n: fmt(burnedOnChain), b: pct(burnedOnChain) });
+    if(state === "over" || state === "win") showEnd(); else showBest();
+    $("playBtn").textContent = tr(state === "idle" ? "play" : "again");
+  }
+  $("langBtn").addEventListener("click", function(){
+    lang = lang === "fr" ? "en" : "fr"; store("btcn.lang", lang); applyLang();
+  });
+
+  /* ---------- Sound ---------- */
+  var muted = store("btcn.mute") === "1", actx = null;
+  function beep(freq, dur, type, vol){
+    if(muted) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      var o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || "sine"; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.06, actx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, actx.currentTime + dur);
+      o.connect(g); g.connect(actx.destination); o.start(); o.stop(actx.currentTime + dur);
+    }catch(e){}
+  }
+  function paintSound(){ $("soundBtn").textContent = muted ? "🔇" : "🔊"; }
+  $("soundBtn").addEventListener("click", function(){
+    muted = !muted; store("btcn.mute", muted ? "1" : "0"); paintSound();
+  });
+  paintSound();
+
+  /* ---------- Canvas ---------- */
+  var cv = $("cv"), ctx = cv.getContext("2d"), W = 436, H = 520, DPR = 1;
+  function resize(){
+    var w = cv.parentNode.clientWidth;
+    var h = Math.max(360, Math.min(560, window.innerHeight - 250));
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = w; H = h;
+    cv.width = Math.round(w * DPR); cv.height = Math.round(h * DPR);
+    cv.style.height = h + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    player.x = Math.min(Math.max(player.x, player.w / 2), W - player.w / 2);
+    player.tx = player.x;
+    if(state !== "play") draw();
+  }
+
+  /* ---------- Game state ---------- */
+  var state = "idle";                        // idle | play | over | win
+  var player = { x: 218, tx: 218, w: 92, h: 46 };
+  var items = [], sparks = [], floats = [], stars = [];
+  var burned = 0, heat = 100, combo = 0, elapsed = 0, spawnT = 0, stage = 1, tipN = 0, shake = 0;
+  var keys = {}, last = 0;
+  for(var i = 0; i < 40; i++) stars.push({ x: Math.random(), y: Math.random(), r: rand(0.4, 1.4), a: rand(0.2, 0.7) });
+
+  function mult(){ return Math.min(5, 1 + Math.floor(combo / 5)); }
+  function level(){
+    var p = burned / SUPPLY * 100, n = 1;
+    for(var i = 0; i < STAGES.length; i++) if(p >= STAGES[i]) n = i + 1;
+    return n;
+  }
+
+  function start(){
+    items = []; sparks = []; floats = [];
+    burned = 0; heat = 100; combo = 0; elapsed = 0; spawnT = 0.4; stage = 1; tipN = 0; shake = 0;
+    player.x = player.tx = W / 2;
+    state = "play";
+    $("overlay").hidden = true;
+    last = performance.now();
+    beep(520, 0.12, "triangle");
+    requestAnimationFrame(loop);
+  }
+
+  function spawn(){
+    var L = stage, r = Math.random();
+    var kind = r < 0.05 ? "gold" : (r < 0.05 + 0.13 + L * 0.035 ? "fud" : "coin");
+    var rad = kind === "fud" ? 17 : (kind === "gold" ? 17 : 15);
+    items.push({ kind: kind, x: rand(rad + 6, W - rad - 6), y: -rad, r: rad,
+                 vy: rand(150, 190) + L * 34, spin: rand(0, 6.28) });
+  }
+
+  function toast(html){
+    var el = $("toast"); el.innerHTML = html; el.classList.add("show");
+    clearTimeout(toast.t); toast.t = setTimeout(function(){ el.classList.remove("show"); }, 2600);
+  }
+
+  function burst(x, y, color, n){
+    for(var i = 0; i < n; i++) sparks.push({ x: x, y: y, vx: rand(-130, 130), vy: rand(-220, -40),
+      life: rand(0.35, 0.8), c: color });
+  }
+
+  function caught(it){
+    if(it.kind === "fud"){
+      heat = Math.max(0, heat - 28); combo = 0; shake = 0.25;
+      burst(it.x, player_y(), "#7fd4ff", 14); beep(140, 0.25, "sawtooth", 0.05);
+      return;
+    }
+    combo++;
+    var gold = it.kind === "gold";
+    var gain = (gold ? 240000 : 45000) * mult();
+    burned = Math.min(GOAL, burned + gain);
+    heat = Math.min(100, heat + (gold ? 26 : 9));
+    burst(it.x, player_y(), gold ? "#ffe066" : "#ffae40", gold ? 22 : 10);
+    floats.push({ x: it.x, y: player_y() - 14, t: 0.9, txt: "-" + fmt(gain) });
+    beep(gold ? 880 : 440 + Math.min(combo, 20) * 18, 0.09, "triangle");
+    var L = level();
+    if(L > stage){
+      stage = L; toast(tr("stage", { n: stage }) + "<br>" + tr("tip" + ((tipN++ % 4) + 1), { b: pct(burnedOnChain) }));
+      beep(660, 0.2, "square", 0.04);
+    }
+  }
+  function player_y(){ return H - player.h - 8; }
+
+  function update(dt){
+    elapsed += dt;
+    // movement: pointer target, or keyboard
+    var dir = (keys.ArrowRight || keys.d ? 1 : 0) - (keys.ArrowLeft || keys.a || keys.q ? 1 : 0);
+    if(dir) player.tx = player.x + dir * 560 * dt;
+    player.tx = Math.min(Math.max(player.tx, player.w / 2), W - player.w / 2);
+    player.x += (player.tx - player.x) * Math.min(1, dt * 18);
+
+    heat -= (5.5 + stage * 1.5) * dt;
+    spawnT -= dt;
+    if(spawnT <= 0){ spawn(); spawnT = Math.max(0.3, 0.72 - stage * 0.07) * rand(0.8, 1.2); }
+
+    var top = player_y(), left = player.x - player.w / 2, right = player.x + player.w / 2;
+    for(var i = items.length - 1; i >= 0; i--){
+      var it = items[i]; it.y += it.vy * dt; it.spin += dt * 3;
+      if(it.y + it.r >= top && it.y - it.r <= top + 18 && it.x >= left - 4 && it.x <= right + 4){
+        caught(it); items.splice(i, 1);
+      } else if(it.y - it.r > H){
+        if(it.kind !== "fud") combo = 0;
+        items.splice(i, 1);
+      }
+    }
+    for(i = sparks.length - 1; i >= 0; i--){
+      var s = sparks[i]; s.life -= dt; s.vy += 520 * dt; s.x += s.vx * dt; s.y += s.vy * dt;
+      if(s.life <= 0) sparks.splice(i, 1);
+    }
+    for(i = floats.length - 1; i >= 0; i--){
+      floats[i].t -= dt; floats[i].y -= 46 * dt; if(floats[i].t <= 0) floats.splice(i, 1);
+    }
+    if(shake > 0) shake -= dt;
+
+    if(burned >= GOAL) end("win");
+    else if(heat <= 0){ heat = 0; end("over"); }
+  }
+
+  /* ---------- Drawing ---------- */
+  function drawCoin(x, y, r, gold, spin){
+    var sx = 0.72 + 0.28 * Math.abs(Math.cos(spin));
+    ctx.save(); ctx.translate(x, y); ctx.scale(sx, 1);
+    if(gold){ ctx.shadowColor = "#ffe066"; ctx.shadowBlur = 16; }
+    ctx.fillStyle = gold ? "#ffe066" : "#F7931A";
+    ctx.beginPath(); ctx.arc(0, 0, r, 0, 6.2832); ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.lineWidth = 2; ctx.strokeStyle = gold ? "#fff3b0" : "#ffc470";
+    ctx.beginPath(); ctx.arc(0, 0, r - 3, 0, 6.2832); ctx.stroke();
+    ctx.fillStyle = gold ? "#7a5a00" : "#3a2200";
+    ctx.font = "800 " + Math.round(r * 1.05) + "px system-ui,sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("N", 0, 1);
+    ctx.restore();
+  }
+  function drawFud(x, y, r){
+    ctx.save(); ctx.translate(x, y);
+    ctx.fillStyle = "#7fd4ff"; ctx.strokeStyle = "#d9f3ff"; ctx.lineWidth = 2;
+    roundRect(-r, -r, r * 2, r * 2, 6); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "#06324a"; ctx.font = "800 11px system-ui,sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("FUD", 0, 1);
+    ctx.restore();
+  }
+  function roundRect(x, y, w, h, r){
+    ctx.beginPath(); ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+  }
+  function drawFurnace(t){
+    var x = player.x, y = player_y(), w = player.w, h = player.h, k = heat / 100;
+    // flame
+    var fh = 10 + 34 * k + Math.sin(t * 18) * 3;
+    var g = ctx.createLinearGradient(0, y - fh, 0, y + 8);
+    g.addColorStop(0, "rgba(255,174,64,0)"); g.addColorStop(0.5, "rgba(255,140,40," + (0.35 + 0.5 * k) + ")");
+    g.addColorStop(1, "rgba(255,90,31," + (0.5 + 0.5 * k) + ")");
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.moveTo(x - w * 0.36, y + 6);
+    ctx.quadraticCurveTo(x - w * 0.2, y - fh * 0.6, x, y - fh);
+    ctx.quadraticCurveTo(x + w * 0.2, y - fh * 0.6, x + w * 0.36, y + 6); ctx.fill();
+    // body
+    ctx.fillStyle = "#1c2129"; ctx.strokeStyle = "#39414f"; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(x - w / 2, y); ctx.lineTo(x + w / 2, y);
+    ctx.lineTo(x + w / 2 - 9, y + h); ctx.lineTo(x - w / 2 + 9, y + h); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "rgba(247,147,26," + (0.25 + 0.75 * k) + ")";
+    roundRect(x - w / 2 + 3, y - 3, w - 6, 7, 3); ctx.fill();
+    ctx.fillStyle = "#9aa4b2"; ctx.font = "700 10px system-ui,sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText("BURN", x, y + h / 2 + 3);
+  }
+  function draw(){
+    var t = performance.now() / 1000;
+    ctx.save();
+    if(shake > 0) ctx.translate(rand(-4, 4), rand(-4, 4));
+    var bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, "#07090c"); bg.addColorStop(1, "#15100a");
+    ctx.fillStyle = bg; ctx.fillRect(-8, -8, W + 16, H + 16);
+    for(var i = 0; i < stars.length; i++){
+      var s = stars[i]; ctx.globalAlpha = s.a * (0.6 + 0.4 * Math.sin(t * 2 + i));
+      ctx.fillStyle = "#fff"; ctx.fillRect(s.x * W, s.y * H * 0.8, s.r, s.r);
+    }
+    ctx.globalAlpha = 1;
+    for(i = 0; i < items.length; i++){
+      var it = items[i];
+      if(it.kind === "fud") drawFud(it.x, it.y, it.r); else drawCoin(it.x, it.y, it.r, it.kind === "gold", it.spin);
+    }
+    drawFurnace(t);
+    for(i = 0; i < sparks.length; i++){
+      var p = sparks[i]; ctx.globalAlpha = Math.max(0, p.life * 1.6); ctx.fillStyle = p.c;
+      ctx.fillRect(p.x, p.y, 3, 3);
+    }
+    ctx.globalAlpha = 1;
+    ctx.font = "800 13px system-ui,sans-serif"; ctx.textAlign = "center";
+    for(i = 0; i < floats.length; i++){
+      ctx.globalAlpha = Math.min(1, floats[i].t * 2); ctx.fillStyle = "#ffae40";
+      ctx.fillText(floats[i].txt, Math.min(Math.max(floats[i].x, 44), W - 44), floats[i].y);
+    }
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+  function hud(){
+    $("supply").textContent = fmt(SUPPLY - burned);
+    $("combo").textContent = "x" + mult();
+    $("burnTxt").textContent = pct(burned) + "% / " + pct(GOAL) + "%";
+    $("burnFill").style.width = (burned / GOAL * 100).toFixed(1) + "%";
+    $("heatFill").style.width = Math.max(0, heat).toFixed(1) + "%";
+  }
+
+  function loop(now){
+    if(state !== "play") return;
+    var dt = Math.min(0.05, (now - last) / 1000); last = now;
+    update(dt); hud(); draw();
+    if(state === "play") requestAnimationFrame(loop);
+  }
+
+  /* ---------- End of game ---------- */
+  var lastRes = null;
+  function end(kind){
+    state = kind; lastRes = { p: pct(burned), t: clock(elapsed), secs: elapsed, raw: burned };
+    var bp = parseFloat(store("btcn.bestPct") || "0"), bt = parseFloat(store("btcn.bestTime") || "0");
+    if(burned / SUPPLY * 100 > bp) store("btcn.bestPct", String(burned / SUPPLY * 100));
+    if(kind === "win" && (!bt || elapsed < bt)) store("btcn.bestTime", String(elapsed));
+    beep(kind === "win" ? 990 : 110, 0.5, kind === "win" ? "triangle" : "sawtooth", 0.06);
+    hud(); draw(); showEnd();
+  }
+  function showBest(){
+    var bp = parseFloat(store("btcn.bestPct") || "0"), bt = parseFloat(store("btcn.bestTime") || "0");
+    var v = bt ? tr("bestTime", { t: clock(bt) }) : (bp ? tr("bestPct", { p: bp.toFixed(1) }) : "");
+    $("bestTxt").textContent = v ? tr("best", { v: v }) : "";
+  }
+  function showEnd(){
+    $("ovTitle").innerHTML = tr(state === "win" ? "winTitle" : "overTitle");
+    $("ovText").hidden = true; $("legend").hidden = true;
+    $("ovResult").hidden = false;
+    $("ovResult").textContent = tr(state === "win" ? "winRes" : "overRes", lastRes);
+    $("playBtn").textContent = tr("again"); $("shareBtn").hidden = false;
+    showBest(); $("overlay").hidden = false;
+  }
+
+  /* ---------- Input ---------- */
+  function pointer(e){
+    var r = cv.getBoundingClientRect(); player.tx = (e.clientX - r.left) * (W / r.width);
+  }
+  cv.addEventListener("pointerdown", function(e){ pointer(e); try{ cv.setPointerCapture(e.pointerId); }catch(err){} });
+  cv.addEventListener("pointermove", pointer);
+  window.addEventListener("keydown", function(e){
+    keys[e.key] = true;
+    if((e.key === " " || e.key === "Enter") && state !== "play" && document.activeElement.tagName !== "BUTTON"){
+      e.preventDefault(); start();
+    }
+    if(e.key === "ArrowLeft" || e.key === "ArrowRight") e.preventDefault();
+  });
+  window.addEventListener("keyup", function(e){ keys[e.key] = false; });
+  window.addEventListener("blur", function(){ keys = {}; });
+  window.addEventListener("resize", resize);
+  $("playBtn").addEventListener("click", start);
+
+  $("shareBtn").addEventListener("click", function(){
+    var url = /^https?:/.test(location.href) ? location.href : "";
+    var text = tr("shareTxt", { p: lastRes ? lastRes.p : "0" });
+    if(navigator.share){ navigator.share({ text: text, url: url || undefined }).catch(function(){}); return; }
+    copy(text + (url ? " " + url : ""), $("shareBtn"), "share");
+  });
+  $("copyBtn").addEventListener("click", function(){ copy(TOKEN, $("copyBtn"), "copy"); });
+  function copy(text, btn, key){
+    var done = function(){ btn.textContent = tr("copied"); setTimeout(function(){ btn.textContent = tr(key); }, 1500); };
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(function(){});
+    }
+  }
+
+  /* ---------- Live burn figure (optional; falls back to the dated value) ---------- */
+  function refreshBurn(i){
+    if(i >= RPCS.length || !window.fetch) return;
+    var data = "0x70a08231" + DEAD.toLowerCase().replace("0x", "").padStart(64, "0");
+    fetch(RPCS[i], { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "eth_call", params: [{ to: TOKEN, data: data }, "latest"] }) })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var n = j && j.result && j.result.length > 2 ? Number(BigInt(j.result) / 1000000000000000000n) : 0;
+        if(n > 0 && n <= SUPPLY){
+          burnedOnChain = n; if(state !== "play") GOAL = n;
+          $("f1").textContent = tr("f1", { n: fmt(n), b: pct(n) });
+          if(state !== "play") hud();
+        } else refreshBurn(i + 1);
+      })
+      .catch(function(){ refreshBurn(i + 1); });
+  }
+
+  /* ---------- Boot ---------- */
+  if(location.hash === "#debug") window.__btcn = { player: player, items: function(){ return items; } };
+  applyLang(); resize(); hud(); draw(); refreshBurn(0);
+})();
+</script>
+</body>
+</html>
