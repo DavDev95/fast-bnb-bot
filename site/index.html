@@ -148,63 +148,63 @@
     color-scheme:dark;
     --bg:#05070d; --bg2:#080c15; --card:#0b101b; --border:#1c2638; --text:#e9f2ff; --muted:#8fa0b8;
     --cyan:#5ef2ff; --magenta:#ff5edb;
-    --holo:linear-gradient(100deg,var(--cyan),#9d8bff 30%,var(--magenta) 55%,var(--orange) 80%,var(--cyan));
+    --holo:linear-gradient(100deg,#F7931A,#ffc45c 26%,#ff5edb 50%,#F7931A 70%,#5ef2ff 88%,#F7931A);
   }
   body{background-color:var(--bg);background-image:
-      radial-gradient(60% 520px at 50% 0%,rgba(94,242,255,.10),transparent 70%),
-      linear-gradient(rgba(94,242,255,.045) 1px,transparent 1px),
-      linear-gradient(90deg,rgba(94,242,255,.045) 1px,transparent 1px);
+      radial-gradient(60% 520px at 50% 0%,rgba(255,160,50,.10),transparent 70%),
+      linear-gradient(rgba(255,160,50,.045) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,160,50,.045) 1px,transparent 1px);
     background-size:auto,44px 44px,44px 44px}
   header{background:rgba(5,7,13,.78)}
   h1,h2,h3,.tag,.ticker-pill,.brand{font-family:Orbitron,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:0}
-  .tag,.ticker-pill,.phase .ph{color:var(--cyan)}
-  .ticker-pill{border-color:rgba(94,242,255,.4);box-shadow:0 0 18px rgba(94,242,255,.15)}
+  .tag,.ticker-pill,.phase .ph{color:var(--orange)}
+  .ticker-pill{border-color:rgba(255,160,50,.4);box-shadow:0 0 18px rgba(255,160,50,.15)}
   @keyframes holo-slide{to{background-position:220% 0}}
   @keyframes holo-spin{to{--spin:360deg}}
   .hero h1 .o,.taxbig,.stat .n,.livecard .v{background:var(--holo);background-size:220% 100%;
     -webkit-background-clip:text;background-clip:text;color:transparent;animation:holo-slide 7s linear infinite}
   .btn-primary{background:var(--holo);background-size:220% 100%;animation:holo-slide 7s linear infinite;color:#04121a;
-    box-shadow:0 6px 24px rgba(94,242,255,.28)}
+    box-shadow:0 6px 24px rgba(255,160,50,.28)}
   .btn-primary:hover{box-shadow:0 10px 30px rgba(255,94,219,.4)}
-  .btn-game{background:rgba(94,242,255,.08);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 18px rgba(94,242,255,.22)}
-  .btn-game:hover{background:var(--cyan);color:#04121a;box-shadow:0 10px 28px rgba(94,242,255,.45)}
-  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
-  .hero::before{background:radial-gradient(circle,rgba(94,242,255,.16),transparent 65%)}
+  .btn-game{background:rgba(255,160,50,.08);border-color:var(--orange);color:var(--orange);box-shadow:0 0 18px rgba(255,160,50,.22)}
+  .btn-game:hover{background:var(--orange);color:#04121a;box-shadow:0 10px 28px rgba(255,160,50,.45)}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+  .hero::before{background:radial-gradient(circle,rgba(255,160,50,.16),transparent 65%)}
 
   /* iridescent panels: rotating foil border + a sheen that follows the pointer */
   .holo-panel{border:1px solid transparent!important;
     background:
-      radial-gradient(260px circle at var(--mx,-999px) var(--my,-999px),rgba(94,242,255,.15),rgba(255,94,219,.06) 45%,transparent 70%) padding-box,
+      radial-gradient(260px circle at var(--mx,-999px) var(--my,-999px),rgba(255,174,64,.20),rgba(94,242,255,.08) 45%,transparent 70%) padding-box,
       linear-gradient(var(--card),var(--card)) padding-box,
-      conic-gradient(from var(--spin),rgba(94,242,255,.75),rgba(157,139,255,.55),rgba(255,94,219,.65),rgba(247,147,26,.6),rgba(94,242,255,.75)) border-box!important;
+      conic-gradient(from var(--spin),rgba(247,147,26,.95),rgba(255,196,92,.7),rgba(255,94,219,.55),rgba(247,147,26,.9),rgba(94,242,255,.65),rgba(247,147,26,.95)) border-box!important;
     animation:holo-spin 9s linear infinite}
-  .toko-ico{background:rgba(94,242,255,.10)}
+  .toko-ico{background:rgba(255,160,50,.10)}
   .step::before{background:var(--holo);background-size:220% 100%}
-  .ca code{background:#070b14;color:var(--cyan)}
-  .phase li::before{color:var(--cyan)}
-  .socials a:hover,.footer-mail a{border-color:var(--cyan);color:var(--cyan)}
+  .ca code{background:#070b14;color:var(--orange)}
+  .phase li::before{color:var(--orange)}
+  .socials a:hover,.footer-mail a{border-color:var(--orange);color:var(--orange)}
 
   /* the hologram: the logo projected above an emitter */
   .projector{position:relative;height:300px;width:280px;margin:0 auto 6px;display:flex;align-items:flex-end;justify-content:center;perspective:900px}
   .projector .beam{position:absolute;bottom:22px;left:50%;width:240px;height:250px;transform:translateX(-50%);
-    background:linear-gradient(to top,rgba(94,242,255,.34),rgba(94,242,255,.04) 75%,transparent);
+    background:linear-gradient(to top,rgba(255,160,50,.34),rgba(255,160,50,.04) 75%,transparent);
     clip-path:polygon(41% 100%,59% 100%,100% 0,0 0);filter:blur(1px);animation:holo-flicker 4s infinite}
   .projector .emitter{position:relative;width:150px;height:22px;border-radius:50%;
-    background:radial-gradient(closest-side,var(--cyan),rgba(94,242,255,.2) 60%,transparent);box-shadow:0 0 34px 6px rgba(94,242,255,.45)}
+    background:radial-gradient(closest-side,var(--orange),rgba(255,160,50,.2) 60%,transparent);box-shadow:0 0 34px 6px rgba(255,160,50,.45)}
   .projector .coin{position:absolute;bottom:84px;left:50%;width:164px;height:164px;margin-left:-82px;transform-style:preserve-3d;
     animation:holo-turn 9s linear infinite,holo-bob 4s ease-in-out infinite}
-  .projector .face{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(94,242,255,.9);
-    box-shadow:0 0 26px rgba(94,242,255,.55),inset 0 0 30px rgba(94,242,255,.35);
-    background:radial-gradient(circle at 35% 30%,rgba(94,242,255,.30),rgba(255,94,219,.14) 60%,rgba(5,7,13,.2))}
+  .projector .face{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(255,160,50,.9);
+    box-shadow:0 0 26px rgba(255,160,50,.55),inset 0 0 30px rgba(255,160,50,.35);
+    background:radial-gradient(circle at 35% 30%,rgba(255,160,50,.30),rgba(255,94,219,.14) 60%,rgba(5,7,13,.2))}
   .projector .face.back{transform:rotateY(180deg)}
   .projector .face img{width:100%;height:100%;object-fit:cover;opacity:.8;mix-blend-mode:screen;
-    filter:saturate(.6) hue-rotate(150deg) brightness(1.2);box-shadow:none;animation:none;margin:0;border-radius:0}
+    filter:saturate(1.15) brightness(1.15);box-shadow:none;animation:none;margin:0;border-radius:0}
   .projector .scan{position:absolute;inset:0;border-radius:50%;pointer-events:none;
     background:repeating-linear-gradient(to bottom,rgba(255,255,255,.14) 0 1px,transparent 1px 4px);animation:holo-scan 1.2s linear infinite}
   .projector .ring{position:absolute;left:50%;bottom:62px;width:220px;height:56px;margin-left:-110px;border-radius:50%;
-    border:1px solid rgba(94,242,255,.5);transform:rotateX(72deg);animation:holo-pulse 3s ease-out infinite}
+    border:1px solid rgba(255,160,50,.5);transform:rotateX(72deg);animation:holo-pulse 3s ease-out infinite}
   .projector .ring.r2{animation-delay:1.5s}
-  .about-card img{filter:drop-shadow(0 0 26px rgba(94,242,255,.45));box-shadow:0 0 50px rgba(94,242,255,.25)}
+  .about-card img{filter:drop-shadow(0 0 26px rgba(255,160,50,.45));box-shadow:0 0 50px rgba(255,160,50,.25)}
   @keyframes holo-turn{to{transform:rotateY(360deg)}}
   @keyframes holo-bob{50%{bottom:96px}}
   @keyframes holo-scan{to{background-position:0 4px}}
@@ -646,6 +646,60 @@
       '<div class="coin"><div class="face"><img src="'+src+'" alt=""><div class="scan"></div></div>'+
       '<div class="face back"><img src="'+src+'" alt=""><div class="scan"></div></div></div><div class="emitter"></div>';
     logo.parentNode.replaceChild(p,logo);
+  }
+  /* Connect Wallet: works on phones (opens the wallet app), adds BNB Chain if missing,
+     shows the BTCN balance, and a second click disconnects. */
+  var TOKEN="0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad", btn=document.getElementById("connectBtn"), account=null, busy=false;
+  function short(a){return a.slice(0,6)+"…"+a.slice(-4);}
+  function flash(t){ if(!btn) return; var prev=btn.textContent; btn.textContent=t; setTimeout(function(){ if(btn.textContent===t) btn.textContent=prev; },2200); }
+  function show(a){
+    account=a; if(!btn) return;
+    btn.removeAttribute("data-i18n"); btn.textContent=short(a); btn.title=a;
+    window.ethereum.request({method:"eth_call",params:[{to:TOKEN,data:"0x70a08231"+a.slice(2).toLowerCase().padStart(64,"0")},"latest"]})
+      .then(function(h){ if(account!==a) return; var n=Number(BigInt(h)/1000000000000000n)/1000;
+        btn.textContent=short(a)+" · "+n.toLocaleString("en-US",{maximumFractionDigits:0})+" BTCN"; })
+      .catch(function(){});
+  }
+  function reset(){
+    account=null; if(!btn) return;
+    btn.setAttribute("data-i18n","nav.connect"); btn.textContent="Connect Wallet"; btn.title="";
+    var sel=document.getElementById("langsel"); if(sel) sel.dispatchEvent(new Event("change"));
+  }
+  function toBsc(){
+    return window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x38"}]}).catch(function(e){
+      if(e&&(e.code===4902||e.code===-32603)) return window.ethereum.request({method:"wallet_addEthereumChain",params:[{
+        chainId:"0x38",chainName:"BNB Smart Chain",nativeCurrency:{name:"BNB",symbol:"BNB",decimals:18},
+        rpcUrls:["https://bsc-dataseed.bnbchain.org"],blockExplorerUrls:["https://bscscan.com"]}]});
+    });
+  }
+  function connect(){
+    if(busy) return;
+    if(!window.ethereum){
+      var here=location.host+location.pathname, mobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      // on a phone, open this page inside the MetaMask app; on a computer, offer the extension
+      location.href=mobile&&location.host?"https://metamask.app.link/dapp/"+here:"https://metamask.io/download/";
+      return;
+    }
+    if(account){
+      var p=window.ethereum.request({method:"wallet_revokePermissions",params:[{eth_accounts:{}}]});
+      if(p&&p.catch) p.catch(function(){}); reset(); return;
+    }
+    busy=true;
+    window.ethereum.request({method:"eth_requestAccounts"}).then(function(accs){
+      busy=false; if(!accs||!accs[0]) return; return toBsc().then(function(){ show(accs[0]); }, function(){ show(accs[0]); });
+    }).catch(function(e){
+      busy=false; flash(e&&e.code===4001?"Cancelled":(e&&e.code===-32002?"Open your wallet":"Wallet error"));
+    });
+  }
+  if(btn){
+    // run before the page's original handler and replace it
+    document.addEventListener("click",function(e){
+      if(e.target===btn||(e.target.closest&&e.target.closest("#connectBtn"))){ e.stopPropagation(); e.preventDefault(); connect(); }
+    },true);
+    if(window.ethereum){
+      window.ethereum.request({method:"eth_accounts"}).then(function(a){ if(a&&a[0]) show(a[0]); }).catch(function(){});
+      if(window.ethereum.on) window.ethereum.on("accountsChanged",function(a){ if(a&&a[0]) show(a[0]); else reset(); });
+    }
   }
   var panels=document.querySelectorAll(".about-card,.ca,.final,.livecard,.phase,.sec-card,.stat,.step,.taxbox,.toko-card");
   for(var i=0;i<panels.length;i++) panels[i].classList.add("holo-panel");
