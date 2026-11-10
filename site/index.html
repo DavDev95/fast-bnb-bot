@@ -1,468 +1,661 @@
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Bitcoin New ($BTCN)</title>
-<meta name="description" content="Bitcoin New ($BTCN): a community meme token on BNB Chain. 21,000,000 supply, 96.9% burned, liquidity burned, ownership renounced. Verify everything on-chain.">
-<meta name="theme-color" content="#05070d">
+<meta name="description" content="Bitcoin New ($BTCN), the new Bitcoin, reborn on BNB Chain. Don't miss your second chance. 21,000,000 supply.">
+<meta property="og:title" content="Bitcoin New ($BTCN)">
+<meta property="og:description" content="Bitcoin New is the new Bitcoin. Don't miss your second chance.">
+<meta property="og:image" content="https://bitcoinnewtoken.com/logo.jpg">
+<meta property="og:url" content="https://bitcoinnewtoken.com">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://bitcoinnewtoken.com">
+<meta name="theme-color" content="#F7931A">
 <link rel="icon" href="logo.jpg">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@600;800&display=swap">
 <style>
-  /* Layout: a projected-hologram hero, then stacked "holo panels" in one centered column. */
+  :root{
+    --orange:#F7931A; --orange2:#ffae40; --bg:#0b0d10; --bg2:#121519;
+    --card:#161a20; --border:#232832; --text:#eef1f5; --muted:#9aa4b2;
+    --radius:16px; --max:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.6;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 20px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;font-weight:700;font-size:15px;cursor:pointer;border:1px solid transparent;transition:.2s;white-space:nowrap}
+  .btn-primary{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#15120a;box-shadow:0 6px 20px rgba(247,147,26,.35)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(247,147,26,.5)}
+  .btn-game{background:rgba(247,147,26,.12);border:1.5px solid var(--orange);color:var(--orange);box-shadow:0 0 18px rgba(247,147,26,.22)}
+  .btn-game:hover{background:var(--orange);color:#15120a;transform:translateY(-2px);box-shadow:0 10px 28px rgba(247,147,26,.5)}
+  .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+  .section{padding:84px 0}
+  .tag{display:inline-block;color:var(--orange);font-weight:800;letter-spacing:.14em;text-transform:uppercase;font-size:13px;margin-bottom:14px}
+  h1,h2,h3{line-height:1.15;letter-spacing:-.02em}
+  h2{font-size:clamp(28px,4vw,42px);margin-bottom:14px}
+  .section-desc{color:var(--muted);max-width:620px;font-size:17px}
+
+  header{position:sticky;top:0;z-index:50;background:rgba(11,13,16,.8);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px}
+  .brand img{width:34px;height:34px;border-radius:50%}
+  .nav-links{display:flex;gap:26px;align-items:center}
+  .nav-links a{color:var(--muted);font-size:15px;font-weight:600}
+  .nav-links a:hover{color:var(--text)}
+  .nav-cta{display:flex;gap:10px;align-items:center}
+  .langsel{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:999px;padding:9px 12px;font-size:14px;font-weight:600;cursor:pointer}
+  .burger{display:none;background:none;border:0;color:var(--text);font-size:26px;cursor:pointer}
+  @media(max-width:860px){.nav-links{display:none}.burger{display:block}.nav-cta .btn-ghost{display:none}}
+
+  .hero{position:relative;text-align:center;padding:80px 0 70px;overflow:hidden}
+  .hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(247,147,26,.22),transparent 65%);z-index:0}
+  .hero>*{position:relative;z-index:1}
+  .hero-logo{width:132px;height:132px;border-radius:50%;box-shadow:0 0 60px rgba(247,147,26,.45);margin-bottom:22px;animation:float 5s ease-in-out infinite}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+  .hero h1{font-size:clamp(40px,7vw,76px);font-weight:900}
+  .hero h1 .o{background:linear-gradient(135deg,var(--orange),var(--orange2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ticker-pill{display:inline-block;margin:16px 0 6px;padding:6px 16px;border:1px solid var(--border);border-radius:999px;color:var(--orange);font-weight:800;letter-spacing:.1em}
+  .hero p.lead{color:var(--muted);font-size:clamp(17px,2.4vw,21px);max-width:640px;margin:16px auto 30px;font-weight:600}
+  .hero-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:56px}
+  .stat{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 18px;text-align:center}
+  .stat .n{font-size:clamp(24px,4vw,34px);font-weight:900;color:var(--orange)}
+  .stat .l{color:var(--muted);font-size:14px;margin-top:4px;text-transform:uppercase;letter-spacing:.08em}
+  @media(max-width:620px){.stats{grid-template-columns:1fr;gap:12px}}
+
+  .grid2{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr;gap:30px}}
+  .about-card{background:linear-gradient(135deg,rgba(247,147,26,.12),rgba(247,147,26,.02));border:1px solid var(--border);border-radius:24px;padding:40px;text-align:center}
+  .about-card img{width:180px;height:180px;border-radius:50%;box-shadow:0 0 50px rgba(247,147,26,.3)}
+
+  .toko{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px}
+  @media(max-width:620px){.toko{grid-template-columns:1fr}}
+  .toko-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;gap:16px;align-items:flex-start}
+  .toko-ico{font-size:28px;width:52px;height:52px;flex:none;display:grid;place-items:center;background:rgba(247,147,26,.12);border-radius:12px}
+  .toko-card h3{font-size:18px;margin-bottom:4px}
+  .toko-card p{color:var(--muted);font-size:15px}
+
+  .taxbox{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px;margin-top:40px;text-align:center}
+  .taxbig{font-size:clamp(52px,10vw,96px);font-weight:900;background:linear-gradient(135deg,var(--orange),var(--orange2));-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px;counter-reset:s}
+  @media(max-width:860px){.steps{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px 22px;position:relative}
+  .step::before{counter-increment:s;content:counter(s);display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));color:#15120a;font-weight:900;margin-bottom:14px}
+  .step h3{font-size:17px;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:14.5px}
+
+  .ca{background:linear-gradient(135deg,rgba(247,147,26,.12),rgba(247,147,26,.02));border:1px solid var(--border);border-radius:24px;padding:34px;margin-top:40px;text-align:center}
+  .ca code{display:block;background:#0b0d10;border:1px solid var(--border);border-radius:12px;padding:16px;margin:16px auto 0;max-width:640px;font-size:14px;color:var(--orange);word-break:break-all}
+
+  .road{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:860px){.road{grid-template-columns:1fr}}
+  .phase{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:26px}
+  .phase .ph{color:var(--orange);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:13px}
+  .phase h3{font-size:19px;margin:6px 0 12px}
+  .phase ul{list-style:none;color:var(--muted);font-size:15px}
+  .phase li{padding:5px 0 5px 24px;position:relative}
+  .phase li::before{content:"▸";position:absolute;left:0;color:var(--orange)}
+
+  .final{text-align:center;background:linear-gradient(135deg,rgba(247,147,26,.14),transparent);border:1px solid var(--border);border-radius:28px;padding:60px 24px;margin-top:20px}
+  footer{border-top:1px solid var(--border);padding:40px 0;text-align:center;color:var(--muted);font-size:14px}
+  .socials{display:flex;gap:14px;justify-content:center;margin:18px 0}
+  .socials a{width:46px;height:46px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;color:var(--muted);transition:.2s}
+  .socials a:hover{border-color:var(--orange);color:var(--orange);transform:translateY(-2px)}
+  .footer-mail{margin:10px 0}
+  .footer-mail a{color:var(--orange);font-weight:700}
+  .note{color:#6b7280;font-size:12.5px;margin-top:10px}
+
+  /* ---- Live on-chain panels ---- */
+  .livedot{display:inline-flex;align-items:center;gap:8px;color:#4ade80;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+  .livedot::before{content:"";width:9px;height:9px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.6);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}70%{box-shadow:0 0 0 10px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+  .livegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
+  @media(max-width:860px){.livegrid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:480px){.livegrid{grid-template-columns:1fr}}
+  .livecard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 18px;text-align:center}
+  .livecard .v{font-size:clamp(22px,3.4vw,30px);font-weight:900;color:var(--orange);line-height:1.1}
+  .livecard .k{color:var(--muted);font-size:13.5px;margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+  .burnpill{display:inline-block;margin-top:26px;padding:10px 20px;border:1px solid var(--orange);border-radius:999px;color:var(--orange);font-weight:800;font-size:15px;background:rgba(247,147,26,.08)}
+
+  .prog{height:16px;border-radius:999px;background:var(--bg);border:1px solid var(--border);overflow:hidden;margin-top:14px}
+  .prog > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--orange2));transition:width 1s ease;border-radius:999px}
+  .mcrow{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .mcrow .big{font-size:clamp(28px,5vw,44px);font-weight:900;color:var(--orange)}
+  .mcrow .goal{color:var(--muted);font-weight:700}
+
+  .sec-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-top:40px}
+  @media(max-width:620px){.sec-grid{grid-template-columns:1fr}}
+  .sec-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px;position:relative}
+  .sec-card .h{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px}
+  .sec-card p{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .sec-card code{display:block;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:10px;margin-top:12px;font-size:12.5px;color:var(--orange);word-break:break-all}
+  .sec-link{display:inline-block;margin-top:12px;color:var(--orange);font-weight:700;font-size:14px}
+  .sec-link:hover{text-decoration:underline}
+  .okico{color:#4ade80}
+</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&display=swap">
+<style id="holo-skin">
+  /* Holographic skin: layered on top of the original stylesheet. Texts and scripts are unchanged. */
   @property --spin{syntax:"<angle>";inherits:false;initial-value:0deg}
   :root{
     color-scheme:dark;
-    --bg:#05070d; --panel:#0b101b; --line:#1c2638; --text:#e9f2ff; --muted:#8fa0b8;
-    --cyan:#5ef2ff; --magenta:#ff5edb; --orange:#F7931A; --ok:#4dffb0;
-    --holo:linear-gradient(100deg,var(--cyan),#9d8bff 35%,var(--magenta) 60%,var(--orange) 85%,var(--cyan));
-    --display:Orbitron,"Space Grotesk",system-ui,sans-serif;
-    --body:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-    --max:1040px;
+    --bg:#05070d; --bg2:#080c15; --card:#0b101b; --border:#1c2638; --text:#e9f2ff; --muted:#8fa0b8;
+    --cyan:#5ef2ff; --magenta:#ff5edb;
+    --holo:linear-gradient(100deg,var(--cyan),#9d8bff 30%,var(--magenta) 55%,var(--orange) 80%,var(--cyan));
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  [hidden]{display:none!important}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);color:var(--text);font-family:var(--body);line-height:1.6;overflow-x:hidden;
-    background-image:
-      radial-gradient(60% 40% at 50% 0%,rgba(94,242,255,.10),transparent 70%),
+  body{background-color:var(--bg);background-image:
+      radial-gradient(60% 520px at 50% 0%,rgba(94,242,255,.10),transparent 70%),
       linear-gradient(rgba(94,242,255,.045) 1px,transparent 1px),
       linear-gradient(90deg,rgba(94,242,255,.045) 1px,transparent 1px);
     background-size:auto,44px 44px,44px 44px}
-  a{color:inherit;text-decoration:none}
-  :focus-visible{outline:2px solid var(--cyan);outline-offset:3px;border-radius:6px}
-  .wrap{max-width:var(--max);margin:0 auto;
-    padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
-  section{padding-block:56px}
-  h1,h2,h3{font-family:var(--display);text-wrap:balance;line-height:1.15}
-  h2{font-size:clamp(22px,4.4vw,32px);margin-bottom:8px}
-  .lead{color:var(--muted);max-width:62ch;margin-bottom:26px}
-  .holo-text{background:var(--holo);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;
-    color:transparent;animation:slide 7s linear infinite}
-  @keyframes slide{to{background-position:220% 0}}
-  .eyebrow{font-family:var(--display);font-size:11.5px;letter-spacing:3px;text-transform:uppercase;color:var(--cyan)}
+  header{background:rgba(5,7,13,.78)}
+  h1,h2,h3,.tag,.ticker-pill,.brand{font-family:Orbitron,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:0}
+  .tag,.ticker-pill,.phase .ph{color:var(--cyan)}
+  .ticker-pill{border-color:rgba(94,242,255,.4);box-shadow:0 0 18px rgba(94,242,255,.15)}
+  @keyframes holo-slide{to{background-position:220% 0}}
+  @keyframes holo-spin{to{--spin:360deg}}
+  .hero h1 .o,.taxbig,.stat .n,.livecard .v{background:var(--holo);background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;animation:holo-slide 7s linear infinite}
+  .btn-primary{background:var(--holo);background-size:220% 100%;animation:holo-slide 7s linear infinite;color:#04121a;
+    box-shadow:0 6px 24px rgba(94,242,255,.28)}
+  .btn-primary:hover{box-shadow:0 10px 30px rgba(255,94,219,.4)}
+  .btn-game{background:rgba(94,242,255,.08);border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 18px rgba(94,242,255,.22)}
+  .btn-game:hover{background:var(--cyan);color:#04121a;box-shadow:0 10px 28px rgba(94,242,255,.45)}
+  .btn-ghost:hover{border-color:var(--cyan);color:var(--cyan)}
+  .hero::before{background:radial-gradient(circle,rgba(94,242,255,.16),transparent 65%)}
 
-  /* ----- nav ----- */
-  nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(5,7,13,.78);
-    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-  nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:58px}
-  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;font-size:15px}
-  .brand img{width:30px;height:30px;border-radius:50%}
-  .links{display:flex;gap:18px;font-size:14px;color:var(--muted)}
-  .links a:hover{color:var(--text)}
-  .chip{background:transparent;border:1px solid var(--line);color:var(--text);border-radius:999px;
-    padding:6px 12px;font:600 13px var(--body);cursor:pointer}
-  @media (max-width:720px){ .links{display:none} }
+  /* iridescent panels: rotating foil border + a sheen that follows the pointer */
+  .holo-panel{border:1px solid transparent!important;
+    background:
+      radial-gradient(260px circle at var(--mx,-999px) var(--my,-999px),rgba(94,242,255,.15),rgba(255,94,219,.06) 45%,transparent 70%) padding-box,
+      linear-gradient(var(--card),var(--card)) padding-box,
+      conic-gradient(from var(--spin),rgba(94,242,255,.75),rgba(157,139,255,.55),rgba(255,94,219,.65),rgba(247,147,26,.6),rgba(94,242,255,.75)) border-box!important;
+    animation:holo-spin 9s linear infinite}
+  .toko-ico{background:rgba(94,242,255,.10)}
+  .step::before{background:var(--holo);background-size:220% 100%}
+  .ca code{background:#070b14;color:var(--cyan)}
+  .phase li::before{color:var(--cyan)}
+  .socials a:hover,.footer-mail a{border-color:var(--cyan);color:var(--cyan)}
 
-  /* ----- buttons ----- */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 22px;border-radius:999px;
-    font-weight:800;font-size:15px;border:1px solid var(--line);background:rgba(11,16,27,.7);color:var(--text);cursor:pointer}
-  .btn.primary{border:0;color:#04121a;background:var(--holo);background-size:220% 100%;animation:slide 7s linear infinite}
-  .btn:hover{filter:brightness(1.12)}
-  .cta{display:flex;gap:10px;flex-wrap:wrap}
-
-  /* ----- hero ----- */
-  .hero{padding-block:44px 30px}
-  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
-  .hero h1{font-size:clamp(38px,8.2vw,72px);font-weight:800;margin:10px 0 14px}
-  .hero p{color:var(--muted);font-size:17px;max-width:46ch;margin-bottom:22px}
-  @media (max-width:820px){ .hero .wrap{grid-template-columns:1fr} .projector{order:-1} }
-
-  /* the hologram: a coin projected above an emitter */
-  .projector{position:relative;height:340px;display:flex;align-items:flex-end;justify-content:center;perspective:900px}
-  .beam{position:absolute;bottom:26px;left:50%;width:250px;height:270px;transform:translateX(-50%);
+  /* the hologram: the logo projected above an emitter */
+  .projector{position:relative;height:300px;width:280px;margin:0 auto 6px;display:flex;align-items:flex-end;justify-content:center;perspective:900px}
+  .projector .beam{position:absolute;bottom:22px;left:50%;width:240px;height:250px;transform:translateX(-50%);
     background:linear-gradient(to top,rgba(94,242,255,.34),rgba(94,242,255,.04) 75%,transparent);
-    clip-path:polygon(41% 100%,59% 100%,100% 0,0 0);filter:blur(1px);animation:flicker 4s infinite}
-  .emitter{position:relative;width:150px;height:22px;border-radius:50%;
-    background:radial-gradient(closest-side,var(--cyan),rgba(94,242,255,.2) 60%,transparent);
-    box-shadow:0 0 34px 6px rgba(94,242,255,.45)}
-  .holo-coin{position:absolute;bottom:92px;left:50%;width:176px;height:176px;margin-left:-88px;
-    transform-style:preserve-3d;animation:turn 9s linear infinite,bob 4s ease-in-out infinite}
-  .holo-coin .face{position:absolute;inset:0;border-radius:50%;overflow:hidden;
-    border:2px solid rgba(94,242,255,.9);box-shadow:0 0 26px rgba(94,242,255,.55),inset 0 0 30px rgba(94,242,255,.35);
-    background:radial-gradient(circle at 35% 30%,rgba(94,242,255,.30),rgba(255,94,219,.14) 60%,rgba(5,7,13,.2));
-    display:flex;align-items:center;justify-content:center}
-  .holo-coin .face.back{transform:rotateY(180deg)}
-  .holo-coin img{width:100%;height:100%;object-fit:cover;opacity:.78;mix-blend-mode:screen;filter:saturate(.6) hue-rotate(150deg) brightness(1.2)}
-  .holo-coin .glyph{font:800 86px var(--display);color:var(--cyan);text-shadow:0 0 18px var(--cyan)}
-  .scan{position:absolute;inset:0;border-radius:50%;pointer-events:none;
-    background:repeating-linear-gradient(to bottom,rgba(255,255,255,.14) 0 1px,transparent 1px 4px);
-    animation:scan 1.2s linear infinite}
-  .ring{position:absolute;left:50%;bottom:70px;width:230px;height:60px;margin-left:-115px;border-radius:50%;
-    border:1px solid rgba(94,242,255,.5);transform:rotateX(72deg);animation:pulse 3s ease-out infinite}
-  .ring.r2{animation-delay:1.5s}
-  @keyframes turn{to{transform:rotateY(360deg)}}
-  @keyframes bob{50%{bottom:104px}}
-  @keyframes scan{to{background-position:0 4px}}
-  @keyframes flicker{0%,100%{opacity:.95}8%{opacity:.6}10%{opacity:1}52%{opacity:.82}54%{opacity:1}}
-  @keyframes pulse{from{opacity:.9;scale:.6}to{opacity:0;scale:1.25}}
-
-  /* ----- holo panels ----- */
-  .panel{position:relative;border-radius:18px;background:var(--panel);padding:20px;isolation:isolate;overflow:hidden}
-  .panel::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;z-index:-1;
-    background:conic-gradient(from var(--spin),var(--cyan),#9d8bff,var(--magenta),var(--orange),var(--cyan));
-    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
-    opacity:.55;animation:spin 9s linear infinite}
-  .panel::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:0;transition:opacity .25s;
-    background:radial-gradient(260px circle at var(--mx,50%) var(--my,50%),rgba(94,242,255,.16),rgba(255,94,219,.07) 45%,transparent 70%)}
-  .panel:hover::after{opacity:1}
-  @keyframes spin{to{--spin:360deg}}
-  .grid{display:grid;gap:14px}
-  .g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
-  @media (max-width:820px){ .g4{grid-template-columns:repeat(2,1fr)} .g3,.g2{grid-template-columns:1fr} }
-  .panel>*{min-width:0}
-  .stat small{display:block;color:var(--muted);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase}
-  .stat b{font-family:var(--display);font-size:clamp(18px,3.6vw,26px);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-  .stat span{display:block;color:var(--muted);font-size:13px}
-  .meter{height:12px;border-radius:999px;background:#0e1524;border:1px solid var(--line);overflow:hidden;margin:18px 0 8px}
-  .meter i{display:block;height:100%;width:96.9%;background:var(--holo);background-size:220% 100%;animation:slide 7s linear infinite}
-  .note{color:var(--muted);font-size:12.5px}
-  .proof h3{font-size:16px;margin-bottom:6px;display:flex;gap:8px;align-items:center}
-  .proof h3 i{font-style:normal;color:var(--ok);font-size:12px;border:1px solid var(--ok);border-radius:999px;padding:1px 8px;font-family:var(--body)}
-  .proof p{color:var(--muted);font-size:14px;margin-bottom:10px}
-  .proof a{color:var(--cyan);font-size:14px;font-weight:600}
-  .steps{counter-reset:s}
-  .steps .panel{counter-increment:s}
-  .steps h3{font-size:15px;margin-bottom:4px}
-  .steps h3::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;margin-right:8px;
-    border-radius:50%;border:1px solid var(--cyan);color:var(--cyan);font-size:13px}
-  .steps p{color:var(--muted);font-size:14px}
-  .soon{display:inline-block;font:600 12px var(--body);letter-spacing:1px;text-transform:uppercase;color:var(--orange);
-    border:1px solid var(--orange);border-radius:999px;padding:3px 12px;margin-bottom:14px}
-  .mc{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
-  .mc div small{display:block;color:var(--muted);font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase}
-  .mc div b{font-family:var(--display);font-size:22px}
-  .road h3{font-size:16px;margin-bottom:2px}
-  .road .ph{color:var(--cyan);font-size:11.5px;letter-spacing:2px;text-transform:uppercase;font-family:var(--display)}
-  .road ul{list-style:none;display:grid;gap:6px;margin-top:10px;font-size:14px;color:var(--muted)}
-  .road li{display:flex;gap:8px}
-  .road li::before{content:"○";color:var(--muted)}
-  .road li.ok{color:var(--text)}
-  .road li.ok::before{content:"✓";color:var(--ok);font-weight:800}
-  .ca{display:flex;gap:10px;align-items:center;margin-top:16px}
-  .ca code{flex:1;min-width:0;font-size:13px;background:#070b14;border:1px solid var(--line);border-radius:10px;
-    padding:11px 12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
-  .warn{color:var(--orange);font-size:13px;margin-top:10px}
-  footer{border-top:1px solid var(--line);padding-block:30px 40px;color:var(--muted);font-size:13px}
-  footer .wrap{display:grid;gap:14px}
-  .social{display:flex;gap:16px;flex-wrap:wrap;color:var(--text);font-weight:600}
-  .social a:hover{color:var(--cyan)}
-  @media (prefers-reduced-motion:reduce){ *{animation:none!important;scroll-behavior:auto!important} }
+    clip-path:polygon(41% 100%,59% 100%,100% 0,0 0);filter:blur(1px);animation:holo-flicker 4s infinite}
+  .projector .emitter{position:relative;width:150px;height:22px;border-radius:50%;
+    background:radial-gradient(closest-side,var(--cyan),rgba(94,242,255,.2) 60%,transparent);box-shadow:0 0 34px 6px rgba(94,242,255,.45)}
+  .projector .coin{position:absolute;bottom:84px;left:50%;width:164px;height:164px;margin-left:-82px;transform-style:preserve-3d;
+    animation:holo-turn 9s linear infinite,holo-bob 4s ease-in-out infinite}
+  .projector .face{position:absolute;inset:0;border-radius:50%;overflow:hidden;border:2px solid rgba(94,242,255,.9);
+    box-shadow:0 0 26px rgba(94,242,255,.55),inset 0 0 30px rgba(94,242,255,.35);
+    background:radial-gradient(circle at 35% 30%,rgba(94,242,255,.30),rgba(255,94,219,.14) 60%,rgba(5,7,13,.2))}
+  .projector .face.back{transform:rotateY(180deg)}
+  .projector .face img{width:100%;height:100%;object-fit:cover;opacity:.8;mix-blend-mode:screen;
+    filter:saturate(.6) hue-rotate(150deg) brightness(1.2);box-shadow:none;animation:none;margin:0;border-radius:0}
+  .projector .scan{position:absolute;inset:0;border-radius:50%;pointer-events:none;
+    background:repeating-linear-gradient(to bottom,rgba(255,255,255,.14) 0 1px,transparent 1px 4px);animation:holo-scan 1.2s linear infinite}
+  .projector .ring{position:absolute;left:50%;bottom:62px;width:220px;height:56px;margin-left:-110px;border-radius:50%;
+    border:1px solid rgba(94,242,255,.5);transform:rotateX(72deg);animation:holo-pulse 3s ease-out infinite}
+  .projector .ring.r2{animation-delay:1.5s}
+  .about-card img{filter:drop-shadow(0 0 26px rgba(94,242,255,.45));box-shadow:0 0 50px rgba(94,242,255,.25)}
+  @keyframes holo-turn{to{transform:rotateY(360deg)}}
+  @keyframes holo-bob{50%{bottom:96px}}
+  @keyframes holo-scan{to{background-position:0 4px}}
+  @keyframes holo-flicker{0%,100%{opacity:.95}8%{opacity:.6}10%{opacity:1}52%{opacity:.82}54%{opacity:1}}
+  @keyframes holo-pulse{from{opacity:.9;scale:.6}to{opacity:0;scale:1.25}}
+  /* keep the top bar inside a phone screen */
+  .nav{gap:8px}
+  .brand{min-width:0;white-space:nowrap;overflow:hidden}
+  .nav-cta{flex:none}
+  @media (max-width:520px){
+    .brand{font-size:13px;gap:7px} .brand img{width:28px;height:28px}
+    .nav-cta{gap:6px} .nav-cta .btn{padding:8px 11px;font-size:12.5px}
+    .langsel{padding:7px 6px;font-size:12.5px;max-width:74px} .burger{font-size:22px;padding:0}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none!important} }
 </style>
 </head>
 <body>
 
-<nav><div class="wrap">
-  <a class="brand" href="#top"><img src="logo.jpg" alt="" onerror="this.hidden=true"><span>Bitcoin New</span></a>
-  <div class="links">
-    <a href="#burn" data-i18n="navBurn">Burn</a>
-    <a href="#security" data-i18n="navSec">Preuves</a>
-    <a href="#tokenomics" data-i18n="navTok">Tokenomics</a>
-    <a href="#staking" data-i18n="navStk">Staking</a>
-    <a href="#buy" data-i18n="navBuy">Acheter</a>
-    <a href="#play" data-i18n="navPlay">Jouer</a>
-    <a href="#roadmap" data-i18n="navRoad">Roadmap</a>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top"><img src="logo.jpg" alt="BTCN">Bitcoin New</a>
+    <nav class="nav-links">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#burn" data-i18n="nav.burn">Burn</a>
+      <a href="#staking" data-i18n="nav.staking">Staking</a>
+      <a href="#tokenomics" data-i18n="nav.tokenomics">Tokenomics</a>
+      <a href="#security" data-i18n="nav.security">Security</a>
+      <a href="#buy" data-i18n="nav.buy">How to Buy</a>
+    </nav>
+    <div class="nav-cta">
+      <select class="langsel" id="langsel" aria-label="Language">
+        <option value="en">🇬🇧 EN</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="es">🇪🇸 ES</option>
+        <option value="zh">🇨🇳 中文</option>
+        <option value="pt">🇵🇹 PT</option>
+        <option value="tr">🇹🇷 TR</option>
+        <option value="hi">🇮🇳 HI</option>
+        <option value="ja">🇯🇵 日本語</option>
+        <option value="ru">🇷🇺 RU</option>
+      </select>
+      <button class="btn btn-primary" id="connectBtn" type="button" data-i18n="nav.connect">Connect Wallet</button>
+    </div>
+    <button class="burger" onclick="document.querySelector('.nav-links').style.display='flex';this.style.display='none'">☰</button>
   </div>
-  <button class="chip" id="langBtn" aria-label="Language">EN</button>
-</div></nav>
+</header>
 
-<header class="hero" id="top"><div class="wrap">
-  <div>
-    <div class="eyebrow">$BTCN · BNB Chain</div>
-    <h1><span class="holo-text">Bitcoin New</span></h1>
-    <p data-i18n="heroP"></p>
-    <div class="cta">
-      <a class="btn primary" target="_blank" rel="noopener"
-         href="https://pancakeswap.finance/swap?outputCurrency=0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" data-i18n="buyBtn">Acheter sur PancakeSwap</a>
-      <a class="btn" href="#security" data-i18n="verifyBtn">Vérifier les preuves</a>
+<section class="hero" id="top">
+  <div class="wrap">
+    <img class="hero-logo" src="logo.jpg" alt="Bitcoin New logo">
+    <h1>Bitcoin <span class="o">New</span></h1>
+    <div class="ticker-pill">$BTCN · BNB CHAIN</div>
+    <p class="lead" data-i18n="hero.lead">Bitcoin New is the new Bitcoin. Don't miss your second chance.</p>
+    <div class="hero-cta">
+      <a class="btn btn-primary" href="https://pancakeswap.finance/swap?outputCurrency=0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" target="_blank" rel="noopener" data-i18n="hero.buy">🚀 Buy on PancakeSwap</a>
+      <a class="btn btn-game" href="https://t.me/Bitcoinnewtoken_bot/game" target="_blank" rel="noopener">🎮 Play &amp; Earn</a>
+      <a class="btn btn-ghost" href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg> <span data-i18n="hero.tg">Join Telegram</span></a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="n">21,000,000</div><div class="l" data-i18n="stat.supply">Total Supply</div></div>
+      <div class="stat"><div class="n">BNB</div><div class="l" data-i18n="stat.chain">Chain</div></div>
+      <div class="stat"><div class="n">100%</div><div class="l" data-i18n="stat.community">Community Owned</div></div>
     </div>
   </div>
-  <div class="projector" aria-hidden="true">
-    <div class="beam"></div>
-    <div class="ring"></div><div class="ring r2"></div>
-    <div class="holo-coin">
-      <div class="face"><img src="logo.jpg" alt="" onerror="this.outerHTML='<span class=glyph>N</span>'"><div class="scan"></div></div>
-      <div class="face back"><span class="glyph">N</span><div class="scan"></div></div>
+</section>
+
+<section class="section" id="about">
+  <div class="wrap grid2">
+    <div>
+      <span class="tag" data-i18n="about.tag">What is Bitcoin New?</span>
+      <h2 data-i18n="about.h2">The legend, rebuilt for the memecoin era.</h2>
+      <p class="section-desc" data-i18n="about.p1">Bitcoin gave the world digital gold. Bitcoin New ($BTCN) takes that iconic energy and brings it to BNB Chain, where transactions are fast, fees are tiny, and the community moves at the speed of memes.</p>
+      <p class="section-desc" style="margin-top:14px" data-i18n="about.p3">$BTCN is deflationary by design. Our goal is to become rare: we will burn at least 90% of all tokens over time, so the supply keeps shrinking and every remaining $BTCN gets scarcer.</p>
+      <p class="section-desc" style="margin-top:14px" data-i18n="about.p2">We kept the most powerful number in crypto: 21,000,000 total supply, just like the original. This is your second chance to be early on a Bitcoin story.</p>
     </div>
-    <div class="emitter"></div>
-  </div>
-</div></header>
-
-<section id="burn"><div class="wrap">
-  <div class="eyebrow" data-i18n="liveEyebrow">Sur la blockchain</div>
-  <h2 data-i18n="burnH"></h2>
-  <p class="lead" data-i18n="burnP"></p>
-  <div class="grid g4">
-    <div class="panel stat"><small data-i18n="sBurned">Brûlés pour toujours</small><b id="vBurned">20 340 979</b><span>BTCN</span></div>
-    <div class="panel stat"><small data-i18n="sPct">Part de l'offre</small><b id="vPct">96,9 %</b><span data-i18n="sPctSub">à l'adresse morte</span></div>
-    <div class="panel stat"><small data-i18n="sCirc">En circulation</small><b id="vCirc">659 021</b><span>BTCN</span></div>
-    <div class="panel stat"><small data-i18n="sLp">Liquidité brûlée</small><b id="vLp">99,8 %</b><span data-i18n="sLpSub">des jetons LP</span></div>
-  </div>
-  <div class="meter"><i id="meter"></i></div>
-  <p class="note" id="liveNote" data-i18n="liveStatic"></p>
-</div></section>
-
-<section id="security"><div class="wrap">
-  <div class="eyebrow" data-i18n="secEyebrow">Ne nous croyez pas</div>
-  <h2 data-i18n="secH"></h2>
-  <p class="lead" data-i18n="secP"></p>
-  <div class="grid g2">
-    <div class="panel proof"><h3><span data-i18n="p1H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p1P"></p>
-      <a target="_blank" rel="noopener" href="https://bscscan.com/tx/0x6dbdb189a2a7f19a8b94aa44294d7280413c1e0784998aedfb9d944513ce4e08" data-i18n="p1A"></a></div>
-    <div class="panel proof"><h3><span data-i18n="p2H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p2P"></p>
-      <a target="_blank" rel="noopener" href="https://bscscan.com/address/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#readContract" data-i18n="p2A"></a></div>
-    <div class="panel proof"><h3><span data-i18n="p3H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p3P"></p>
-      <a target="_blank" rel="noopener" href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad?a=0x000000000000000000000000000000000000dEaD" data-i18n="p3A"></a></div>
-    <div class="panel proof"><h3><span data-i18n="p4H"></span><i data-i18n="onchain">on-chain</i></h3><p data-i18n="p4P"></p>
-      <a target="_blank" rel="noopener" href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#code" data-i18n="p4A"></a></div>
-  </div>
-</div></section>
-
-<section id="tokenomics"><div class="wrap">
-  <div class="eyebrow">Tokenomics</div>
-  <h2 data-i18n="tokH"></h2>
-  <p class="lead" data-i18n="tokP"></p>
-  <div class="grid g4">
-    <div class="panel stat"><small data-i18n="t1">Offre initiale</small><b>21 000 000</b><span data-i18n="t1s">fixe</span></div>
-    <div class="panel stat"><small data-i18n="t2">Taxe achat / vente</small><b>8 %</b><span data-i18n="t2s">plafonnée dans le contrat</span></div>
-    <div class="panel stat"><small data-i18n="t3">Max par portefeuille</small><b>21 000</b><span>BTCN</span></div>
-    <div class="panel stat"><small data-i18n="t4">Marché</small><b>PancakeSwap</b><span>BTCN / BNB</span></div>
-  </div>
-</div></section>
-
-<section id="staking"><div class="wrap">
-  <div class="eyebrow">Staking</div>
-  <h2 data-i18n="stkH"></h2>
-  <p class="lead" data-i18n="stkP"></p>
-  <div class="panel">
-    <span class="soon" data-i18n="stkSoon"></span>
-    <div class="mc">
-      <div><small data-i18n="stkMc">Capitalisation actuelle</small><b id="stkMc">…</b></div>
-      <div style="text-align:right"><small data-i18n="stkGoal">Objectif</small><b>$1,000,000</b></div>
+    <div class="about-card">
+      <img src="logo.jpg" alt="Bitcoin New">
+      <h3 style="margin-top:18px" data-i18n="about.card_h3">21M Supply · Just like BTC</h3>
+      <p style="color:var(--muted);margin-top:6px" data-i18n="about.card_p">A tribute to the one that started it all.</p>
     </div>
-    <div class="meter"><i id="stkBar" style="width:0"></i></div>
-    <p class="note" id="stkNote" data-i18n="stkNote"></p>
   </div>
-</div></section>
+</section>
 
-<section id="buy"><div class="wrap">
-  <div class="eyebrow" data-i18n="buyEyebrow">Acheter</div>
-  <h2 data-i18n="buyH"></h2>
-  <div class="grid g4 steps" style="margin-top:18px">
-    <div class="panel"><h3 data-i18n="b1H"></h3><p data-i18n="b1P"></p></div>
-    <div class="panel"><h3 data-i18n="b2H"></h3><p data-i18n="b2P"></p></div>
-    <div class="panel"><h3 data-i18n="b3H"></h3><p data-i18n="b3P"></p></div>
-    <div class="panel"><h3 data-i18n="b4H"></h3><p data-i18n="b4P"></p></div>
-  </div>
-  <div class="ca">
-    <code id="ca">0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
-    <button class="btn" id="copyBtn" data-i18n="copy">Copier</button>
-  </div>
-  <p class="warn" data-i18n="warn"></p>
-</div></section>
 
-<section id="play"><div class="wrap">
-  <div class="eyebrow" data-i18n="playEyebrow">Jouer</div>
-  <h2 data-i18n="playH"></h2>
-  <p class="lead" data-i18n="playP"></p>
-  <div class="grid g2">
-    <a class="panel proof" href="../game/daily.html"><h3>Daily Block</h3><p data-i18n="g1P"></p><span class="holo-text" data-i18n="playGo">Jouer →</span></a>
-    <a class="panel proof" href="../game/index.html"><h3>Burn Rush</h3><p data-i18n="g2P"></p><span class="holo-text" data-i18n="playGo">Jouer →</span></a>
-  </div>
-</div></section>
+<section class="section" id="burn" style="background:var(--bg2)">
+  <div class="wrap">
+    <span class="livedot" data-i18n="burn.live">Live on-chain</span>
+    <h2 style="margin-top:12px" data-i18n="burn.h2">Watch the supply shrink, live</h2>
+    <p class="section-desc" data-i18n="burn.desc">1% of the burn reserve is sent to the dead address every single day. The numbers below are read directly from the BNB Chain in real time, no wallet needed.</p>
 
-<section id="roadmap"><div class="wrap">
-  <div class="eyebrow">Roadmap</div>
-  <h2 data-i18n="roadH"></h2>
-  <div class="grid g3 road" style="margin-top:18px">
-    <div class="panel"><div class="ph" data-i18n="r1Ph"></div><h3 data-i18n="r1H"></h3>
-      <ul><li class="ok" data-i18n="r1a"></li><li class="ok" data-i18n="r1b"></li><li class="ok" data-i18n="r1c"></li><li class="ok" data-i18n="r1d"></li></ul></div>
-    <div class="panel"><div class="ph" data-i18n="r2Ph"></div><h3 data-i18n="r2H"></h3>
-      <ul><li data-i18n="r2a"></li><li data-i18n="r2b"></li><li data-i18n="r2c"></li><li data-i18n="r2d"></li></ul></div>
-    <div class="panel"><div class="ph" data-i18n="r3Ph"></div><h3 data-i18n="r3H"></h3>
-      <ul><li class="ok" data-i18n="r3a"></li><li data-i18n="r3b"></li><li data-i18n="r3c"></li><li data-i18n="r3d"></li><li data-i18n="r3e"></li></ul></div>
-  </div>
-  <p class="note" style="margin-top:14px" data-i18n="roadNote"></p>
-</div></section>
+    <div class="livegrid">
+      <div class="livecard"><div class="v" id="bn-burned">…</div><div class="k" data-i18n="burn.k_burned">Burned Forever</div></div>
+      <div class="livecard"><div class="v" id="bn-vault">…</div><div class="k" data-i18n="burn.k_vault">In Burn Vault</div></div>
+      <div class="livecard"><div class="v" id="bn-out">…</div><div class="k" data-i18n="burn.k_out">Out of Circulation</div></div>
+      <div class="livecard"><div class="v" id="bn-circ">…</div><div class="k" data-i18n="burn.k_circ">Circulating</div></div>
+    </div>
 
-<footer><div class="wrap">
-  <div class="social">
-    <a href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener">Telegram</a>
-    <a href="https://x.com/BitcoinNewAI" target="_blank" rel="noopener">X</a>
-    <a href="https://www.tiktok.com/@bitcoin_new" target="_blank" rel="noopener">TikTok</a>
-    <a href="https://coinmarketcap.com/currencies/bitcoin-new/" target="_blank" rel="noopener">CoinMarketCap</a>
-    <a href="https://www.dextools.io/app/bnb/pair-explorer/0x0820d24f1ecd6e4dd88e899e31db066d016155ca" target="_blank" rel="noopener">DexTools</a>
+    <div style="text-align:center"><span class="burnpill" data-i18n="burn.daily">🔥 1% burned every day</span></div>
+    <p class="note" style="text-align:center" data-i18n="burn.src">Source: BNB Chain · balances of the dead address &amp; the Burn Vault contract. Updates every 30s.</p>
   </div>
-  <p data-i18n="disclaimer"></p>
-  <p>© 2026 Bitcoin New</p>
-</div></footer>
+</section>
+
+<section class="section" id="staking">
+  <div class="wrap">
+    <span class="tag" data-i18n="stake.tag">Staking</span>
+    <h2 data-i18n="stake.h2">Stake your $BTCN, unlocking at $1M</h2>
+    <p class="section-desc" data-i18n="stake.desc">Staking is coming. The moment Bitcoin New reaches a $1,000,000 market cap, holders will be able to lock their $BTCN and earn rewards.</p>
+
+    <div class="taxbox" style="margin-top:40px;text-align:left">
+      <div style="display:inline-block;padding:6px 16px;border:1px solid var(--orange);border-radius:999px;color:var(--orange);font-weight:800;margin-bottom:18px" data-i18n="stake.badge">🔜 Coming at $1M market cap</div>
+      <div class="mcrow">
+        <div><div class="big" id="stk-mc">…</div><div class="k" style="color:var(--muted);font-weight:700;font-size:14px" data-i18n="stake.mc_label">Live market cap</div></div>
+        <div style="text-align:right"><div class="big" style="color:var(--text)">$1,000,000</div><div class="goal" data-i18n="stake.goal">Staking unlock goal</div></div>
+      </div>
+      <div class="prog"><i id="stk-bar"></i></div>
+      <p style="color:var(--muted);margin-top:10px;font-weight:700"><span id="stk-pct">…</span> <span data-i18n="stake.towards">of the way to the $1M staking unlock</span></p>
+      <p class="note" data-i18n="stake.funded">💡 The team funds the staking rewards pool itself the moment $BTCN reaches a $1,000,000 market cap. Market cap is read live from the BNB Chain.</p>
+    </div>
+
+    <div class="toko" style="margin-top:16px">
+      <div class="toko-card"><div class="toko-ico">🔒</div><div><h3 data-i18n="stake.c1_h">Lock &amp; Earn</h3><p data-i18n="stake.c1_p">Lock your $BTCN for a set period and earn passive rewards.</p></div></div>
+      <div class="toko-card"><div class="toko-ico">💎</div><div><h3 data-i18n="stake.c2_h">Rewards for Holders</h3><p data-i18n="stake.c2_p">The longer and bigger you stake, the more you earn.</p></div></div>
+    </div>
+  </div>
+</section>
+<section class="section" id="tokenomics" style="background:var(--bg2)">
+  <div class="wrap">
+    <span class="tag" data-i18n="nav.tokenomics">Tokenomics</span>
+    <h2 data-i18n="toko.h2">Simple. Transparent. Built to grow.</h2>
+    <p class="section-desc" data-i18n="toko.desc">No complicated mechanics, just a fair token with a clean structure.</p>
+    <p class="section-desc" style="margin-top:12px" data-i18n="toko.base">At launch, all 21,000,000 $BTCN are in circulation, the exact same cap as Bitcoin. From there the supply only goes down: $BTCN is deflationary and we burn tokens over time to make it rare.</p>
+
+    <div class="taxbox">
+      <div class="taxbig">8%</div>
+      <p style="color:var(--muted);margin-top:8px;font-weight:700" data-i18n="toko.tax_label">Buy &amp; Sell Tax</p>
+      <p style="color:var(--muted);margin-top:4px;font-size:14px" data-i18n="toko.tax_sub">A small 8% on each trade, that's it.</p>
+    </div>
+
+    <div class="toko">
+      <div class="toko-card"><div class="toko-ico">🪙</div><div><h3>21,000,000 $BTCN</h3><p data-i18n="toko.c1_p">Fixed total supply, a direct nod to Bitcoin's legendary 21M cap.</p></div></div>
+      <div class="toko-card"><div class="toko-ico">📊</div><div><h3 data-i18n="toko.c2_h">8% Tax</h3><p data-i18n="toko.c2_p">A simple 8% on buys and sells. Nothing hidden.</p></div></div>
+      <div class="toko-card"><div class="toko-ico">🔒</div><div><h3 data-i18n="toko.c3_h">Liquidity Locked</h3><p data-i18n="toko.c3_p">LP locked / burned at launch, a foundation you can trust.</p></div></div>
+      <div class="toko-card"><div class="toko-ico">🧾</div><div><h3 data-i18n="toko.c4_h">Verified Contract</h3><p data-i18n="toko.c4_p">Open-source &amp; verified on BscScan. No hidden mint, no blacklist.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="security">
+  <div class="wrap">
+    <span class="tag" data-i18n="sec.tag">Security</span>
+    <h2 data-i18n="sec.h2">Built to be safe. Verify everything.</h2>
+    <p class="section-desc" data-i18n="sec.desc">Trust nothing, check it yourself. Every point below is provable on-chain. Click to verify.</p>
+
+    <div class="sec-grid">
+      <div class="sec-card">
+        <div class="h"><span class="okico">🔒</span> <span data-i18n="sec.lp_h">Liquidity Burned Forever</span></div>
+        <p data-i18n="sec.lp_p">The LP tokens were sent to the dead address. Liquidity can NEVER be pulled or removed, not even by the team. This is permanent.</p>
+        <a class="sec-link" href="https://bscscan.com/tx/0x6dbdb189a2a7f19a8b94aa44294d7280413c1e0784998aedfb9d944513ce4e08" target="_blank" rel="noopener" data-i18n="sec.view_lp">View LP burn transaction ↗</a>
+      </div>
+      <div class="sec-card">
+        <div class="h"><span class="okico">✅</span> <span data-i18n="sec.renounced_h">Ownership Renounced</span></div>
+        <p data-i18n="sec.renounced_p">The contract owner is the zero address. No one can change the tax, mint new tokens, or alter any rule. The contract is frozen forever.</p>
+        <a class="sec-link" href="https://bscscan.com/address/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#readContract" target="_blank" rel="noopener" data-i18n="sec.view_owner">Check owner = 0x000…000 ↗</a>
+      </div>
+      <div class="sec-card">
+        <div class="h"><span class="okico">🔥</span> <span data-i18n="sec.vault_h">Burn Vault</span></div>
+        <p data-i18n="sec.vault_p">A dedicated contract holding the burn reserve. It can ONLY send tokens to the dead address, never sell, never withdraw. 1% is burned every day.</p>
+        <code>0x72672bA9772275797F421F01464c80c38Fc3600c</code>
+        <a class="sec-link" href="https://bscscan.com/address/0x72672bA9772275797F421F01464c80c38Fc3600c" target="_blank" rel="noopener" data-i18n="sec.view_vault">View Burn Vault ↗</a>
+      </div>
+      <div class="sec-card">
+        <div class="h"><span class="okico">🧾</span> <span data-i18n="sec.contract_h">Verified Contract</span></div>
+        <p data-i18n="sec.contract_p">Open-source and verified on BscScan. No hidden mint, no blacklist, no pause function, no honeypot. Fixed supply of 21,000,000.</p>
+        <code>0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
+        <a class="sec-link" href="https://bscscan.com/token/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#code" target="_blank" rel="noopener" data-i18n="sec.view_contract">View verified contract ↗</a>
+      </div>
+      <div class="sec-card">
+        <div class="h"><span class="okico">📊</span> <span data-i18n="sec.tax_h">Fixed 8% Tax</span></div>
+        <p data-i18n="sec.tax_p">The buy &amp; sell tax is hard-capped at 8% in the contract code (MAX_FEE) and can never be raised above it. Read it yourself on-chain.</p>
+        <a class="sec-link" href="https://bscscan.com/address/0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad#readContract" target="_blank" rel="noopener" data-i18n="sec.view_tax">See the 8% hard cap on-chain ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="buy">
+  <div class="wrap">
+    <span class="tag" data-i18n="nav.buy">How to Buy</span>
+    <h2 data-i18n="buy.h2">Grab your $BTCN in 4 steps</h2>
+    <div class="steps">
+      <div class="step"><h3 data-i18n="buy.s1_h">Get a Wallet</h3><p data-i18n="buy.s1_p">Install MetaMask or Trust Wallet and set it to BNB Smart Chain.</p></div>
+      <div class="step"><h3 data-i18n="buy.s2_h">Add BNB</h3><p data-i18n="buy.s2_p">Buy BNB on any exchange and send it to your wallet.</p></div>
+      <div class="step"><h3 data-i18n="buy.s3_h">Connect to PancakeSwap</h3><p data-i18n="buy.s3_p">Open PancakeSwap and connect your wallet.</p></div>
+      <div class="step"><h3 data-i18n="buy.s4_h">Swap for $BTCN</h3><p data-i18n="buy.s4_p">Paste the $BTCN contract, set slippage to ~9%, and swap. Welcome aboard!</p></div>
+    </div>
+
+    <div class="ca">
+      <span class="tag" style="margin:0" data-i18n="ca.tag">Official Contract</span>
+      <h3 style="margin-top:8px" data-i18n="ca.h3">$BTCN Contract Address</h3>
+      <code id="ca">0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad</code>
+      <p class="note" data-i18n="ca.note">⚠️ Always verify the contract here before buying. We will NEVER DM you first.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="roadmap" style="background:var(--bg2)">
+  <div class="wrap">
+    <span class="tag" data-i18n="nav.roadmap">Roadmap</span>
+    <h2 data-i18n="road.h2">The plan to the moon 🌕</h2>
+    <div class="road">
+      <div class="phase">
+        <div class="ph" data-i18n="road.p1_ph">Phase 1, Launch</div>
+        <h3 data-i18n="road.p1_h">Ignition</h3>
+        <ul>
+          <li data-i18n="road.p1_l1">Website &amp; socials live</li>
+          <li data-i18n="road.p1_l2">Contract deployed &amp; verified</li>
+          <li data-i18n="road.p1_l3">Liquidity added &amp; locked</li>
+          <li data-i18n="road.p1_l4">Fair launch on PancakeSwap</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="ph" data-i18n="road.p2_ph">Phase 2, Growth</div>
+        <h3 data-i18n="road.p2_h">The Marketing Machine</h3>
+        <ul>
+          <li data-i18n="road.p2_l1">Influencer &amp; KOL campaigns</li>
+          <li data-i18n="road.p2_l2">Trending on DexScreener / DexTools</li>
+          <li data-i18n="road.p2_l3">Community contests &amp; giveaways</li>
+          <li data-i18n="road.p2_l4">1,000+ holders</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <div class="ph" data-i18n="road.p3_ph">Phase 3, Expansion</div>
+        <h3 data-i18n="road.p3_h">Going Big</h3>
+        <ul>
+          <li data-i18n="road.p3_l1">CoinGecko &amp; CoinMarketCap listings</li>
+          <li data-i18n="road.p3_l2">CEX listings</li>
+          <li data-i18n="road.p3_l3">Partnerships</li>
+          <li data-i18n="road.p3_l4">$BTCN everywhere 🚀</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="top2">
+  <div class="wrap">
+    <div class="final">
+      <img src="logo.jpg" alt="" style="width:80px;height:80px;border-radius:50%;margin-bottom:16px;box-shadow:0 0 40px rgba(247,147,26,.4)">
+      <h2 data-i18n="final.h2">Be early. Be Bitcoin New.</h2>
+      <p class="section-desc" style="margin:10px auto 26px" data-i18n="final.p">The new Bitcoin is being written on BNB Chain, and you can be part of chapter one.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="https://pancakeswap.finance/swap?outputCurrency=0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad" target="_blank" rel="noopener" data-i18n="final.buy">🚀 Buy $BTCN</a>
+        <a class="btn btn-game" href="https://t.me/Bitcoinnewtoken_bot/game" target="_blank" rel="noopener">🎮 Play &amp; Earn</a>
+        <a class="btn btn-ghost" href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg> <span data-i18n="hero.tg">Join Telegram</span></a>
+        <a class="btn btn-ghost" href="https://x.com/BitcoinNewAI" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg> Twitter</a>
+        <a class="btn btn-ghost" href="https://www.dextools.io/app/bnb/pair-explorer/0x0820d24f1ecd6e4dd88e899e31db066d016155ca" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><rect x="4.5" y="8" width="4" height="9" rx="1"/><rect x="6" y="4" width="1" height="17"/><rect x="15.5" y="6" width="4" height="7" rx="1"/><rect x="17" y="3" width="1" height="15"/></svg> DexTools</a>
+        <a class="btn btn-ghost" href="https://www.tiktok.com/@bitcoin_new" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-1.06-2.82h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.66a5.7 5.7 0 1 0 4.92 5.64V8.99a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.26-1.48z"/></svg> TikTok</a>
+        <a class="btn btn-ghost" href="https://coinmarketcap.com/currencies/bitcoin-new/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><circle cx="8.3" cy="13.2" r="1.25"/><circle cx="12" cy="10.6" r="1.25"/><circle cx="15.7" cy="13.2" r="1.25"/></svg> CoinMarketCap</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="justify-content:center"><img src="logo.jpg" alt="" style="width:30px;height:30px">Bitcoin New · $BTCN</div>
+    <div class="socials">
+      <a href="https://t.me/bitcoinnewtoken" target="_blank" rel="noopener" title="Telegram" aria-label="Telegram">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+      </a>
+      <a href="https://x.com/BitcoinNewAI" target="_blank" rel="noopener" title="X (Twitter)" aria-label="X">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </a>
+      <a href="https://www.dextools.io/app/bnb/pair-explorer/0x0820d24f1ecd6e4dd88e899e31db066d016155ca" target="_blank" rel="noopener" title="DexTools" aria-label="DexTools">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><rect x="4.5" y="8" width="4" height="9" rx="1"/><rect x="6" y="4" width="1" height="17"/><rect x="15.5" y="6" width="4" height="7" rx="1"/><rect x="17" y="3" width="1" height="15"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@bitcoin_new" target="_blank" rel="noopener" title="TikTok" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M16.6 5.82a4.28 4.28 0 0 1-1.06-2.82h-3.09v12.4a2.59 2.59 0 1 1-2.59-2.59c.27 0 .53.04.78.12V9.66a5.7 5.7 0 1 0 4.92 5.64V8.99a7.35 7.35 0 0 0 4.3 1.38V7.3a4.3 4.3 0 0 1-3.26-1.48z"/></svg>
+      </a>
+      <a href="https://coinmarketcap.com/currencies/bitcoin-new/" target="_blank" rel="noopener" title="CoinMarketCap" aria-label="CoinMarketCap">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16z"/><circle cx="8.3" cy="13.2" r="1.25"/><circle cx="12" cy="10.6" r="1.25"/><circle cx="15.7" cy="13.2" r="1.25"/></svg>
+      </a>
+    </div>
+    <div class="footer-mail">📧 <a href="mailto:support@offtrend.xyz">support@offtrend.xyz</a></div>
+    <p data-i18n="footer.disc">$BTCN is a community meme token on BNB Chain. Nothing here is financial advice. Crypto is risky, only invest what you can afford to lose. Not affiliated with Bitcoin or any other project.</p>
+    <p class="note">© 2026 Bitcoin New. All rights reserved.</p>
+  </div>
+</footer>
 
 <script>
 (function(){
-  "use strict";
-  var TOKEN="0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad", PAIR="0x0820D24f1ecd6E4dd88E899e31DB066d016155CA",
-      DEAD="0x000000000000000000000000000000000000dEaD", WBNB="0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", SUPPLY=21000000;
-  var RPCS=["https://bsc-dataseed.bnbchain.org","https://bsc-dataseed1.defibit.io","https://bsc.publicnode.com","https://binance.llamarpc.com"];
-
   var T={
-    fr:{
-      navStk:"Staking",navRoad:"Roadmap",
-      stkH:"Staking : prévu à 1 M$ de capitalisation",
-      stkP:"Le staking n'est pas encore ouvert. Il est prévu quand Bitcoin New atteindra 1 000 000 $ de capitalisation : les détenteurs pourront alors bloquer leurs $BTCN. Les conditions seront publiées avant le lancement.",
-      stkSoon:"Bientôt · pas encore actif",stkMc:"Capitalisation actuelle",stkGoal:"Objectif",
-      stkNote:"Capitalisation calculée depuis le pool PancakeSwap et l'offre en circulation.",
-      stkNoteOff:"Capitalisation indisponible pour le moment.",
-      roadH:"Les étapes du projet",
-      r1Ph:"Phase 1 · Lancement",r1H:"Mise à feu",r1a:"Site et réseaux sociaux en ligne",r1b:"Contrat déployé et vérifié",r1c:"Liquidité ajoutée et brûlée",r1d:"Lancement équitable sur PancakeSwap",
-      r2Ph:"Phase 2 · Croissance",r2H:"Faire connaître $BTCN",r2a:"Campagnes avec influenceurs et KOL",r2b:"Tendances sur DexScreener / DexTools",r2c:"Concours communautaires",r2d:"1 000 détenteurs et plus",
-      r3Ph:"Phase 3 · Expansion",r3H:"Voir plus grand",r3a:"Référencement CoinMarketCap",r3b:"Référencement CoinGecko",r3c:"Listings sur plateformes centralisées",r3d:"Partenariats",r3e:"Ouverture du staking",
-      roadNote:"Cette feuille de route décrit des objectifs, pas des engagements : les dates et les résultats ne sont pas garantis.",
-      navBurn:"Burn",navSec:"Preuves",navTok:"Tokenomics",navBuy:"Acheter",navPlay:"Jouer",
-      heroP:"Un meme token communautaire sur BNB Chain, en hommage à Bitcoin : 21 millions à l'origine, presque tout brûlé, et des règles que plus personne ne peut changer.",
-      buyBtn:"Acheter sur PancakeSwap",verifyBtn:"Vérifier les preuves",
-      liveEyebrow:"Sur la blockchain",burnH:"96,9 % de l'offre a été brûlée",
-      burnP:"Ces jetons sont à l'adresse morte : personne ne peut les récupérer. Le burn est terminé, il ne reste que l'offre en circulation.",
-      sBurned:"Brûlés pour toujours",sPct:"Part de l'offre",sPctSub:"à l'adresse morte",sCirc:"En circulation",sLp:"Liquidité brûlée",sLpSub:"des jetons LP",
-      liveStatic:"Valeurs lues sur BNB Chain le 10 nov. 2026.",liveOk:"Valeurs lues sur BNB Chain à l'instant. Mise à jour toutes les 60 s.",
-      secEyebrow:"Ne nous croyez pas",secH:"Vérifiez chaque point vous-même",
-      secP:"Chaque affirmation ci-dessous renvoie vers BscScan, où vous pouvez la contrôler sans nous faire confiance.",
-      onchain:"on-chain",
-      p1H:"Liquidité brûlée",p1P:"Les jetons de liquidité ont été envoyés à l'adresse morte le 29 octobre 2026. La liquidité ne peut pas être retirée.",p1A:"Voir la transaction ↗",
-      p2H:"Propriété renoncée",p2P:"Le propriétaire du contrat est l'adresse zéro. Personne ne peut modifier la taxe ni les règles.",p2A:"Lire owner() ↗",
-      p3H:"Offre brûlée",p3P:"Plus de 20,3 millions de BTCN sont à l'adresse morte.",p3A:"Voir le solde de l'adresse morte ↗",
-      p4H:"Contrat public",p4P:"Le code source est publié sur BscScan. La taxe est plafonnée à 8 % (MAX_FEE).",p4A:"Lire le contrat ↗",
-      tokH:"Des règles simples et figées",
-      tokP:"Le contrat n'a plus de propriétaire : ces paramètres ne peuvent plus changer.",
-      t1:"Offre initiale",t1s:"fixe",t2:"Taxe achat / vente",t2s:"plafonnée dans le contrat",t3:"Max par portefeuille",t4:"Marché",
-      buyEyebrow:"Acheter",buyH:"Quatre étapes",
-      b1H:"Portefeuille",b1P:"Installez MetaMask ou Trust Wallet, réseau BNB Smart Chain.",
-      b2H:"BNB",b2P:"Achetez du BNB sur une plateforme et envoyez-le à votre portefeuille.",
-      b3H:"PancakeSwap",b3P:"Ouvrez PancakeSwap et connectez votre portefeuille.",
-      b4H:"Échange",b4P:"Collez l'adresse du contrat, réglez le slippage vers 9 %, puis échangez.",
-      copy:"Copier",copied:"Copié ✓",
-      warn:"Vérifiez toujours cette adresse avant d'acheter. Nous ne vous contacterons jamais en premier par message privé.",
-      playEyebrow:"Jouer",playH:"Deux jeux gratuits",playP:"Sans portefeuille et sans gain : juste pour jouer et défier vos amis.",
-      g1P:"Un nombre à miner par jour, le même pour tout le monde. Gardez votre série.",
-      g2P:"Gardez le four chaud et brûlez l'offre jusqu'à 96,9 %.",playGo:"Jouer →",
-      disclaimer:"$BTCN est un meme token communautaire sur BNB Chain. Rien ici n'est un conseil financier. Les cryptos sont risquées : n'investissez que ce que vous pouvez vous permettre de perdre. Aucun rendement n'est promis. Non affilié à Bitcoin ni à aucun autre projet."
-    },
-    en:{
-      navStk:"Staking",navRoad:"Roadmap",
-      stkH:"Staking: planned at a $1M market cap",
-      stkP:"Staking is not open yet. It is planned for when Bitcoin New reaches a $1,000,000 market cap: holders will then be able to lock their $BTCN. The terms will be published before launch.",
-      stkSoon:"Coming · not active yet",stkMc:"Current market cap",stkGoal:"Goal",
-      stkNote:"Market cap computed from the PancakeSwap pool and the circulating supply.",
-      stkNoteOff:"Market cap unavailable right now.",
-      roadH:"Project milestones",
-      r1Ph:"Phase 1 · Launch",r1H:"Ignition",r1a:"Website and socials live",r1b:"Contract deployed and verified",r1c:"Liquidity added and burned",r1d:"Fair launch on PancakeSwap",
-      r2Ph:"Phase 2 · Growth",r2H:"Getting $BTCN known",r2a:"Influencer and KOL campaigns",r2b:"Trending on DexScreener / DexTools",r2c:"Community contests",r2d:"1,000+ holders",
-      r3Ph:"Phase 3 · Expansion",r3H:"Going bigger",r3a:"CoinMarketCap listing",r3b:"CoinGecko listing",r3c:"Centralized exchange listings",r3d:"Partnerships",r3e:"Staking opens",
-      roadNote:"This roadmap describes goals, not commitments: dates and outcomes are not guaranteed.",
-      navBurn:"Burn",navSec:"Proofs",navTok:"Tokenomics",navBuy:"Buy",navPlay:"Play",
-      heroP:"A community meme token on BNB Chain, a tribute to Bitcoin: 21 million at launch, almost all of it burned, and rules nobody can change any more.",
-      buyBtn:"Buy on PancakeSwap",verifyBtn:"Check the proofs",
-      liveEyebrow:"On-chain",burnH:"96.9% of the supply has been burned",
-      burnP:"These tokens sit at the dead address: nobody can get them back. The burn is complete; only the circulating supply remains.",
-      sBurned:"Burned forever",sPct:"Share of supply",sPctSub:"at the dead address",sCirc:"Circulating",sLp:"Liquidity burned",sLpSub:"of LP tokens",
-      liveStatic:"Values read from BNB Chain on 10 Nov 2026.",liveOk:"Values read from BNB Chain just now. Updates every 60 s.",
-      secEyebrow:"Don't trust us",secH:"Check every point yourself",
-      secP:"Each claim below links to BscScan, where you can check it without trusting us.",
-      onchain:"on-chain",
-      p1H:"Liquidity burned",p1P:"The liquidity tokens were sent to the dead address on 29 October 2026. Liquidity cannot be pulled.",p1A:"View the transaction ↗",
-      p2H:"Ownership renounced",p2P:"The contract owner is the zero address. Nobody can change the tax or the rules.",p2A:"Read owner() ↗",
-      p3H:"Supply burned",p3P:"More than 20.3 million BTCN sit at the dead address.",p3A:"View the dead address balance ↗",
-      p4H:"Public contract",p4P:"The source code is published on BscScan. The tax is capped at 8% (MAX_FEE).",p4A:"Read the contract ↗",
-      tokH:"Simple, frozen rules",
-      tokP:"The contract has no owner any more: these settings can no longer change.",
-      t1:"Initial supply",t1s:"fixed",t2:"Buy / sell tax",t2s:"capped in the contract",t3:"Max per wallet",t4:"Market",
-      buyEyebrow:"Buy",buyH:"Four steps",
-      b1H:"Wallet",b1P:"Install MetaMask or Trust Wallet, on BNB Smart Chain.",
-      b2H:"BNB",b2P:"Buy BNB on an exchange and send it to your wallet.",
-      b3H:"PancakeSwap",b3P:"Open PancakeSwap and connect your wallet.",
-      b4H:"Swap",b4P:"Paste the contract address, set slippage to about 9%, then swap.",
-      copy:"Copy",copied:"Copied ✓",
-      warn:"Always check this address before buying. We will never message you first.",
-      playEyebrow:"Play",playH:"Two free games",playP:"No wallet and no rewards: just play and challenge your friends.",
-      g1P:"One number to mine per day, the same for everyone. Keep your streak.",
-      g2P:"Keep the furnace hot and burn the supply down to 96.9%.",playGo:"Play →",
-      disclaimer:"$BTCN is a community meme token on BNB Chain. Nothing here is financial advice. Crypto is risky: only invest what you can afford to lose. No returns are promised. Not affiliated with Bitcoin or any other project."
-    }
+    "fr":{"sec.renounced_h":"Ownership renoncé","sec.renounced_p":"Le propriétaire du contrat est l'adresse zéro. Personne ne peut changer la taxe, créer de nouveaux jetons ou modifier une règle. Le contrat est figé pour toujours.","sec.view_owner":"Vérifier owner = 0x000…000 ↗","about.p3":"$BTCN est déflationniste par nature. Notre but est de devenir rare : nous brûlerons au moins 90% de tous les jetons au fil du temps, pour que l'offre diminue sans cesse et que chaque $BTCN restant devienne plus rare.","toko.base":"Au lancement, la totalité des 21 000 000 $BTCN sont en circulation, exactement le même plafond que Bitcoin. Ensuite, l'offre ne fait que baisser : $BTCN est déflationniste et nous brûlons des jetons au fil du temps pour le rendre rare.","sec.view_tax":"Voir le plafond de 8% on-chain ↗","nav.burn":"Burn","nav.security":"Sécurité","nav.connect":"Connecter le wallet","burn.live":"En direct on-chain","burn.h2":"Regardez l'offre fondre, en direct","burn.desc":"1% de la réserve de burn est envoyé à l'adresse morte chaque jour. Les chiffres ci-dessous sont lus directement sur la BNB Chain en temps réel, aucun wallet requis.","burn.k_burned":"Brûlé à jamais","burn.k_vault":"Dans le Burn Vault","burn.k_out":"Hors circulation","burn.k_circ":"En circulation","burn.daily":"🔥 1% brûlé chaque jour","burn.src":"Source : BNB Chain · soldes de l'adresse morte et du contrat Burn Vault. Mise à jour toutes les 30s.","stake.mc_label":"Market cap en direct","stake.goal":"Objectif de déblocage du staking","stake.towards":"du chemin vers le déblocage du staking à 1M$","stake.funded":"💡 L'équipe alimente elle-même la pool de récompenses du staking dès que $BTCN atteint 1 000 000 $ de market cap. Le market cap est lu en direct sur la BNB Chain.","sec.tag":"Sécurité","sec.h2":"Conçu pour être sûr. Vérifiez tout.","sec.desc":"Ne faites confiance à rien, vérifiez vous-même. Chaque point ci-dessous est prouvable on-chain. Cliquez pour vérifier.","sec.lp_h":"Liquidité brûlée à jamais","sec.lp_p":"Les jetons LP ont été envoyés à l'adresse morte. La liquidité ne peut JAMAIS être retirée, pas même par l'équipe. C'est permanent.","sec.vault_h":"Burn Vault","sec.vault_p":"Un contrat dédié qui détient la réserve de burn. Il ne peut QUE envoyer des jetons à l'adresse morte, jamais vendre, jamais retirer. 1% est brûlé chaque jour.","sec.contract_h":"Contrat vérifié","sec.contract_p":"Open-source et vérifié sur BscScan. Pas de mint caché, pas de blacklist, pas de fonction pause, pas de honeypot. Offre fixe de 21 000 000.","sec.tax_h":"Taxe fixe de 8%","sec.tax_p":"La taxe d'achat et de vente est plafonnée à 8% dans le code, elle ne peut jamais dépasser ce seuil. Simple et transparent.","sec.view_lp":"Voir la transaction de burn LP ↗","sec.view_vault":"Voir le Burn Vault ↗","sec.view_contract":"Voir le contrat vérifié ↗","sec.view_dead":"Voir les jetons brûlés (adresse morte) ↗","nav.staking":"Staking","stake.tag":"Staking","stake.h2":"Stakez vos $BTCN, débloqué à 1M$","stake.desc":"Le staking arrive. Dès que Bitcoin New atteint 1 000 000 $ de market cap, les holders pourront bloquer leurs $BTCN et gagner des récompenses.","stake.badge":"🔜 Arrive à 1M$ de market cap","stake.milestone":"Market cap pour débloquer le staking","stake.c1_h":"Bloquez & gagnez","stake.c1_p":"Bloquez vos $BTCN pour une durée définie et gagnez des récompenses passives.","stake.c2_h":"Récompenses pour les holders","stake.c2_p":"Plus vous stakez longtemps et gros, plus vous gagnez.","nav.about":"À propos","nav.tokenomics":"Tokenomics","nav.buy":"Comment acheter","nav.roadmap":"Feuille de route","nav.buybtn":"Acheter $BTCN","hero.lead":"Bitcoin New est le nouveau Bitcoin. Ne ratez pas votre deuxième chance.","hero.buy":"🚀 Acheter sur PancakeSwap","hero.tg":"Rejoindre le Telegram","stat.supply":"Offre totale","stat.chain":"Blockchain","stat.community":"Détenu par la communauté","about.tag":"Qu'est-ce que Bitcoin New ?","about.h2":"La légende, réinventée pour l'ère des memecoins.","about.p1":"Bitcoin a offert au monde l'or numérique. Bitcoin New ($BTCN) reprend cette énergie iconique et l'amène sur BNB Chain, où les transactions sont rapides, les frais minuscules, et la communauté avance à la vitesse des memes.","about.p2":"Nous avons gardé le nombre le plus puissant de la crypto : 21 000 000 d'offre totale, comme l'original. C'est votre deuxième chance d'être tôt sur une histoire Bitcoin.","about.card_h3":"21M d'offre · comme le BTC","about.card_p":"Un hommage à celui qui a tout commencé.","toko.h2":"Simple. Transparent. Fait pour grandir.","toko.desc":"Pas de mécanique compliquée, juste un token équitable avec une structure claire.","toko.tax_label":"Taxe achat & vente","toko.tax_sub":"Un petit 8% sur chaque trade, c'est tout.","toko.c1_p":"Offre totale fixe, un clin d'œil direct au plafond légendaire de 21M du Bitcoin.","toko.c2_h":"Taxe 8%","toko.c2_p":"Un simple 8% à l'achat et à la vente. Rien de caché.","toko.c3_h":"Liquidité verrouillée","toko.c3_p":"LP verrouillée / brûlée au lancement, une base de confiance.","toko.c4_h":"Contrat vérifié","toko.c4_p":"Open-source & vérifié sur BscScan. Pas de mint caché, pas de blacklist.","buy.h2":"Obtenez vos $BTCN en 4 étapes","buy.s1_h":"Obtenez un wallet","buy.s1_p":"Installez MetaMask ou Trust Wallet et réglez-le sur BNB Smart Chain.","buy.s2_h":"Ajoutez du BNB","buy.s2_p":"Achetez du BNB sur un exchange et envoyez-le sur votre wallet.","buy.s3_h":"Connectez-vous à PancakeSwap","buy.s3_p":"Ouvrez PancakeSwap et connectez votre wallet.","buy.s4_h":"Échangez contre des $BTCN","buy.s4_p":"Collez le contrat $BTCN, réglez le slippage à ~9% et échangez. Bienvenue à bord !","ca.tag":"Contrat officiel","ca.h3":"Adresse du contrat $BTCN","ca.code":"Bientôt disponible, déploiement imminent","ca.note":"⚠️ Vérifiez toujours le contrat ici avant d'acheter. Nous ne vous enverrons JAMAIS de message en premier.","road.h2":"Le plan vers la lune 🌕","road.p1_ph":"Phase 1, Lancement","road.p1_h":"Allumage","road.p1_l1":"Site & réseaux en ligne","road.p1_l2":"Contrat déployé & vérifié","road.p1_l3":"Liquidité ajoutée & verrouillée","road.p1_l4":"Fair launch sur PancakeSwap","road.p2_ph":"Phase 2, Croissance","road.p2_h":"La machine marketing","road.p2_l1":"Campagnes influenceurs & KOL","road.p2_l2":"Trending sur DexScreener / DexTools","road.p2_l3":"Concours & giveaways communautaires","road.p2_l4":"1 000+ holders","road.p3_ph":"Phase 3, Expansion","road.p3_h":"Passer à la vitesse supérieure","road.p3_l1":"Listings CoinGecko & CoinMarketCap","road.p3_l2":"Listings sur exchanges (CEX)","road.p3_l3":"Partenariats","road.p3_l4":"$BTCN partout 🚀","final.h2":"Soyez tôt. Soyez Bitcoin New.","final.p":"Le nouveau Bitcoin s'écrit sur BNB Chain, et vous pouvez faire partie du premier chapitre.","final.buy":"🚀 Acheter $BTCN","footer.disc":"$BTCN est un meme token communautaire sur BNB Chain. Rien ici n'est un conseil financier. La crypto est risquée, n'investissez que ce que vous pouvez vous permettre de perdre. Non affilié à Bitcoin ni à aucun autre projet."},
+    "es":{"sec.renounced_h":"Propiedad renunciada","sec.renounced_p":"El propietario del contrato es la dirección cero. Nadie puede cambiar el impuesto, acuñar nuevos tokens ni alterar ninguna regla. El contrato está congelado para siempre.","sec.view_owner":"Verifica owner = 0x000…000 ↗","about.p3":"$BTCN es deflacionario por diseño. Nuestro objetivo es volvernos raros: quemaremos al menos el 90% de todos los tokens con el tiempo, para que el suministro siga reduciéndose y cada $BTCN restante sea más escaso.","toko.base":"En el lanzamiento, los 21.000.000 $BTCN están en circulación, el mismo límite exacto que Bitcoin. A partir de ahí, el suministro solo baja: $BTCN es deflacionario y quemamos tokens con el tiempo para hacerlo raro.","sec.view_tax":"Ver el límite del 8% on-chain ↗","nav.burn":"Burn","nav.security":"Seguridad","nav.connect":"Conectar wallet","burn.live":"En vivo on-chain","burn.h2":"Mira cómo se reduce el suministro, en vivo","burn.desc":"El 1% de la reserva de burn se envía a la dirección muerta cada día. Las cifras de abajo se leen directamente de la BNB Chain en tiempo real, sin wallet.","burn.k_burned":"Quemado para siempre","burn.k_vault":"En el Burn Vault","burn.k_out":"Fuera de circulación","burn.k_circ":"En circulación","burn.daily":"🔥 1% quemado cada día","burn.src":"Fuente: BNB Chain · saldos de la dirección muerta y del contrato Burn Vault. Se actualiza cada 30s.","stake.mc_label":"Market cap en vivo","stake.goal":"Meta para desbloquear staking","stake.towards":"del camino hacia el desbloqueo del staking a 1M$","stake.funded":"💡 El equipo financia la pool de recompensas del staking en cuanto $BTCN alcanza 1.000.000 $ de market cap. El market cap se lee en vivo de la BNB Chain.","sec.tag":"Seguridad","sec.h2":"Hecho para ser seguro. Verifica todo.","sec.desc":"No confíes en nada, compruébalo tú mismo. Cada punto es verificable on-chain. Haz clic para verificar.","sec.lp_h":"Liquidez quemada para siempre","sec.lp_p":"Los tokens LP se enviaron a la dirección muerta. La liquidez NUNCA puede retirarse, ni siquiera por el equipo. Es permanente.","sec.vault_h":"Burn Vault","sec.vault_p":"Un contrato dedicado que guarda la reserva de burn. SOLO puede enviar tokens a la dirección muerta, nunca vender, nunca retirar. Se quema 1% cada día.","sec.contract_h":"Contrato verificado","sec.contract_p":"Código abierto y verificado en BscScan. Sin mint oculto, sin blacklist, sin función de pausa, sin honeypot. Suministro fijo de 21.000.000.","sec.tax_h":"Impuesto fijo del 8%","sec.tax_p":"El impuesto de compra y venta está limitado al 8% en el código, nunca puede subir más. Simple y transparente.","sec.view_lp":"Ver transacción de burn LP ↗","sec.view_vault":"Ver Burn Vault ↗","sec.view_contract":"Ver contrato verificado ↗","sec.view_dead":"Ver tokens quemados (dirección muerta) ↗","nav.staking":"Staking","stake.tag":"Staking","stake.h2":"Haz staking de tus $BTCN, se desbloquea a 1M$","stake.desc":"El staking está en camino. En cuanto Bitcoin New alcance 1.000.000 $ de market cap, los holders podrán bloquear sus $BTCN y ganar recompensas.","stake.badge":"🔜 Llega a 1M$ de market cap","stake.milestone":"Market cap para desbloquear el staking","stake.c1_h":"Bloquea y gana","stake.c1_p":"Bloquea tus $BTCN durante un periodo y gana recompensas pasivas.","stake.c2_h":"Recompensas para holders","stake.c2_p":"Cuanto más tiempo y más cantidad hagas staking, más ganas.","nav.about":"Acerca","nav.tokenomics":"Tokenomics","nav.buy":"Cómo comprar","nav.roadmap":"Hoja de ruta","nav.buybtn":"Comprar $BTCN","hero.lead":"Bitcoin New es el nuevo Bitcoin. No pierdas tu segunda oportunidad.","hero.buy":"🚀 Comprar en PancakeSwap","hero.tg":"Unirse al Telegram","stat.supply":"Suministro total","stat.chain":"Red","stat.community":"De la comunidad","about.tag":"¿Qué es Bitcoin New?","about.h2":"La leyenda, reconstruida para la era de las memecoins.","about.p1":"Bitcoin le dio al mundo el oro digital. Bitcoin New ($BTCN) toma esa energía icónica y la lleva a BNB Chain, donde las transacciones son rápidas, las comisiones mínimas y la comunidad se mueve a la velocidad de los memes.","about.p2":"Mantuvimos el número más poderoso del cripto: 21.000.000 de suministro total, igual que el original. Esta es tu segunda oportunidad de llegar temprano a una historia de Bitcoin.","about.card_h3":"21M de suministro · como BTC","about.card_p":"Un homenaje al que empezó todo.","toko.h2":"Simple. Transparente. Hecho para crecer.","toko.desc":"Sin mecánicas complicadas: solo un token justo con una estructura limpia.","toko.tax_label":"Impuesto compra y venta","toko.tax_sub":"Un pequeño 8% en cada operación, nada más.","toko.c1_p":"Suministro total fijo: un guiño directo al legendario límite de 21M de Bitcoin.","toko.c2_h":"Impuesto 8%","toko.c2_p":"Un simple 8% en compras y ventas. Nada oculto.","toko.c3_h":"Liquidez bloqueada","toko.c3_p":"LP bloqueada / quemada en el lanzamiento: una base en la que confiar.","toko.c4_h":"Contrato verificado","toko.c4_p":"Código abierto y verificado en BscScan. Sin mint oculto, sin lista negra.","buy.h2":"Consigue tus $BTCN en 4 pasos","buy.s1_h":"Consigue una wallet","buy.s1_p":"Instala MetaMask o Trust Wallet y configúralo en BNB Smart Chain.","buy.s2_h":"Añade BNB","buy.s2_p":"Compra BNB en cualquier exchange y envíalo a tu wallet.","buy.s3_h":"Conéctate a PancakeSwap","buy.s3_p":"Abre PancakeSwap y conecta tu wallet.","buy.s4_h":"Cambia por $BTCN","buy.s4_p":"Pega el contrato de $BTCN, ajusta el slippage a ~9% y cambia. ¡Bienvenido a bordo!","ca.tag":"Contrato oficial","ca.h3":"Dirección del contrato $BTCN","ca.code":"Próximamente, desplegando pronto","ca.note":"⚠️ Verifica siempre el contrato aquí antes de comprar. NUNCA te enviaremos un DM primero.","road.h2":"El plan a la luna 🌕","road.p1_ph":"Fase 1, Lanzamiento","road.p1_h":"Ignición","road.p1_l1":"Web y redes en vivo","road.p1_l2":"Contrato desplegado y verificado","road.p1_l3":"Liquidez añadida y bloqueada","road.p1_l4":"Lanzamiento justo en PancakeSwap","road.p2_ph":"Fase 2, Crecimiento","road.p2_h":"La máquina de marketing","road.p2_l1":"Campañas con influencers y KOL","road.p2_l2":"Trending en DexScreener / DexTools","road.p2_l3":"Concursos y giveaways de la comunidad","road.p2_l4":"Más de 1.000 holders","road.p3_ph":"Fase 3, Expansión","road.p3_h":"A lo grande","road.p3_l1":"Listados en CoinGecko y CoinMarketCap","road.p3_l2":"Listados en CEX","road.p3_l3":"Alianzas","road.p3_l4":"$BTCN en todas partes 🚀","final.h2":"Llega temprano. Sé Bitcoin New.","final.p":"El nuevo Bitcoin se está escribiendo en BNB Chain, y puedes ser parte del primer capítulo.","final.buy":"🚀 Comprar $BTCN","footer.disc":"$BTCN es un meme token comunitario en BNB Chain. Nada aquí es asesoramiento financiero. El cripto es arriesgado: invierte solo lo que puedas permitirte perder. No afiliado a Bitcoin ni a ningún otro proyecto."},
+    "zh":{"sec.renounced_h":"所有权已放弃","sec.renounced_p":"合约所有者是零地址。没有人能更改税费、增发代币或修改任何规则。合约已永久冻结。","sec.view_owner":"查看 owner = 0x000…000 ↗","about.p3":"$BTCN 天生通缩。我们的目标是变得稀有：我们将随时间销毁至少 90% 的代币，让供应量不断减少，剩下的每一枚 $BTCN 都更稀缺。","toko.base":"上线时，全部 21,000,000 枚 $BTCN 都在流通，与比特币完全相同的上限。此后供应量只会下降：$BTCN 是通缩的，我们会随时间销毁代币使其稀有。","sec.view_tax":"链上查看 8% 上限 ↗","nav.burn":"销毁","nav.security":"安全","nav.connect":"连接钱包","burn.live":"链上实时","burn.h2":"实时见证供应量减少","burn.desc":"每天都会将销毁储备的 1% 发送到销毁地址。以下数据实时直接读取自 BNB 链无需连接钱包。","burn.k_burned":"永久销毁","burn.k_vault":"销毁金库中","burn.k_out":"流通之外","burn.k_circ":"流通中","burn.daily":"🔥 每天销毁 1%","burn.src":"来源：BNB 链 · 销毁地址与销毁金库合约的余额。每 30 秒更新。","stake.mc_label":"实时市值","stake.goal":"质押解锁目标","stake.towards":"距离 100 万美元质押解锁的进度","stake.funded":"💡 一旦 $BTCN 市值达到 100 万美元，团队将亲自注资质押奖励池。市值实时读取自 BNB 链。","sec.tag":"安全","sec.h2":"为安全而建。一切皆可验证。","sec.desc":"不要轻信自己核实。以下每一点都可在链上验证。点击验证。","sec.lp_h":"流动性永久销毁","sec.lp_p":"LP 代币已发送至销毁地址。流动性永远无法撤出或移除团队也不行。这是永久的。","sec.vault_h":"销毁金库","sec.vault_p":"持有销毁储备的专用合约。它只能将代币发送到销毁地址绝不出售、绝不提取。每天销毁 1%。","sec.contract_h":"已验证合约","sec.contract_p":"开源并在 BscScan 上验证。无隐藏增发、无黑名单、无暂停功能、无蜜罐。固定供应 21,000,000。","sec.tax_h":"固定 8% 税","sec.tax_p":"买卖税在代码中硬性上限为 8%永远无法提高。简单透明。","sec.view_lp":"查看 LP 销毁交易 ↗","sec.view_vault":"查看销毁金库 ↗","sec.view_contract":"查看已验证合约 ↗","sec.view_dead":"查看已销毁代币（销毁地址）↗","nav.staking":"质押","stake.tag":"质押","stake.h2":"质押你的 $BTCN市值 100 万美元解锁","stake.desc":"质押即将上线。一旦 Bitcoin New 市值达到 100 万美元，持有者即可锁定 $BTCN 并赚取奖励。","stake.badge":"🔜 市值 100 万美元时上线","stake.milestone":"解锁质押所需市值","stake.c1_h":"锁定并赚取","stake.c1_p":"将你的 $BTCN 锁定一段时间，赚取被动奖励。","stake.c2_h":"持有者奖励","stake.c2_p":"质押时间越长、金额越大，赚得越多。","nav.about":"关于","nav.tokenomics":"代币经济","nav.buy":"如何购买","nav.roadmap":"路线图","nav.buybtn":"购买 $BTCN","hero.lead":"Bitcoin New 就是新的比特币。别错过你的第二次机会。","hero.buy":"🚀 在 PancakeSwap 购买","hero.tg":"加入 Telegram","stat.supply":"总供应量","stat.chain":"链","stat.community":"社区所有","about.tag":"什么是 Bitcoin New？","about.h2":"传奇，为 meme 币时代重塑。","about.p1":"比特币为世界带来了数字黄金。Bitcoin New（$BTCN）将这股标志性的能量带到 BNB 链交易快速、手续费极低，社区以 meme 的速度前进。","about.p2":"我们保留了加密世界最具力量的数字：2100 万总供应量与原版一致。这是你早期参与一个比特币故事的第二次机会。","about.card_h3":"2100万供应量 · 与 BTC 一样","about.card_p":"向开创一切的它致敬。","toko.h2":"简单。透明。为成长而生。","toko.desc":"没有复杂机制只是一个结构清晰的公平代币。","toko.tax_label":"买卖税","toko.tax_sub":"每笔交易仅 8%就这么简单。","toko.c1_p":"固定总供应量直接致敬比特币传奇的 2100 万上限。","toko.c2_h":"8% 税","toko.c2_p":"买入和卖出均为简单的 8%。没有隐藏。","toko.c3_h":"流动性锁定","toko.c3_p":"LP 在启动时锁定/销毁值得信赖的基础。","toko.c4_h":"已验证合约","toko.c4_p":"开源并在 BscScan 上验证。无隐藏增发，无黑名单。","buy.h2":"4 步获取你的 $BTCN","buy.s1_h":"获取钱包","buy.s1_p":"安装 MetaMask 或 Trust Wallet，并切换到 BNB Smart Chain。","buy.s2_h":"添加 BNB","buy.s2_p":"在任意交易所购买 BNB 并发送到你的钱包。","buy.s3_h":"连接 PancakeSwap","buy.s3_p":"打开 PancakeSwap 并连接你的钱包。","buy.s4_h":"兑换 $BTCN","buy.s4_p":"粘贴 $BTCN 合约，将滑点设为约 9%，然后兑换。欢迎加入！","ca.tag":"官方合约","ca.h3":"$BTCN 合约地址","ca.code":"即将推出即将部署","ca.note":"⚠️ 购买前请务必在此核对合约。我们绝不会主动私信你。","road.h2":"登月计划 🌕","road.p1_ph":"第一阶段, 启动","road.p1_h":"点火","road.p1_l1":"网站和社媒上线","road.p1_l2":"合约部署并验证","road.p1_l3":"添加并锁定流动性","road.p1_l4":"在 PancakeSwap 公平发射","road.p2_ph":"第二阶段, 成长","road.p2_h":"营销机器","road.p2_l1":"网红与 KOL 活动","road.p2_l2":"在 DexScreener / DexTools 上热门","road.p2_l3":"社区竞赛与赠送","road.p2_l4":"1,000+ 持有者","road.p3_ph":"第三阶段, 扩张","road.p3_h":"做大做强","road.p3_l1":"上线 CoinGecko 和 CoinMarketCap","road.p3_l2":"中心化交易所上线","road.p3_l3":"合作伙伴","road.p3_l4":"$BTCN 无处不在 🚀","final.h2":"抢占先机。成为 Bitcoin New。","final.p":"新的比特币正在 BNB 链上书写你可以成为第一章的一部分。","final.buy":"🚀 购买 $BTCN","footer.disc":"$BTCN 是 BNB 链上的社区 meme 代币。此处内容均非财务建议。加密有风险只投入你能承受损失的资金。与比特币或任何其他项目无关。"},
+    "pt":{"sec.renounced_h":"Propriedade renunciada","sec.renounced_p":"O dono do contrato é o endereço zero. Ninguém pode mudar a taxa, emitir novos tokens ou alterar qualquer regra. O contrato está congelado para sempre.","sec.view_owner":"Verificar owner = 0x000…000 ↗","about.p3":"$BTCN é deflacionário por design. Nosso objetivo é nos tornarmos raros: vamos queimar pelo menos 90% de todos os tokens ao longo do tempo, para que a oferta continue diminuindo e cada $BTCN restante fique mais escasso.","toko.base":"No lançamento, todos os 21.000.000 $BTCN estão em circulação, o mesmo limite exato do Bitcoin. A partir daí, a oferta só cai: $BTCN é deflacionário e queimamos tokens ao longo do tempo para torná-lo raro.","sec.view_tax":"Ver o limite de 8% on-chain ↗","nav.burn":"Burn","nav.security":"Segurança","nav.connect":"Conectar carteira","burn.live":"Ao vivo on-chain","burn.h2":"Veja a oferta encolher, ao vivo","burn.desc":"1% da reserva de burn é enviado para o endereço morto todos os dias. Os números abaixo são lidos diretamente da BNB Chain em tempo real, sem carteira.","burn.k_burned":"Queimado para sempre","burn.k_vault":"No Burn Vault","burn.k_out":"Fora de circulação","burn.k_circ":"Em circulação","burn.daily":"🔥 1% queimado todos os dias","burn.src":"Fonte: BNB Chain · saldos do endereço morto e do contrato Burn Vault. Atualiza a cada 30s.","stake.mc_label":"Market cap ao vivo","stake.goal":"Meta de desbloqueio do staking","stake.towards":"do caminho até o desbloqueio do staking em 1M$","stake.funded":"💡 A equipe financia o pool de recompensas do staking assim que $BTCN atinge 1.000.000 $ de market cap. O market cap é lido ao vivo da BNB Chain.","sec.tag":"Segurança","sec.h2":"Feito para ser seguro. Verifique tudo.","sec.desc":"Não confie em nada, verifique você mesmo. Cada ponto é comprovável on-chain. Clique para verificar.","sec.lp_h":"Liquidez queimada para sempre","sec.lp_p":"Os tokens LP foram enviados para o endereço morto. A liquidez NUNCA pode ser retirada, nem mesmo pela equipe. É permanente.","sec.vault_h":"Burn Vault","sec.vault_p":"Um contrato dedicado que guarda a reserva de burn. Ele SÓ pode enviar tokens para o endereço morto, nunca vender, nunca sacar. 1% é queimado todos os dias.","sec.contract_h":"Contrato verificado","sec.contract_p":"Código aberto e verificado na BscScan. Sem mint oculto, sem blacklist, sem função de pausa, sem honeypot. Oferta fixa de 21.000.000.","sec.tax_h":"Taxa fixa de 8%","sec.tax_p":"A taxa de compra e venda tem limite rígido de 8% no código, nunca pode subir acima disso. Simples e transparente.","sec.view_lp":"Ver transação de burn LP ↗","sec.view_vault":"Ver Burn Vault ↗","sec.view_contract":"Ver contrato verificado ↗","sec.view_dead":"Ver tokens queimados (endereço morto) ↗","nav.staking":"Staking","stake.tag":"Staking","stake.h2":"Faça staking dos seus $BTCN, desbloqueado a 1M$","stake.desc":"O staking está a caminho. Assim que a Bitcoin New atingir 1.000.000 $ de market cap, os holders poderão bloquear seus $BTCN e ganhar recompensas.","stake.badge":"🔜 Chega a 1M$ de market cap","stake.milestone":"Market cap para desbloquear o staking","stake.c1_h":"Bloqueie e ganhe","stake.c1_p":"Bloqueie seus $BTCN por um período e ganhe recompensas passivas.","stake.c2_h":"Recompensas para holders","stake.c2_p":"Quanto mais tempo e mais quantidade você fizer staking, mais ganha.","nav.about":"Sobre","nav.tokenomics":"Tokenomics","nav.buy":"Como comprar","nav.roadmap":"Roteiro","nav.buybtn":"Comprar $BTCN","hero.lead":"Bitcoin New é o novo Bitcoin. Não perca a sua segunda chance.","hero.buy":"🚀 Comprar na PancakeSwap","hero.tg":"Entrar no Telegram","stat.supply":"Fornecimento total","stat.chain":"Rede","stat.community":"Da comunidade","about.tag":"O que é Bitcoin New?","about.h2":"A lenda, reconstruída para a era das memecoins.","about.p1":"O Bitcoin deu ao mundo o ouro digital. O Bitcoin New ($BTCN) pega essa energia icônica e a traz para a BNB Chain, onde as transações são rápidas, as taxas minúsculas e a comunidade se move na velocidade dos memes.","about.p2":"Mantivemos o número mais poderoso do cripto: 21.000.000 de fornecimento total, igual ao original. Esta é a sua segunda chance de chegar cedo a uma história de Bitcoin.","about.card_h3":"21M de oferta · como o BTC","about.card_p":"Uma homenagem ao que começou tudo.","toko.h2":"Simples. Transparente. Feito para crescer.","toko.desc":"Sem mecânicas complicadas, apenas um token justo com uma estrutura limpa.","toko.tax_label":"Taxa de compra e venda","toko.tax_sub":"Apenas 8% em cada negociação, só isso.","toko.c1_p":"Fornecimento total fixo, uma referência direta ao lendário limite de 21M do Bitcoin.","toko.c2_h":"Taxa de 8%","toko.c2_p":"Simples 8% nas compras e vendas. Nada escondido.","toko.c3_h":"Liquidez bloqueada","toko.c3_p":"LP bloqueada / queimada no lançamento, uma base confiável.","toko.c4_h":"Contrato verificado","toko.c4_p":"Código aberto e verificado na BscScan. Sem mint oculto, sem blacklist.","buy.h2":"Garanta seus $BTCN em 4 passos","buy.s1_h":"Tenha uma carteira","buy.s1_p":"Instale MetaMask ou Trust Wallet e configure para a BNB Smart Chain.","buy.s2_h":"Adicione BNB","buy.s2_p":"Compre BNB em qualquer exchange e envie para a sua carteira.","buy.s3_h":"Conecte-se à PancakeSwap","buy.s3_p":"Abra a PancakeSwap e conecte a sua carteira.","buy.s4_h":"Troque por $BTCN","buy.s4_p":"Cole o contrato $BTCN, defina o slippage em ~9% e troque. Bem-vindo a bordo!","ca.tag":"Contrato oficial","ca.h3":"Endereço do contrato $BTCN","ca.code":"Em breve, implantando em breve","ca.note":"⚠️ Sempre verifique o contrato aqui antes de comprar. NUNCA enviaremos DM primeiro.","road.h2":"O plano até a lua 🌕","road.p1_ph":"Fase 1, Lançamento","road.p1_h":"Ignição","road.p1_l1":"Site e redes no ar","road.p1_l2":"Contrato implantado e verificado","road.p1_l3":"Liquidez adicionada e bloqueada","road.p1_l4":"Lançamento justo na PancakeSwap","road.p2_ph":"Fase 2, Crescimento","road.p2_h":"A máquina de marketing","road.p2_l1":"Campanhas com influenciadores e KOL","road.p2_l2":"Trending no DexScreener / DexTools","road.p2_l3":"Concursos e giveaways da comunidade","road.p2_l4":"Mais de 1.000 holders","road.p3_ph":"Fase 3, Expansão","road.p3_h":"Indo além","road.p3_l1":"Listagens na CoinGecko e CoinMarketCap","road.p3_l2":"Listagens em CEX","road.p3_l3":"Parcerias","road.p3_l4":"$BTCN em todo lugar 🚀","final.h2":"Chegue cedo. Seja Bitcoin New.","final.p":"O novo Bitcoin está sendo escrito na BNB Chain, e você pode fazer parte do primeiro capítulo.","final.buy":"🚀 Comprar $BTCN","footer.disc":"$BTCN é um meme token comunitário na BNB Chain. Nada aqui é aconselhamento financeiro. Cripto é arriscado, invista apenas o que você pode perder. Não afiliado ao Bitcoin nem a qualquer outro projeto."},
+    "tr":{"sec.renounced_h":"Sahiplik bırakıldı","sec.renounced_p":"Sözleşme sahibi sıfır adrestir. Kimse vergiyi değiştiremez, yeni token basamaz veya herhangi bir kuralı değiştiremez. Sözleşme sonsuza dek donduruldu.","sec.view_owner":"owner = 0x000…000 kontrol et ↗","about.p3":"$BTCN tasarımı gereği deflasyonisttir. Amacımız nadir olmak: zamanla tüm token'ların en az %90'ını yakacağız, böylece arz sürekli azalacak ve kalan her $BTCN daha kıt hale gelecek.","toko.base":"Lansmanda 21.000.000 $BTCN'nin tamamı dolaşımdadır, tıpkı Bitcoin'in sınırı gibi. Oradan sonra arz yalnızca azalır: $BTCN deflasyonisttir ve onu nadir kılmak için zamanla token yakarız.","sec.view_tax":"%8 sınırını zincirde gör ↗","nav.burn":"Yakım","nav.security":"Güvenlik","nav.connect":"Cüzdan bağla","burn.live":"Zincirde canlı","burn.h2":"Arzın küçülmesini izle, canlı","burn.desc":"Yakım rezervinin %1'i her gün ölü adrese gönderilir. Aşağıdaki rakamlar doğrudan BNB Chain'den gerçek zamanlı okunur, cüzdan gerekmez.","burn.k_burned":"Sonsuza dek yakıldı","burn.k_vault":"Burn Vault'ta","burn.k_out":"Dolaşım dışı","burn.k_circ":"Dolaşımda","burn.daily":"🔥 Her gün %1 yakılır","burn.src":"Kaynak: BNB Chain · ölü adres ve Burn Vault sözleşmesi bakiyeleri. 30 saniyede bir güncellenir.","stake.mc_label":"Canlı piyasa değeri","stake.goal":"Staking açılış hedefi","stake.towards":"1M$ staking açılışına giden yolun","stake.funded":"💡 $BTCN 1.000.000 $ piyasa değerine ulaştığı anda ekip staking ödül havuzunu kendisi fonlar. Piyasa değeri BNB Chain'den canlı okunur.","sec.tag":"Güvenlik","sec.h2":"Güvenli olması için inşa edildi. Her şeyi doğrula.","sec.desc":"Hiçbir şeye güvenme, kendin kontrol et. Aşağıdaki her madde zincirde kanıtlanabilir. Doğrulamak için tıkla.","sec.lp_h":"Likidite sonsuza dek yakıldı","sec.lp_p":"LP token'ları ölü adrese gönderildi. Likidite ASLA çekilemez veya kaldırılamaz, ekip bile yapamaz. Bu kalıcıdır.","sec.vault_h":"Burn Vault","sec.vault_p":"Yakım rezervini tutan özel bir sözleşme. SADECE ölü adrese token gönderebilir, asla satamaz, asla çekemez. Her gün %1 yakılır.","sec.contract_h":"Doğrulanmış sözleşme","sec.contract_p":"Açık kaynak ve BscScan'de doğrulanmış. Gizli mint yok, kara liste yok, duraklatma işlevi yok, honeypot yok. Sabit arz 21.000.000.","sec.tax_h":"Sabit %8 vergi","sec.tax_p":"Alım-satım vergisi kodda sabit olarak %8 ile sınırlıdır, asla bunun üzerine çıkamaz. Basit ve şeffaf.","sec.view_lp":"LP yakım işlemini gör ↗","sec.view_vault":"Burn Vault'u gör ↗","sec.view_contract":"Doğrulanmış sözleşmeyi gör ↗","sec.view_dead":"Yakılan token'ları gör (ölü adres) ↗","nav.staking":"Staking","stake.tag":"Staking","stake.h2":"$BTCN'ni stake et, 1M$'da açılıyor","stake.desc":"Staking geliyor. Bitcoin New 1.000.000 $ piyasa değerine ulaştığı anda, sahipler $BTCN'lerini kilitleyip ödül kazanabilecek.","stake.badge":"🔜 1M$ piyasa değerinde geliyor","stake.milestone":"Staking'i açmak için piyasa değeri","stake.c1_h":"Kilitle & kazan","stake.c1_p":"$BTCN'ni belirli bir süre kilitle ve pasif ödüller kazan.","stake.c2_h":"Sahiplere ödüller","stake.c2_p":"Ne kadar uzun ve büyük stake edersen, o kadar çok kazanırsın.","nav.about":"Hakkında","nav.tokenomics":"Tokenomik","nav.buy":"Nasıl alınır","nav.roadmap":"Yol haritası","nav.buybtn":"$BTCN Al","hero.lead":"Bitcoin New yeni Bitcoin'dir. İkinci şansını kaçırma.","hero.buy":"🚀 PancakeSwap'tan al","hero.tg":"Telegram'a katıl","stat.supply":"Toplam arz","stat.chain":"Zincir","stat.community":"Topluluğa ait","about.tag":"Bitcoin New nedir?","about.h2":"Efsane, memecoin çağı için yeniden inşa edildi.","about.p1":"Bitcoin dünyaya dijital altını verdi. Bitcoin New ($BTCN) bu ikonik enerjiyi alıp BNB Chain'e taşıyor, işlemlerin hızlı, ücretlerin çok düşük olduğu ve topluluğun meme hızında ilerlediği yer.","about.p2":"Kriptonun en güçlü sayısını koruduk: 21.000.000 toplam arz, tıpkı orijinali gibi. Bu, bir Bitcoin hikâyesine erken katılmak için ikinci şansın.","about.card_h3":"21M arz · tıpkı BTC gibi","about.card_p":"Her şeyi başlatana bir saygı duruşu.","toko.h2":"Basit. Şeffaf. Büyümek için tasarlandı.","toko.desc":"Karmaşık mekanikler yok, sadece temiz yapıya sahip adil bir token.","toko.tax_label":"Alım & satım vergisi","toko.tax_sub":"Her işlemde küçük bir %8, hepsi bu.","toko.c1_p":"Sabit toplam arz, Bitcoin'in efsanevi 21M sınırına doğrudan bir gönderme.","toko.c2_h":"%8 Vergi","toko.c2_p":"Alım ve satımda basit %8. Gizli bir şey yok.","toko.c3_h":"Likidite kilitli","toko.c3_p":"LP lansmanda kilitlendi / yakıldı, güvenebileceğin bir temel.","toko.c4_h":"Doğrulanmış sözleşme","toko.c4_p":"Açık kaynak ve BscScan'de doğrulanmış. Gizli mint yok, kara liste yok.","buy.h2":"4 adımda $BTCN'ni al","buy.s1_h":"Bir cüzdan edin","buy.s1_p":"MetaMask veya Trust Wallet kur ve BNB Smart Chain'e ayarla.","buy.s2_h":"BNB ekle","buy.s2_p":"Herhangi bir borsadan BNB al ve cüzdanına gönder.","buy.s3_h":"PancakeSwap'a bağlan","buy.s3_p":"PancakeSwap'ı aç ve cüzdanını bağla.","buy.s4_h":"$BTCN ile takas et","buy.s4_p":"$BTCN sözleşmesini yapıştır, kaymayı ~%9 ayarla ve takas et. Aramıza hoş geldin!","ca.tag":"Resmî sözleşme","ca.h3":"$BTCN sözleşme adresi","ca.code":"Çok yakında, yakında dağıtılıyor","ca.note":"⚠️ Almadan önce sözleşmeyi her zaman buradan doğrula. ASLA önce DM atmayız.","road.h2":"Aya giden plan 🌕","road.p1_ph":"Aşama 1, Lansman","road.p1_h":"Ateşleme","road.p1_l1":"Web sitesi & sosyaller yayında","road.p1_l2":"Sözleşme dağıtıldı & doğrulandı","road.p1_l3":"Likidite eklendi & kilitlendi","road.p1_l4":"PancakeSwap'ta adil lansman","road.p2_ph":"Aşama 2, Büyüme","road.p2_h":"Pazarlama makinesi","road.p2_l1":"Influencer & KOL kampanyaları","road.p2_l2":"DexScreener / DexTools'ta trend","road.p2_l3":"Topluluk yarışmaları & çekilişler","road.p2_l4":"1.000+ sahip","road.p3_ph":"Aşama 3, Genişleme","road.p3_h":"Büyümek","road.p3_l1":"CoinGecko & CoinMarketCap listelemeleri","road.p3_l2":"CEX listelemeleri","road.p3_l3":"Ortaklıklar","road.p3_l4":"Her yerde $BTCN 🚀","final.h2":"Erken ol. Bitcoin New ol.","final.p":"Yeni Bitcoin BNB Chain'de yazılıyor, ve ilk bölümün parçası olabilirsin.","final.buy":"🚀 $BTCN Al","footer.disc":"$BTCN, BNB Chain üzerinde bir topluluk meme tokenıdır. Buradaki hiçbir şey finansal tavsiye değildir. Kripto risklidir, yalnızca kaybetmeyi göze alabileceğinizi yatırın. Bitcoin veya başka bir projeyle bağlantılı değildir."},
+    "hi":{"sec.renounced_h":"ओनरशिप त्याग दी गई","sec.renounced_p":"कॉन्ट्रैक्ट का मालिक ज़ीरो एड्रेस है। कोई भी टैक्स बदल नहीं सकता, नए टोकन मिंट नहीं कर सकता, या कोई नियम नहीं बदल सकता। कॉन्ट्रैक्ट हमेशा के लिए फ्रीज़ है।","sec.view_owner":"owner = 0x000…000 जांचें ↗","about.p3":"$BTCN स्वभाव से डिफ्लेशनरी है। हमारा लक्ष्य दुर्लभ बनना है: हम समय के साथ सभी टोकन का कम से कम 90% बर्न करेंगे, ताकि सप्लाई लगातार घटती रहे और बचा हुआ हर $BTCN और दुर्लभ हो जाए।","toko.base":"लॉन्च पर, सभी 21,000,000 $BTCN सर्कुलेशन में हैं, बिल्कुल Bitcoin जैसी सीमा। वहां से, सप्लाई केवल घटती है: $BTCN डिफ्लेशनरी है और हम इसे दुर्लभ बनाने के लिए समय के साथ टोकन बर्न करते हैं।","sec.view_tax":"8% की सीमा ऑन-चेन देखें ↗","nav.burn":"बर्न","nav.security":"सुरक्षा","nav.connect":"वॉलेट कनेक्ट करें","burn.live":"ऑन-चेन लाइव","burn.h2":"सप्लाई को घटते देखें, लाइव","burn.desc":"बर्न रिज़र्व का 1% हर दिन डेड एड्रेस पर भेजा जाता है। नीचे के आंकड़े सीधे BNB Chain से रियल-टाइम में पढ़े जाते हैं, वॉलेट की ज़रूरत नहीं।","burn.k_burned":"हमेशा के लिए बर्न","burn.k_vault":"बर्न वॉल्ट में","burn.k_out":"सर्कुलेशन के बाहर","burn.k_circ":"सर्कुलेशन में","burn.daily":"🔥 हर दिन 1% बर्न","burn.src":"स्रोत: BNB Chain · डेड एड्रेस और बर्न वॉल्ट कॉन्ट्रैक्ट के बैलेंस। हर 30 सेकंड में अपडेट।","stake.mc_label":"लाइव मार्केट कैप","stake.goal":"स्टेकिंग अनलॉक लक्ष्य","stake.towards":"$1M स्टेकिंग अनलॉक तक का रास्ता","stake.funded":"💡 जैसे ही $BTCN $1,000,000 मार्केट कैप पर पहुंचेगा, टीम खुद स्टेकिंग रिवॉर्ड पूल को फंड करेगी। मार्केट कैप BNB Chain से लाइव पढ़ा जाता है।","sec.tag":"सुरक्षा","sec.h2":"सुरक्षित बनाया गया। सब कुछ जांचें।","sec.desc":"किसी पर भरोसा न करें, खुद जांचें। नीचे का हर बिंदु ऑन-चेन प्रमाणित है। जांचने के लिए क्लिक करें।","sec.lp_h":"लिक्विडिटी हमेशा के लिए बर्न","sec.lp_p":"LP टोकन डेड एड्रेस पर भेजे गए। लिक्विडिटी कभी नहीं निकाली जा सकती, टीम भी नहीं। यह स्थायी है।","sec.vault_h":"बर्न वॉल्ट","sec.vault_p":"बर्न रिज़र्व रखने वाला एक समर्पित कॉन्ट्रैक्ट। यह केवल डेड एड्रेस पर टोकन भेज सकता है, कभी बेच नहीं सकता, निकाल नहीं सकता। हर दिन 1% बर्न होता है।","sec.contract_h":"सत्यापित कॉन्ट्रैक्ट","sec.contract_p":"ओपन-सोर्स और BscScan पर सत्यापित। कोई छिपा मिंट नहीं, कोई ब्लैकलिस्ट नहीं, कोई पॉज़ फ़ंक्शन नहीं, कोई हनीपॉट नहीं। निश्चित सप्लाई 21,000,000।","sec.tax_h":"निश्चित 8% टैक्स","sec.tax_p":"खरीद-बिक्री टैक्स कोड में 8% पर हार्ड-कैप है, इससे ऊपर कभी नहीं बढ़ सकता। सरल और पारदर्शी।","sec.view_lp":"LP बर्न ट्रांज़ैक्शन देखें ↗","sec.view_vault":"बर्न वॉल्ट देखें ↗","sec.view_contract":"सत्यापित कॉन्ट्रैक्ट देखें ↗","sec.view_dead":"बर्न किए टोकन देखें (डेड एड्रेस) ↗","nav.staking":"स्टेकिंग","stake.tag":"स्टेकिंग","stake.h2":"अपने $BTCN स्टेक करें, $1M पर अनलॉक","stake.desc":"स्टेकिंग आ रहा है। जैसे ही Bitcoin New $1,000,000 मार्केट कैप पर पहुंचेगा, होल्डर अपने $BTCN लॉक करके रिवॉर्ड कमा सकेंगे।","stake.badge":"🔜 $1M मार्केट कैप पर आ रहा है","stake.milestone":"स्टेकिंग अनलॉक करने के लिए मार्केट कैप","stake.c1_h":"लॉक करें और कमाएं","stake.c1_p":"अपने $BTCN को एक निश्चित अवधि के लिए लॉक करें और पैसिव रिवॉर्ड कमाएं।","stake.c2_h":"होल्डर्स के लिए रिवॉर्ड","stake.c2_p":"जितना लंबा और बड़ा स्टेक करेंगे, उतना अधिक कमाएंगे।","nav.about":"परिचय","nav.tokenomics":"टोकनॉमिक्स","nav.buy":"कैसे खरीदें","nav.roadmap":"रोडमैप","nav.buybtn":"$BTCN खरीदें","hero.lead":"Bitcoin New नया Bitcoin है। अपना दूसरा मौका मत चूकिए।","hero.buy":"🚀 PancakeSwap पर खरीदें","hero.tg":"Telegram जॉइन करें","stat.supply":"कुल आपूर्ति","stat.chain":"चेन","stat.community":"समुदाय के स्वामित्व में","about.tag":"Bitcoin New क्या है?","about.h2":"वह दिग्गज, मीमकॉइन युग के लिए फिर से बनाया गया।","about.p1":"Bitcoin ने दुनिया को डिजिटल सोना दिया। Bitcoin New ($BTCN) उसी प्रतिष्ठित ऊर्जा को BNB Chain पर लाता है, जहाँ लेनदेन तेज़ हैं, फीस बहुत कम है, और समुदाय मीम की रफ़्तार से चलता है।","about.p2":"हमने क्रिप्टो का सबसे शक्तिशाली नंबर रखा: 21,000,000 कुल आपूर्ति, बिल्कुल असली की तरह। यह एक Bitcoin कहानी में जल्दी शामिल होने का आपका दूसरा मौका है।","about.card_h3":"21M आपूर्ति · BTC की तरह","about.card_p":"उस की श्रद्धांजलि जिसने सब शुरू किया।","toko.h2":"सरल। पारदर्शी। बढ़ने के लिए बना।","toko.desc":"कोई जटिल तंत्र नहीं, बस एक साफ़ संरचना वाला निष्पक्ष टोकन।","toko.tax_label":"खरीद और बिक्री टैक्स","toko.tax_sub":"हर ट्रेड पर बस 8%, इतना ही।","toko.c1_p":"निश्चित कुल आपूर्ति, Bitcoin की प्रसिद्ध 21M सीमा को सीधा सम्मान।","toko.c2_h":"8% टैक्स","toko.c2_p":"खरीद और बिक्री पर साधारण 8%। कुछ भी छिपा नहीं।","toko.c3_h":"लिक्विडिटी लॉक","toko.c3_p":"लॉन्च पर LP लॉक / बर्न, एक भरोसेमंद नींव।","toko.c4_h":"सत्यापित कॉन्ट्रैक्ट","toko.c4_p":"ओपन-सोर्स और BscScan पर सत्यापित। कोई छिपा मिंट नहीं, कोई ब्लैकलिस्ट नहीं।","buy.h2":"4 कदम में अपने $BTCN पाएं","buy.s1_h":"एक वॉलेट लें","buy.s1_p":"MetaMask या Trust Wallet इंस्टॉल करें और इसे BNB Smart Chain पर सेट करें।","buy.s2_h":"BNB जोड़ें","buy.s2_p":"किसी भी एक्सचेंज से BNB खरीदें और अपने वॉलेट में भेजें।","buy.s3_h":"PancakeSwap से कनेक्ट करें","buy.s3_p":"PancakeSwap खोलें और अपना वॉलेट कनेक्ट करें।","buy.s4_h":"$BTCN के लिए स्वैप करें","buy.s4_p":"$BTCN कॉन्ट्रैक्ट पेस्ट करें, स्लिपेज ~9% सेट करें और स्वैप करें। स्वागत है!","ca.tag":"आधिकारिक कॉन्ट्रैक्ट","ca.h3":"$BTCN कॉन्ट्रैक्ट पता","ca.code":"जल्द आ रहा है, शीघ्र तैनाती","ca.note":"⚠️ खरीदने से पहले हमेशा यहाँ कॉन्ट्रैक्ट जाँचें। हम कभी पहले DM नहीं करेंगे।","road.h2":"चाँद तक का प्लान 🌕","road.p1_ph":"चरण 1, लॉन्च","road.p1_h":"इग्निशन","road.p1_l1":"वेबसाइट और सोशल लाइव","road.p1_l2":"कॉन्ट्रैक्ट तैनात और सत्यापित","road.p1_l3":"लिक्विडिटी जोड़ी और लॉक","road.p1_l4":"PancakeSwap पर फेयर लॉन्च","road.p2_ph":"चरण 2, वृद्धि","road.p2_h":"मार्केटिंग मशीन","road.p2_l1":"इन्फ्लुएंसर और KOL अभियान","road.p2_l2":"DexScreener / DexTools पर ट्रेंडिंग","road.p2_l3":"कम्युनिटी प्रतियोगिता और गिववे","road.p2_l4":"1,000+ होल्डर","road.p3_ph":"चरण 3, विस्तार","road.p3_h":"बड़ा होना","road.p3_l1":"CoinGecko और CoinMarketCap लिस्टिंग","road.p3_l2":"CEX लिस्टिंग","road.p3_l3":"साझेदारियाँ","road.p3_l4":"हर जगह $BTCN 🚀","final.h2":"जल्दी आएं। Bitcoin New बनें।","final.p":"नया Bitcoin BNB Chain पर लिखा जा रहा है, और आप पहले अध्याय का हिस्सा बन सकते हैं।","final.buy":"🚀 $BTCN खरीदें","footer.disc":"$BTCN, BNB Chain पर एक कम्युनिटी मीम टोकन है। यहाँ कुछ भी वित्तीय सलाह नहीं है। क्रिप्टो जोखिम भरा है, उतना ही निवेश करें जितना आप खो सकते हैं। Bitcoin या किसी अन्य प्रोजेक्ट से संबद्ध नहीं।"},
+    "ja":{"sec.renounced_h":"オーナーシップ放棄済み","sec.renounced_p":"コントラクトのオーナーはゼロアドレスです。誰も税率を変更したり、新しいトークンを発行したり、ルールを変更したりできません。コントラクトは永久に凍結されています。","sec.view_owner":"owner = 0x000…000 を確認 ↗","about.p3":"$BTCN は設計上デフレ型です。私たちの目標は希少になること。時間をかけて全トークンの少なくとも90%をバーンし、供給を減らし続け、残る $BTCN をより希少にします。","toko.base":"ローンチ時、21,000,000 $BTCN のすべてが流通しており、ビットコインとまったく同じ上限です。そこから供給は減る一方。$BTCN はデフレ型で、希少にするため時間をかけてトークンをバーンします。","sec.view_tax":"8%上限をオンチェーンで見る ↗","nav.burn":"バーン","nav.security":"セキュリティ","nav.connect":"ウォレット接続","burn.live":"オンチェーン・ライブ","burn.h2":"供給が減るのをライブで見る","burn.desc":"バーンリザーブの1%が毎日デッドアドレスへ送られます。下の数値は BNB チェーンからリアルタイムで直接読み取っていますウォレット不要。","burn.k_burned":"永久にバーン","burn.k_vault":"バーンボールト内","burn.k_out":"流通外","burn.k_circ":"流通中","burn.daily":"🔥 毎日1%バーン","burn.src":"ソース：BNB チェーン · デッドアドレスとバーンボールト契約の残高。30秒ごとに更新。","stake.mc_label":"ライブ時価総額","stake.goal":"ステーキング解放の目標","stake.towards":"100万ドルのステーキング解放までの進捗","stake.funded":"💡 $BTCN が時価総額100万ドルに達した瞬間、チームが自らステーキング報酬プールに資金を投入します。時価総額は BNB チェーンからライブで読み取ります。","sec.tag":"セキュリティ","sec.h2":"安全に作られています。すべて検証を。","sec.desc":"何も信用せず、自分で確認を。下の各項目はオンチェーンで検証可能。クリックして確認。","sec.lp_h":"流動性を永久にバーン","sec.lp_p":"LPトークンはデッドアドレスへ送られました。流動性は決して引き出せませんチームでも不可能。これは永久です。","sec.vault_h":"バーンボールト","sec.vault_p":"バーンリザーブを保有する専用契約。デッドアドレスへトークンを送ることしかできません売却も引き出しも不可。毎日1%バーン。","sec.contract_h":"検証済みコントラクト","sec.contract_p":"オープンソースで BscScan にて検証済み。隠しミントなし、ブラックリストなし、一時停止機能なし、ハニーポットなし。固定供給21,000,000。","sec.tax_h":"固定8%税","sec.tax_p":"売買税はコード内で8%にハードキャップそれ以上は決して上げられません。シンプルで透明。","sec.view_lp":"LPバーン取引を見る ↗","sec.view_vault":"バーンボールトを見る ↗","sec.view_contract":"検証済みコントラクトを見る ↗","sec.view_dead":"バーン済みトークンを見る（デッドアドレス）↗","nav.staking":"ステーキング","stake.tag":"ステーキング","stake.h2":"$BTCN をステーク時価総額100万ドルで解放","stake.desc":"ステーキングは近日公開。Bitcoin New が時価総額100万ドルに達した瞬間、ホルダーは $BTCN をロックして報酬を獲得できます。","stake.badge":"🔜 時価総額100万ドルで登場","stake.milestone":"ステーキング解放に必要な時価総額","stake.c1_h":"ロックして稼ぐ","stake.c1_p":"$BTCN を一定期間ロックして、受動的な報酬を獲得。","stake.c2_h":"ホルダーへの報酬","stake.c2_p":"ステーク期間が長く、量が多いほど、報酬も増えます。","nav.about":"概要","nav.tokenomics":"トークノミクス","nav.buy":"購入方法","nav.roadmap":"ロードマップ","nav.buybtn":"$BTCN を購入","hero.lead":"Bitcoin New は新しいビットコインです。2度目のチャンスを逃すな。","hero.buy":"🚀 PancakeSwap で購入","hero.tg":"Telegram に参加","stat.supply":"総供給量","stat.chain":"チェーン","stat.community":"コミュニティ所有","about.tag":"Bitcoin New とは？","about.h2":"伝説を、ミームコイン時代に再構築。","about.p1":"ビットコインは世界にデジタルゴールドをもたらしました。Bitcoin New（$BTCN）はその象徴的なエネルギーを BNB チェーンへ取引は速く、手数料はごくわずか、コミュニティはミームの速さで動きます。","about.p2":"私たちは暗号資産で最も強力な数字を守りました。総供給量 2,100 万オリジナルと同じです。これは、ビットコインの物語に早く乗る2度目のチャンスです。","about.card_h3":"2100万供給 · BTCと同じ","about.card_p":"すべてを始めた存在へのオマージュ。","toko.h2":"シンプル。透明。成長のために。","toko.desc":"複雑な仕組みはなしクリーンな構造の公正なトークンです。","toko.tax_label":"売買税","toko.tax_sub":"各取引でわずか8%それだけ。","toko.c1_p":"固定の総供給量ビットコインの伝説的な2100万上限への直接のオマージュ。","toko.c2_h":"8% の税","toko.c2_p":"購入・売却ともにシンプルな8%。隠し事はありません。","toko.c3_h":"流動性ロック","toko.c3_p":"ローンチ時にLPをロック／バーン信頼できる基盤。","toko.c4_h":"検証済みコントラクト","toko.c4_p":"オープンソースで BscScan にて検証済み。隠しミントなし、ブラックリストなし。","buy.h2":"4ステップで $BTCN を手に入れよう","buy.s1_h":"ウォレットを用意","buy.s1_p":"MetaMask か Trust Wallet をインストールし、BNB スマートチェーンに設定。","buy.s2_h":"BNB を追加","buy.s2_p":"任意の取引所で BNB を購入し、ウォレットへ送金。","buy.s3_h":"PancakeSwap に接続","buy.s3_p":"PancakeSwap を開いてウォレットを接続。","buy.s4_h":"$BTCN にスワップ","buy.s4_p":"$BTCN コントラクトを貼り付け、スリッページを約9%に設定してスワップ。ようこそ！","ca.tag":"公式コントラクト","ca.h3":"$BTCN コントラクトアドレス","ca.code":"近日公開まもなくデプロイ","ca.note":"⚠️ 購入前に必ずここで契約を確認してください。こちらから最初に DM を送ることは絶対にありません。","road.h2":"月への計画 🌕","road.p1_ph":"フェーズ1, ローンチ","road.p1_h":"点火","road.p1_l1":"サイト・SNS 公開","road.p1_l2":"コントラクトのデプロイと検証","road.p1_l3":"流動性の追加とロック","road.p1_l4":"PancakeSwap でフェアローンチ","road.p2_ph":"フェーズ2, 成長","road.p2_h":"マーケティングマシン","road.p2_l1":"インフルエンサー・KOL 施策","road.p2_l2":"DexScreener／DexTools でトレンド入り","road.p2_l3":"コミュニティのコンテストとギブアウェイ","road.p2_l4":"1,000人以上のホルダー","road.p3_ph":"フェーズ3, 拡大","road.p3_h":"さらなる飛躍","road.p3_l1":"CoinGecko・CoinMarketCap 掲載","road.p3_l2":"CEX 上場","road.p3_l3":"パートナーシップ","road.p3_l4":"どこでも $BTCN 🚀","final.h2":"早く来て。Bitcoin New になろう。","final.p":"新しいビットコインが BNB チェーンで綴られていますあなたも第一章の一員になれます。","final.buy":"🚀 $BTCN を購入","footer.disc":"$BTCN は BNB チェーン上のコミュニティ・ミームトークンです。本サイトの内容は投資助言ではありません。暗号資産はリスクを伴います失ってもよい額だけを投資してください。ビットコインやその他のプロジェクトとは無関係です。"},
+    "ru":{"sec.renounced_h":"Владение отозвано","sec.renounced_p":"Владелец контракта — нулевой адрес. Никто не может изменить налог, выпустить новые токены или поменять правила. Контракт заморожен навсегда.","sec.view_owner":"Проверить owner = 0x000…000 ↗","about.p3":"$BTCN дефляционный по своей сути. Наша цель: стать редкими. Со временем мы сожжём не менее 90% всех токенов, чтобы объём постоянно сокращался, а каждый оставшийся $BTCN становился реже.","toko.base":"На старте все 21 000 000 $BTCN находятся в обращении, тот же лимит, что и у биткойна. Дальше объём только снижается: $BTCN дефляционный, и мы сжигаем токены со временем, чтобы сделать его редким.","sec.view_tax":"Посмотреть предел 8% в сети ↗","nav.burn":"Сжигание","nav.security":"Безопасность","nav.connect":"Подключить кошелёк","burn.live":"В сети в реальном времени","burn.h2":"Смотрите, как сокращается объём, в реальном времени","burn.desc":"1% резерва сжигания отправляется на мёртвый адрес каждый день. Цифры ниже читаются напрямую из BNB Chain в реальном времени, без кошелька.","burn.k_burned":"Сожжено навсегда","burn.k_vault":"В Burn Vault","burn.k_out":"Вне обращения","burn.k_circ":"В обращении","burn.daily":"🔥 1% сжигается каждый день","burn.src":"Источник: BNB Chain · балансы мёртвого адреса и контракта Burn Vault. Обновление каждые 30с.","stake.mc_label":"Капитализация в реальном времени","stake.goal":"Цель разблокировки стейкинга","stake.towards":"пути к разблокировке стейкинга на $1M","stake.funded":"💡 Команда сама пополняет пул наград стейкинга, как только $BTCN достигает капитализации $1 000 000. Капитализация читается в реальном времени из BNB Chain.","sec.tag":"Безопасность","sec.h2":"Создано безопасным. Проверяйте всё.","sec.desc":"Не верьте на слово, проверьте сами. Каждый пункт ниже доказуем в сети. Нажмите, чтобы проверить.","sec.lp_h":"Ликвидность сожжена навсегда","sec.lp_p":"Токены LP отправлены на мёртвый адрес. Ликвидность НИКОГДА нельзя вывести, даже команде. Это навсегда.","sec.vault_h":"Burn Vault","sec.vault_p":"Специальный контракт, хранящий резерв сжигания. Он может ТОЛЬКО отправлять токены на мёртвый адрес, никогда не продавать и не выводить. 1% сжигается каждый день.","sec.contract_h":"Проверенный контракт","sec.contract_p":"Открытый код и проверен на BscScan. Без скрытого минта, без чёрного списка, без функции паузы, без ханипота. Фиксированный объём 21 000 000.","sec.tax_h":"Фиксированный налог 8%","sec.tax_p":"Налог на покупку и продажу жёстко ограничен 8% в коде, его нельзя поднять выше. Просто и прозрачно.","sec.view_lp":"Посмотреть транзакцию сжигания LP ↗","sec.view_vault":"Посмотреть Burn Vault ↗","sec.view_contract":"Посмотреть проверенный контракт ↗","sec.view_dead":"Посмотреть сожжённые токены (мёртвый адрес) ↗","nav.staking":"Стейкинг","stake.tag":"Стейкинг","stake.h2":"Стейкайте $BTCN, открывается на $1M","stake.desc":"Стейкинг уже в пути. Как только Bitcoin New достигнет капитализации $1 000 000, держатели смогут заблокировать свои $BTCN и получать награды.","stake.badge":"🔜 Появится на $1M капитализации","stake.milestone":"Капитализация для разблокировки стейкинга","stake.c1_h":"Блокируй и зарабатывай","stake.c1_p":"Заблокируйте $BTCN на определённый срок и получайте пассивный доход.","stake.c2_h":"Награды для держателей","stake.c2_p":"Чем дольше и больше вы стейкаете, тем больше зарабатываете.","nav.about":"О проекте","nav.tokenomics":"Токеномика","nav.buy":"Как купить","nav.roadmap":"Дорожная карта","nav.buybtn":"Купить $BTCN","hero.lead":"Bitcoin New, это новый биткойн. Не упустите свой второй шанс.","hero.buy":"🚀 Купить на PancakeSwap","hero.tg":"Вступить в Telegram","stat.supply":"Общий объём","stat.chain":"Сеть","stat.community":"Принадлежит сообществу","about.tag":"Что такое Bitcoin New?","about.h2":"Легенда, созданная заново для эпохи мемкоинов.","about.p1":"Биткойн подарил миру цифровое золото. Bitcoin New ($BTCN) берёт эту культовую энергию и переносит её в BNB Chain, где транзакции быстрые, комиссии крошечные, а сообщество движется со скоростью мемов.","about.p2":"Мы сохранили самое мощное число в крипте: 21 000 000 общего объёма, как у оригинала. Это ваш второй шанс оказаться в начале истории Bitcoin.","about.card_h3":"21M объём · как у BTC","about.card_p":"Дань уважения тому, кто всё начал.","toko.h2":"Просто. Прозрачно. Создано для роста.","toko.desc":"Никаких сложных механик, просто честный токен с понятной структурой.","toko.tax_label":"Налог на покупку и продажу","toko.tax_sub":"Небольшие 8% с каждой сделки, и всё.","toko.c1_p":"Фиксированный общий объём, прямая отсылка к легендарному лимиту биткойна в 21 млн.","toko.c2_h":"Налог 8%","toko.c2_p":"Простые 8% на покупку и продажу. Ничего скрытого.","toko.c3_h":"Ликвидность заблокирована","toko.c3_p":"LP заблокирован / сожжён на старте, надёжная основа.","toko.c4_h":"Проверенный контракт","toko.c4_p":"Открытый код и проверен на BscScan. Без скрытого минта и чёрного списка.","buy.h2":"Получите $BTCN за 4 шага","buy.s1_h":"Заведите кошелёк","buy.s1_p":"Установите MetaMask или Trust Wallet и переключите на BNB Smart Chain.","buy.s2_h":"Добавьте BNB","buy.s2_p":"Купите BNB на любой бирже и отправьте в кошелёк.","buy.s3_h":"Подключитесь к PancakeSwap","buy.s3_p":"Откройте PancakeSwap и подключите кошелёк.","buy.s4_h":"Обменяйте на $BTCN","buy.s4_p":"Вставьте контракт $BTCN, установите проскальзывание ~9% и обменяйте. Добро пожаловать!","ca.tag":"Официальный контракт","ca.h3":"Адрес контракта $BTCN","ca.code":"Скоро, развёртывание в ближайшее время","ca.note":"⚠️ Всегда проверяйте контракт здесь перед покупкой. Мы НИКОГДА не пишем первыми.","road.h2":"План до луны 🌕","road.p1_ph":"Фаза 1, Запуск","road.p1_h":"Старт","road.p1_l1":"Сайт и соцсети запущены","road.p1_l2":"Контракт развёрнут и проверен","road.p1_l3":"Ликвидность добавлена и заблокирована","road.p1_l4":"Честный запуск на PancakeSwap","road.p2_ph":"Фаза 2, Рост","road.p2_h":"Маркетинговая машина","road.p2_l1":"Кампании с инфлюенсерами и KOL","road.p2_l2":"В трендах DexScreener / DexTools","road.p2_l3":"Конкурсы и розыгрыши для сообщества","road.p2_l4":"1 000+ держателей","road.p3_ph":"Фаза 3, Расширение","road.p3_h":"Выход на новый уровень","road.p3_l1":"Листинги на CoinGecko и CoinMarketCap","road.p3_l2":"Листинги на CEX","road.p3_l3":"Партнёрства","road.p3_l4":"$BTCN повсюду 🚀","final.h2":"Будь первым. Будь Bitcoin New.","final.p":"Новый биткойн пишется в BNB Chain, и вы можете стать частью первой главы.","final.buy":"🚀 Купить $BTCN","footer.disc":"$BTCN, это общественный мем-токен в BNB Chain. Ничто здесь не является финансовым советом. Крипта рискованна, вкладывайте только то, что можете позволить себе потерять. Не связан с Bitcoin или любым другим проектом."}
   };
+  var nodes=document.querySelectorAll('[data-i18n]');
+  var EN={};nodes.forEach(function(n){EN[n.getAttribute('data-i18n')]=n.textContent;});
+  function apply(l){nodes.forEach(function(n){var k=n.getAttribute('data-i18n');var v=(l==='en')?EN[k]:(T[l]&&T[l][k]);if(v!=null)n.textContent=v;});document.documentElement.lang=l;try{localStorage.setItem('btcn_lang',l);}catch(e){}}
+  var sel=document.getElementById('langsel');
+  var saved='en';try{saved=localStorage.getItem('btcn_lang')||'en';}catch(e){}
+  if(!T[saved]&&saved!=='en')saved='en';
+  sel.value=saved;apply(saved);
+  sel.addEventListener('change',function(){apply(this.value);});
+})();
+</script>
 
-  function $(id){return document.getElementById(id);}
-  function get(k){try{return localStorage.getItem(k);}catch(e){return null;}}
-  function put(k,v){try{localStorage.setItem(k,v);}catch(e){}}
-  var lang=get("btcn.lang")||((navigator.language||"en").slice(0,2)==="fr"?"fr":"en");
-  var live=null, mcap=null;
-  function tr(k){return (T[lang]&&T[lang][k])||T.en[k]||k;}
-  function num(n){return Math.round(n).toLocaleString(lang==="fr"?"fr-FR":"en-US");}
-  function pc(x){return x.toLocaleString(lang==="fr"?"fr-FR":"en-US",{minimumFractionDigits:1,maximumFractionDigits:1})+(lang==="fr"?" %":"%");}
-  function paint(){
-    var d=live||{dead:20340979,lp:99.825};
-    $("vBurned").textContent=num(d.dead);
-    $("vPct").textContent=pc(d.dead/SUPPLY*100);
-    $("vCirc").textContent=num(SUPPLY-d.dead);
-    $("vLp").textContent=pc(d.lp);
-    $("meter").style.width=(d.dead/SUPPLY*100).toFixed(1)+"%";
-    $("liveNote").textContent=tr(live?"liveOk":"liveStatic");
-    $("stkMc").textContent=mcap===null?"…":"$"+Math.round(mcap).toLocaleString("en-US");
-    $("stkBar").style.width=(mcap===null?0:Math.max(0.5,Math.min(100,mcap/10000))).toFixed(2)+"%";
-    $("stkNote").textContent=tr(mcap===null?"stkNoteOff":"stkNote");
+<script>
+/* ============ Bitcoin New, live on-chain data + wallet connect ============ */
+(function(){
+  var TOKEN="0x5f0D55D366E0D1F37Ab7e150b989048b24DFc2ad";
+  var PAIR ="0x0820D24f1ecd6E4dd88E899e31DB066d016155CA";
+  var VAULT="0x72672bA9772275797F421F01464c80c38Fc3600c";
+  var DEAD ="0x000000000000000000000000000000000000dEaD";
+  var WBNB ="0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c";
+  var SUPPLY=21000000;                 // offre fixe (pas de mint)
+  var RPCS=[
+    "https://bsc-dataseed.bnbchain.org",
+    "https://bsc-dataseed1.defibit.io",
+    "https://bsc.publicnode.com",
+    "https://binance.llamarpc.com",
+    "https://bsc-dataseed2.bnbchain.org",
+    "https://bsc-dataseed1.ninicoin.io"
+  ];
+
+  function pad(a){return a.toLowerCase().replace(/^0x/,'').padStart(64,'0');}
+  function ethCall(to,data){
+    var i=0;
+    return new Promise(function(resolve,reject){
+      (function next(){
+        if(i>=RPCS.length){reject(new Error('rpc'));return;}
+        var url=RPCS[i++];
+        fetch(url,{method:'POST',headers:{'content-type':'application/json'},
+          body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_call",params:[{to:to,data:data},"latest"]})})
+          .then(function(r){return r.json();})
+          .then(function(j){ if(j&&j.result&&j.result.length>2){resolve(j.result);} else {next();} })
+          .catch(function(){next();});
+      })();
+    });
   }
-  function applyLang(){
-    document.documentElement.lang=lang;
-    var n=document.querySelectorAll("[data-i18n]");
-    for(var i=0;i<n.length;i++) n[i].textContent=tr(n[i].getAttribute("data-i18n"));
-    $("langBtn").textContent=lang==="fr"?"EN":"FR";
-    paint();
+  function big(hex){ try{return BigInt(hex);}catch(e){return 0n;} }
+  function toNum(b){ return Number(b)/1e18; }           // 18 décimales -> float
+  function tok(n){ return Math.round(n).toLocaleString('en-US'); }
+  function usd(n){
+    if(!isFinite(n)||n<=0) return "…";
+    if(n>=1e6) return "$"+(n/1e6).toFixed(2)+"M";
+    if(n>=1e3) return "$"+(n/1e3).toFixed(1)+"K";
+    return "$"+n.toFixed(2);
   }
-  $("langBtn").addEventListener("click",function(){lang=lang==="fr"?"en":"fr";put("btcn.lang",lang);applyLang();});
+  function set(id,v){var el=document.getElementById(id);if(el)el.textContent=v;}
 
-  $("copyBtn").addEventListener("click",function(){
-    var b=$("copyBtn");
-    function ok(){b.textContent=tr("copied");setTimeout(function(){b.textContent=tr("copy");},1500);}
-    function sel(){var r=document.createRange();r.selectNodeContents($("ca"));var s=getSelection();s.removeAllRanges();s.addRange(r);}
-    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(TOKEN).then(ok).catch(sel); else sel();
-  });
-
-  /* pointer-tracked sheen on the holo panels */
-  document.addEventListener("pointermove",function(e){
-    var p=e.target.closest?e.target.closest(".panel"):null; if(!p) return;
-    var r=p.getBoundingClientRect();
-    p.style.setProperty("--mx",(e.clientX-r.left)+"px"); p.style.setProperty("--my",(e.clientY-r.top)+"px");
-  });
-
-  /* live on-chain values, with the dated figures as fallback */
-  function pad(a){return a.toLowerCase().replace(/^0x/,"").padStart(64,"0");}
-  function call(to,data,i){
-    i=i||0; if(i>=RPCS.length||!window.fetch) return Promise.reject(new Error("rpc"));
-    return fetch(RPCS[i],{method:"POST",headers:{"content-type":"application/json"},
-      body:JSON.stringify({jsonrpc:"2.0",id:1,method:"eth_call",params:[{to:to,data:data},"latest"]})})
-      .then(function(r){return r.json();})
-      .then(function(j){ if(j&&j.result&&j.result.length>2) return BigInt(j.result); throw new Error("empty"); })
-      .catch(function(){return call(to,data,i+1);});
-  }
-  function bnbUsd(){
+  function bnbPrice(){
     return fetch("https://api.binance.com/api/v3/ticker/price?symbol=BNBUSDT")
-      .then(function(r){return r.json();}).then(function(j){return parseFloat(j.price)||0;});
+      .then(function(r){return r.json();}).then(function(j){return parseFloat(j.price)||0;})
+      .catch(function(){
+        return fetch("https://api.coingecko.com/api/v3/simple/price?ids=binancecoin&vs_currencies=usd")
+          .then(function(r){return r.json();}).then(function(j){return (j.binancecoin&&j.binancecoin.usd)||0;})
+          .catch(function(){return 0;});
+      });
   }
+
   function refresh(){
+    // balances brûlés / vault / supply
     Promise.all([
-      call(TOKEN,"0x70a08231"+pad(DEAD)),   // BTCN at the dead address
-      call(PAIR,"0x70a08231"+pad(DEAD)),    // LP tokens at the dead address
-      call(PAIR,"0x18160ddd")               // LP total supply
-    ]).then(function(r){
-      var dead=Number(r[0]/1000000000000000000n), lp=Number(r[1]*100000n/r[2])/1000;
-      if(dead>0&&dead<=SUPPLY){live={dead:dead,lp:lp};paint();}
-      return Promise.all([call(TOKEN,"0x70a08231"+pad(PAIR)),call(WBNB,"0x70a08231"+pad(PAIR)),bnbUsd()]);
-    }).then(function(r){
-      // price = BNB in the pool / BTCN in the pool; market cap = price x circulating supply
-      var tok=Number(r[0]/1000000000000n)/1e6, bnb=Number(r[1]/1000000000000n)/1e6;
-      if(tok>0&&r[2]>0&&live){mcap=bnb/tok*r[2]*(SUPPLY-live.dead);paint();}
-    }).catch(function(){});
+      ethCall(TOKEN,"0x70a08231"+pad(DEAD)),   // balanceOf(dead)
+      ethCall(TOKEN,"0x70a08231"+pad(VAULT))   // balanceOf(vault)
+    ]).then(function(res){
+      var dead=toNum(big(res[0])), vault=toNum(big(res[1]));
+      var out=dead+vault;
+      var circ=SUPPLY-out; if(circ<0)circ=0;
+      set("bn-burned", tok(dead)+" BTCN");
+      set("bn-vault",  tok(vault)+" BTCN");
+      set("bn-out",    ((out/SUPPLY)*100).toFixed(1)+"%");
+      set("bn-circ",   tok(circ)+" BTCN");
+      // market cap (pour le staking)
+      Promise.all([
+        ethCall(PAIR,"0x0902f1ac"),  // getReserves()
+        ethCall(PAIR,"0x0dfe1681"),  // token0()
+        bnbPrice()
+      ]).then(function(r2){
+        var reserves=r2[0], token0=r2[1], bnb=r2[2];
+        var r0=big("0x"+reserves.slice(2,66)), r1=big("0x"+reserves.slice(66,130));
+        var t0="0x"+token0.slice(-40);
+        var resBNB,resTok;
+        if(t0.toLowerCase()===WBNB.toLowerCase()){resBNB=toNum(r0);resTok=toNum(r1);}
+        else{resBNB=toNum(r1);resTok=toNum(r0);}
+        var priceBnb = resTok>0 ? resBNB/resTok : 0;
+        var priceUsd = priceBnb*bnb;
+        var mc = circ*priceUsd;
+        set("stk-mc", usd(mc));
+        var pct = Math.max(0,Math.min(100,(mc/1e6)*100));
+        var bar=document.getElementById("stk-bar"); if(bar)bar.style.width=pct.toFixed(2)+"%";
+        set("stk-pct", pct<0.1 ? (pct.toFixed(3)+"%") : (pct.toFixed(1)+"%"));
+      }).catch(function(){ set("stk-mc","…"); });
+    }).catch(function(){
+      ["bn-burned","bn-vault","bn-out","bn-circ"].forEach(function(id){set(id,"…");});
+    });
   }
-  applyLang(); refresh(); setInterval(refresh,60000);
+  refresh();
+  setInterval(refresh,30000);
+
+  /* ---------- Connect Wallet ---------- */
+  var btn=document.getElementById("connectBtn");
+  function short(a){return a.slice(0,6)+"…"+a.slice(-4);}
+  function connected(a){ if(btn){btn.textContent=short(a);btn.removeAttribute("data-i18n");} }
+  if(btn){
+    btn.addEventListener("click",function(){
+      if(!window.ethereum){ window.open("https://metamask.io/download/","_blank"); return; }
+      window.ethereum.request({method:"eth_requestAccounts"}).then(function(accs){
+        if(accs&&accs[0]){
+          connected(accs[0]);
+          window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x38"}]}).catch(function(){});
+        }
+      }).catch(function(){});
+    });
+    if(window.ethereum){
+      window.ethereum.request({method:"eth_accounts"}).then(function(accs){ if(accs&&accs[0])connected(accs[0]); }).catch(function(){});
+      if(window.ethereum.on){ window.ethereum.on("accountsChanged",function(accs){ if(accs&&accs[0])connected(accs[0]); else if(btn){btn.textContent="Connect Wallet";} }); }
+    }
+  }
+})();
+</script>
+
+<script id="holo-skin-js">
+/* Holographic skin: swaps the hero logo for a projected hologram and adds the panel sheen. */
+(function(){
+  var logo=document.querySelector(".hero-logo");
+  if(logo){
+    var src=logo.getAttribute("src")||"logo.jpg", p=document.createElement("div");
+    p.className="projector"; p.setAttribute("aria-hidden","true");
+    p.innerHTML='<div class="beam"></div><div class="ring"></div><div class="ring r2"></div>'+
+      '<div class="coin"><div class="face"><img src="'+src+'" alt=""><div class="scan"></div></div>'+
+      '<div class="face back"><img src="'+src+'" alt=""><div class="scan"></div></div></div><div class="emitter"></div>';
+    logo.parentNode.replaceChild(p,logo);
+  }
+  var panels=document.querySelectorAll(".about-card,.ca,.final,.livecard,.phase,.sec-card,.stat,.step,.taxbox,.toko-card");
+  for(var i=0;i<panels.length;i++) panels[i].classList.add("holo-panel");
+  document.addEventListener("pointermove",function(e){
+    var el=e.target.closest?e.target.closest(".holo-panel"):null; if(!el) return;
+    var r=el.getBoundingClientRect();
+    el.style.setProperty("--mx",(e.clientX-r.left)+"px"); el.style.setProperty("--my",(e.clientY-r.top)+"px");
+  });
 })();
 </script>
 </body>
 </html>
+<script async src="/.netlify/scripts/hud?variant=public" data-nf-variant="public" data-netlify-site-id="fa420cab-8eb1-49c3-970b-ed4937a89908" data-app-host="app.netlify.com" data-account-tier="free"></script>
